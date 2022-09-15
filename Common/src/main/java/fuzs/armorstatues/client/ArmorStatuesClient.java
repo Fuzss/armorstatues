@@ -1,6 +1,6 @@
 package fuzs.armorstatues.client;
 
-import fuzs.armorstatues.client.gui.screens.inventory.ArmorStandScreen2;
+import fuzs.armorstatues.client.gui.screens.inventory.ArmorStandScreenType;
 import fuzs.armorstatues.init.ModRegistry;
 import fuzs.armorstatues.world.inventory.ArmorStandMenu;
 import fuzs.puzzleslib.client.core.ClientModConstructor;
@@ -10,7 +10,7 @@ public class ArmorStatuesClient implements ClientModConstructor {
 
     @Override
     public void onRegisterMenuScreens(MenuScreensContext context) {
-        context.registerMenuScreen(ModRegistry.ARMOR_STAND_MENU_TYPE.get(), ArmorStandScreen2::new);
+        context.registerMenuScreen(ModRegistry.ARMOR_STAND_MENU_TYPE.get(), ArmorStandScreenType.getLastType()::create);
     }
 
     @Override

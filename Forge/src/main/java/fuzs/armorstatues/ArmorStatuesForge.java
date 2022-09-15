@@ -25,6 +25,7 @@ public class ArmorStatuesForge {
 
     private static void registerHandlers() {
         MinecraftForge.EVENT_BUS.addListener((final PlayerInteractEvent.EntityInteractSpecific evt) -> {
+            // event is broken server-side, we use our own implementation for that below
             if (!evt.getSide().isClient()) return;
             ArmorStandInteractHandler.onEntityInteract(evt.getEntity(), evt.getLevel(), evt.getHand(), evt.getTarget()).ifPresent(result -> {
                 evt.setCancellationResult(result);

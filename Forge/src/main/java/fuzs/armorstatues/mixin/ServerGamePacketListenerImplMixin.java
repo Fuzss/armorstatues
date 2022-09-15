@@ -1,6 +1,5 @@
 package fuzs.armorstatues.mixin;
 
-import fuzs.armorstatues.ArmorStatues;
 import fuzs.armorstatues.api.event.entity.player.PlayerEntityInteractEvent;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;

@@ -3,7 +3,7 @@ package fuzs.armorstatues.client.gui.components;
 import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
-import fuzs.armorstatues.client.gui.screens.inventory.ArmorStandScreen;
+import fuzs.armorstatues.client.gui.screens.inventory.AbstractArmorStandScreen;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.components.Checkbox;
@@ -19,7 +19,7 @@ public class BooleanSettingButton extends Checkbox {
     @Override
     public void renderButton(PoseStack pPoseStack, int pMouseX, int pMouseY, float pPartialTick) {
         Minecraft minecraft = Minecraft.getInstance();
-        RenderSystem.setShaderTexture(0, ArmorStandScreen.ARMOR_STAND_WIDGETS_LOCATION);
+        RenderSystem.setShaderTexture(0, AbstractArmorStandScreen.ARMOR_STAND_WIDGETS_LOCATION);
         RenderSystem.enableDepthTest();
         Font font = minecraft.font;
         RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, this.alpha);
