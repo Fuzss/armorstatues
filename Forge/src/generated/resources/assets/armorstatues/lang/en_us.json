@@ -1,5 +1,5 @@
 {
-  "armorstatues.item.armor_stand.description": "Shift-click to open configuration screen.",
+  "armorstatues.item.armor_stand.description": "Shift + right-click to open configuration screen when placed.",
   "armorstatues.screen.style.invisible": "Invisible",
   "armorstatues.screen.style.invisible.tooltip": "Makes the armor stand itself invisible, but still shows all equipment.",
   "armorstatues.screen.style.noBasePlate": "No Base Plate",
@@ -9,5 +9,10 @@
   "armorstatues.screen.style.showName": "Show Name",
   "armorstatues.screen.style.showName.tooltip": "Render the armor stand's name tag above it's head.",
   "armorstatues.screen.style.small": "Small",
-  "armorstatues.screen.style.small.tooltip": "Makes the armor stand half it's size like a baby mob."
+  "armorstatues.screen.style.small.tooltip": "Makes the armor stand half it's size like a baby mob.",
+  "armorstatues.screen.type.equipment": "Equipment",
+  "armorstatues.screen.type.poses": "Poses",
+  "armorstatues.screen.type.position": "Position",
+  "armorstatues.screen.type.rotations": "Rotations",
+  "armorstatues.screen.type.style": "Style"
 }

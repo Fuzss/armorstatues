@@ -10,7 +10,7 @@ public class ArmorStatuesClient implements ClientModConstructor {
 
     @Override
     public void onRegisterMenuScreens(MenuScreensContext context) {
-        context.registerMenuScreen(ModRegistry.ARMOR_STAND_MENU_TYPE.get(), ArmorStandScreenType.getLastType()::create);
+        context.registerMenuScreen(ModRegistry.ARMOR_STAND_MENU_TYPE.get(), ArmorStandScreenType.getLastType()::createTabScreen);
     }
 
     @Override

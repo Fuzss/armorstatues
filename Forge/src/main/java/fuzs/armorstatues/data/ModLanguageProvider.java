@@ -12,6 +12,11 @@ public class ModLanguageProvider extends LanguageProvider {
     @Override
     protected void addTranslations() {
         this.add("armorstatues.item.armor_stand.description", "Shift + right-click to open configuration screen when placed.");
+        this.add("armorstatues.screen.type.equipment", "Equipment");
+        this.add("armorstatues.screen.type.rotations", "Rotations");
+        this.add("armorstatues.screen.type.style", "Style");
+        this.add("armorstatues.screen.type.poses", "Poses");
+        this.add("armorstatues.screen.type.position", "Position");
         this.add("armorstatues.screen.style.showArms", "Show Arms");
         this.add("armorstatues.screen.style.small", "Small");
         this.add("armorstatues.screen.style.invisible", "Invisible");
