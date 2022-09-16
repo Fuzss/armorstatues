@@ -22,10 +22,12 @@ public class ModLanguageProvider extends LanguageProvider {
         this.add("armorstatues.screen.style.invisible", "Invisible");
         this.add("armorstatues.screen.style.noBasePlate", "No Base Plate");
         this.add("armorstatues.screen.style.showName", "Show Name");
-        this.add("armorstatues.screen.style.showArms.tooltip", "Enables the armor stand's arms, so it may hold items in both hands.");
-        this.add("armorstatues.screen.style.small.tooltip", "Makes the armor stand half it's size like a baby mob.");
-        this.add("armorstatues.screen.style.invisible.tooltip", "Makes the armor stand itself invisible, but still shows all equipment.");
-        this.add("armorstatues.screen.style.noBasePlate.tooltip", "Hide the stone base plate.");
-        this.add("armorstatues.screen.style.showName.tooltip", "Render the armor stand's name tag above it's head.");
+        this.add("armorstatues.screen.style.noGravity", "No Gravity");
+        this.add("armorstatues.screen.style.showArms.description", "Shows the armor stand's arms, so it may hold items in both hands.");
+        this.add("armorstatues.screen.style.small.description", "Makes the armor stand half it's size like a baby mob.");
+        this.add("armorstatues.screen.style.invisible.description", "Makes the armor stand itself invisible, but still shows all equipped items.");
+        this.add("armorstatues.screen.style.noBasePlate.description", "Hide the stone base plate at the armor stand's feet.");
+        this.add("armorstatues.screen.style.showName.description", "Render the armor stand's name tag above it's head.");
+        this.add("armorstatues.screen.style.noGravity.description", "Prevents the armor stand from falling down, so it may float freely.");
     }
 }

@@ -46,6 +46,9 @@ dependencies {
     modImplementation "net.fabricmc:fabric-loader:${fabricVersion}"
     modImplementation "net.fabricmc.fabric-api:fabric-api:${fabricApiVersion}"
 
+    // Forge Configs
+    modImplementation "net.minecraftforge:forgeconfigapiport-fabric:4.2.6"
+
     // Quality of Life Mods
     modRuntimeOnly "com.terraformersmc:modmenu:4.0.6"
     modRuntimeOnly "curse.maven:tooltipfix-411557:3820437"

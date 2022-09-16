@@ -27,6 +27,8 @@ public abstract class AbstractArmorStandScreen extends Screen implements MenuAcc
     protected final int imageHeight = 188;
     protected int leftPos;
     protected int topPos;
+    protected int mouseX;
+    protected int mouseY;
 
     public AbstractArmorStandScreen(ArmorStandMenu menu, Inventory inventory, Component component) {
         super(component);
@@ -75,6 +77,8 @@ public abstract class AbstractArmorStandScreen extends Screen implements MenuAcc
                 this.renderTooltip(poseStack, hoveredTab.getComponent(), mouseX, mouseY);
             });
         }
+        this.mouseX = mouseX;
+        this.mouseY = mouseY;
     }
 
     protected void renderBg(PoseStack poseStack, float partialTick, int mouseX, int mouseY) {
