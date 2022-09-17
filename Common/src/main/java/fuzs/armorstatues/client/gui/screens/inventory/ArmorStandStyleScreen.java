@@ -1,12 +1,11 @@
 package fuzs.armorstatues.client.gui.screens.inventory;
 
-import com.google.common.collect.ImmutableList;
-import com.google.common.collect.Lists;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import fuzs.armorstatues.ArmorStatues;
 import fuzs.armorstatues.client.gui.components.TickBoxButton;
 import fuzs.armorstatues.network.client.C2SArmorStandNameMessage;
+import fuzs.armorstatues.network.client.C2SArmorStandStyleMessage;
 import fuzs.armorstatues.world.inventory.ArmorStandMenu;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.components.Button;
@@ -15,14 +14,12 @@ import net.minecraft.client.gui.screens.inventory.InventoryScreen;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.decoration.ArmorStand;
 import net.minecraft.world.entity.player.Inventory;
 
-import java.util.List;
+import java.util.stream.Stream;
 
 public class ArmorStandStyleScreen extends AbstractArmorStandScreen {
-    private static final List<Component> STYLE_SETTING_DESCRIPTIONS = Lists.newArrayList("showName", "showArms", "small", "invisible", "noBasePlate", "noGravity").stream().map(s -> "armorstatues.screen.style." + s).map(Component::translatable).collect(ImmutableList.toImmutableList());
-    private static final List<Component> STYLE_SETTING_TOOLTIPS = Lists.newArrayList("showName", "showArms", "small", "invisible", "noBasePlate", "noGravity").stream().map(s -> "armorstatues.screen.style." + s + ".description").map(Component::translatable).collect(ImmutableList.toImmutableList());
-
     private EditBox name;
 
     public ArmorStandStyleScreen(ArmorStandMenu menu, Inventory inventory, Component component) {
@@ -38,27 +35,35 @@ public class ArmorStandStyleScreen extends AbstractArmorStandScreen {
     @Override
     protected void init() {
         super.init();
+        ArmorStand armorStand = this.menu.getArmorStand();
         this.minecraft.keyboardHandler.setSendRepeatsToGui(true);
-        this.name = new EditBox(this.font, this.leftPos + 16, this.topPos + 33, 66, 9, EntityType.ARMOR_STAND.getDescription());
+        this.name = new EditBox(this.font, this.leftPos + 16, this.topPos + 32, 66, 9, EntityType.ARMOR_STAND.getDescription());
         this.name.setTextColor(16777215);
         this.name.setBordered(false);
         this.name.setMaxLength(50);
         this.name.setResponder(this::onNameChanged);
-        this.name.setValue(this.menu.getArmorStand().getName().getString());
+        this.name.setValue(armorStand.getName().getString());
         this.addWidget(this.name);
         this.setInitialFocus(this.name);
-        final int buttonStartY = (this.imageHeight - STYLE_SETTING_DESCRIPTIONS.size() * 20 - (STYLE_SETTING_DESCRIPTIONS.size() - 1) * 2) / 2;
-        for (int i = 0; i < STYLE_SETTING_DESCRIPTIONS.size(); i++) {
-            Component description = STYLE_SETTING_TOOLTIPS.get(i);
-            this.addRenderableWidget(new TickBoxButton(this.leftPos + 98, this.topPos + buttonStartY + i * 22, STYLE_SETTING_DESCRIPTIONS.get(i), (Button button, PoseStack poseStack, int mouseX, int mouseY) -> {
-                this.renderTooltip(poseStack, description, mouseX, mouseY);
+        int optionsSize = (int) Stream.of(ArmorStandStyleOption.values()).filter(option -> this.minecraft.player.getAbilities().instabuild || !option.onlyCreative()).count();
+        final int buttonStartY = (this.imageHeight - optionsSize * 20 - (optionsSize - 1) * 2) / 2;
+        for (int i = 0, j = 0; i < ArmorStandStyleOption.values().length; i++) {
+            ArmorStandStyleOption option = ArmorStandStyleOption.values()[i];
+            if (!this.minecraft.player.getAbilities().instabuild && option.onlyCreative()) continue;
+            this.addRenderableWidget(new TickBoxButton(this.leftPos + 98, this.topPos + buttonStartY + j++ * 22, option.getComponent(), option.getOption(armorStand), (Button button) -> {
+                boolean setting = ((TickBoxButton) button).isSelected();
+                option.setOption(armorStand, setting);
+                ArmorStatues.NETWORK.sendToServer(new C2SArmorStandStyleMessage(option, setting));
+            }, (Button button, PoseStack poseStack, int mouseX, int mouseY) -> {
+                this.renderTooltip(poseStack, option.getDescriptionComponent(), mouseX, mouseY);
             }));
         }
     }
 
     private void onNameChanged(String input) {
-        if (!input.equals(this.menu.getArmorStand().getName().getString())) {
-            C2SArmorStandNameMessage.setCustomNameArmorStand(input, this.menu.getArmorStand());
+        ArmorStand armorStand = this.menu.getArmorStand();
+        if (!input.equals(armorStand.getName().getString())) {
+            C2SArmorStandNameMessage.setCustomNameArmorStand(input, armorStand);
             ArmorStatues.NETWORK.sendToServer(new C2SArmorStandNameMessage(input));
         }
     }
@@ -94,7 +99,7 @@ public class ArmorStandStyleScreen extends AbstractArmorStandScreen {
         // armor stand background
         this.blit(poseStack, this.leftPos + 14, this.topPos + 50, 0, 0, 76, 108);
         // name edit box background
-        this.blit(poseStack, this.leftPos + 14, this.topPos + 31, 0, 108, 76, 12);
+        this.blit(poseStack, this.leftPos + 14, this.topPos + 30, 0, 108, 76, 12);
         this.name.render(poseStack, mouseX, mouseY, partialTick);
         InventoryScreen.renderEntityInInventory(this.leftPos + 52, this.topPos + 148, 45, (float) (this.leftPos + 52 - 5) - this.mouseX, (float) (this.topPos + 148 - 66) - this.mouseY, this.menu.getArmorStand());
     }

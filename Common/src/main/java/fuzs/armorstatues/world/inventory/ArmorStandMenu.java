@@ -2,6 +2,7 @@ package fuzs.armorstatues.world.inventory;
 
 import com.mojang.datafixers.util.Pair;
 import fuzs.armorstatues.ArmorStatues;
+import fuzs.armorstatues.client.gui.screens.inventory.ArmorStandStyleOption;
 import fuzs.armorstatues.core.ModServices;
 import fuzs.armorstatues.init.ModRegistry;
 import fuzs.armorstatues.mixin.accessor.ArmorStandAccessor;
@@ -42,7 +43,7 @@ public class ArmorStandMenu extends AbstractContainerMenu {
         SimpleContainer handItemsContainer = simpleContainer(handItems);
         handItemsContainer.addListener(container -> {
             if (container.hasAnyMatching(stack -> !stack.isEmpty())) {
-                armorStand.getEntityData().set(ArmorStand.DATA_CLIENT_FLAGS, (byte) (armorStand.getEntityData().get(ArmorStand.DATA_CLIENT_FLAGS) | 4));
+                ArmorStandStyleOption.setArmorStandData(armorStand, true, ArmorStand.CLIENT_FLAG_SHOW_ARMS);
             }
         });
         CompoundContainer container = new CompoundContainer(simpleContainer(armorItems), handItemsContainer);

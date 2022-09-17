@@ -14,13 +14,15 @@ import net.minecraft.util.Mth;
 public class TickBoxButton extends Button {
     private boolean selected;
 
-    public TickBoxButton(int posX, int posY, Component component, OnTooltip onTooltip) {
-        super(posX, posY, 101, 20, component, button -> {}, onTooltip);
+    public TickBoxButton(int posX, int posY, Component component, boolean selected, OnPress onPress, OnTooltip onTooltip) {
+        super(posX, posY, 101, 20, component, onPress, onTooltip);
+        this.selected = selected;
     }
 
     @Override
     public void onPress() {
         this.selected = !this.selected;
+        super.onPress();
     }
 
     public boolean isSelected() {
@@ -37,12 +39,12 @@ public class TickBoxButton extends Button {
         RenderSystem.enableBlend();
         RenderSystem.defaultBlendFunc();
         RenderSystem.blendFunc(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA);
-        blit(poseStack, this.x, this.y, 196.0F, this.isHoveredOrFocused() ? 16.0F : 0.0F, 16, 16, 256, 256);
+        blit(poseStack, this.x + 2, this.y + 2, 196.0F, this.isHoveredOrFocused() ? 16.0F : 0.0F, 16, 16, 256, 256);
         if (this.selected) {
-            blit(poseStack, this.x, this.y, 196.0F, 32.0F + (this.isHoveredOrFocused() ? 16.0F : 0.0F), 16, 16, 256, 256);
+            blit(poseStack, this.x + 2, this.y + 2, 196.0F, 32.0F + (this.isHoveredOrFocused() ? 16.0F : 0.0F), 16, 16, 256, 256);
         }
         final int textColor = this.active ? (this.isHoveredOrFocused() ? ChatFormatting.YELLOW.getColor() : 16777215) : 10526880;
-        drawString(poseStack, font, this.getMessage(), this.x + 24, this.y + 4, textColor | Mth.ceil(this.alpha * 255.0F) << 24);
+        drawString(poseStack, font, this.getMessage(), this.x + 4 + 24, this.y + 2 + 4, textColor | Mth.ceil(this.alpha * 255.0F) << 24);
         if (this.isHoveredOrFocused()) {
             this.renderToolTip(poseStack, mouseX, mouseY);
         }

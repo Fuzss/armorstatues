@@ -14,4 +14,10 @@ public interface ArmorStandAccessor {
 
     @Accessor
     NonNullList<ItemStack> getArmorItems();
+
+    @Accessor
+    int getDisabledSlots();
+
+    @Accessor
+    void setDisabledSlots(int disabledSlots);
 }

@@ -16,10 +16,10 @@ import java.util.Optional;
 public class ArmorStandInteractHandler {
 
     public static Optional<InteractionResult> onEntityInteract(Player player, Level level, InteractionHand interactionHand, Entity entity) {
-        if (entity instanceof ArmorStand && player.isShiftKeyDown()) {
+        if (player.isShiftKeyDown() && entity instanceof ArmorStand armorStand && (!armorStand.isInvulnerable() || player.getAbilities().instabuild)) {
             if (player instanceof ServerPlayer serverPlayer) {
                 CoreServices.ABSTRACTIONS.openMenu(serverPlayer, new SimpleMenuProvider((pContainerId, pPlayerInventory, pPlayer) -> {
-                    return ArmorStandMenu.create(pContainerId, pPlayerInventory, (ArmorStand) entity);
+                    return ArmorStandMenu.create(pContainerId, pPlayerInventory, armorStand);
                 }, entity.getDisplayName()), (serverPlayer1, friendlyByteBuf) -> {
                     friendlyByteBuf.writeInt(entity.getId());
                 });
