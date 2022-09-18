@@ -10,22 +10,20 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 
 public final class ArmorStandScreenType<T extends Screen & MenuAccess<ArmorStandMenu> & ArmorStandScreen> {
-    public static final ArmorStandScreenType<ArmorStandEquipmentScreen> EQUIPMENT = new ArmorStandScreenType<>(0, "equipment", new ItemStack(Items.IRON_CHESTPLATE), ArmorStandEquipmentScreen::new);
-    public static final ArmorStandScreenType<ArmorStandEquipmentScreen> ROTATIONS = new ArmorStandScreenType<>(1, "rotations", new ItemStack(Items.COMPASS), ArmorStandEquipmentScreen::new);
-    public static final ArmorStandScreenType<ArmorStandStyleScreen> STYLE = new ArmorStandScreenType<>(2, "style", new ItemStack(Items.PAINTING), ArmorStandStyleScreen::new);
-    public static final ArmorStandScreenType<ArmorStandEquipmentScreen> POSES = new ArmorStandScreenType<>(3, "poses", new ItemStack(Items.SPYGLASS), ArmorStandEquipmentScreen::new);
-    public static final ArmorStandScreenType<ArmorStandPositionScreen> POSITION = new ArmorStandScreenType<>(4, "position", new ItemStack(Items.GRASS_BLOCK), ArmorStandPositionScreen::new);
+    public static final ArmorStandScreenType<ArmorStandEquipmentScreen> EQUIPMENT = new ArmorStandScreenType<>("equipment", new ItemStack(Items.IRON_CHESTPLATE), ArmorStandEquipmentScreen::new);
+    public static final ArmorStandScreenType<ArmorStandEquipmentScreen> ROTATIONS = new ArmorStandScreenType<>("rotations", new ItemStack(Items.COMPASS), ArmorStandEquipmentScreen::new);
+    public static final ArmorStandScreenType<ArmorStandStyleScreen> STYLE = new ArmorStandScreenType<>("style", new ItemStack(Items.PAINTING), ArmorStandStyleScreen::new);
+    public static final ArmorStandScreenType<ArmorStandPosesScreen> POSES = new ArmorStandScreenType<>("poses", new ItemStack(Items.SPYGLASS), ArmorStandPosesScreen::new);
+    public static final ArmorStandScreenType<ArmorStandPositionScreen> POSITION = new ArmorStandScreenType<>("position", new ItemStack(Items.GRASS_BLOCK), ArmorStandPositionScreen::new);
     private static final ArmorStandScreenType<?>[] VALUES = new ArmorStandScreenType[]{EQUIPMENT, ROTATIONS, STYLE, POSES, POSITION};
 
     private static ArmorStandScreenType<?> lastType = STYLE;
 
-    private final int ordinal;
     private final String name;
     private final ItemStack icon;
     private final ModScreenConstructor<ArmorStandMenu, T> factory;
 
-    private ArmorStandScreenType(int ordinal, String name, ItemStack icon, ModScreenConstructor<ArmorStandMenu, T> factory) {
-        this.ordinal = ordinal;
+    private ArmorStandScreenType(String name, ItemStack icon, ModScreenConstructor<ArmorStandMenu, T> factory) {
         this.name = name;
         this.icon = icon;
         this.factory = factory;
@@ -34,10 +32,6 @@ public final class ArmorStandScreenType<T extends Screen & MenuAccess<ArmorStand
     @Override
     public String toString() {
         return this.name;
-    }
-
-    public int ordinal() {
-        return this.ordinal;
     }
 
     public Component getComponent() {

@@ -11,15 +11,16 @@ public class TickButton extends NewTextureButton {
     private final Component title;
     private final Component clickedTitle;
     private int lastClickedTicks;
+    public int lastClickedTicksDelay = 30;
 
     public TickButton(int x, int y, int width, int height, Component title, Component clickedTitle, OnPress onPress) {
-        super(x, y, width, height, 54, 142, AbstractArmorStandScreen.ARMOR_STAND_WIDGETS_LOCATION, title, onPress);
+        super(x, y, width, height, 0, 189, AbstractArmorStandScreen.ARMOR_STAND_WIDGETS_LOCATION, title, onPress);
         this.title = title;
         this.clickedTitle = clickedTitle;
     }
 
     public TickButton(int x, int y, int width, int height, Component title, Component clickedTitle, OnPress onPress, OnTooltip onTooltip) {
-        super(x, y, width, height, 54, 142, AbstractArmorStandScreen.ARMOR_STAND_WIDGETS_LOCATION, title, onPress, onTooltip);
+        super(x, y, width, height, 0, 189, AbstractArmorStandScreen.ARMOR_STAND_WIDGETS_LOCATION, title, onPress, onTooltip);
         this.title = title;
         this.clickedTitle = clickedTitle;
     }
@@ -27,7 +28,7 @@ public class TickButton extends NewTextureButton {
     @Override
     public void onPress() {
         super.onPress();
-        this.lastClickedTicks = 30;
+        this.lastClickedTicks = this.lastClickedTicksDelay;
         this.setMessage(this.clickedTitle);
     }
 

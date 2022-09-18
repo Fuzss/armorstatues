@@ -12,6 +12,19 @@ public class ModLanguageProvider extends LanguageProvider {
     @Override
     protected void addTranslations() {
         this.add("armorstatues.item.armor_stand.description", "Shift + right-click to open configuration screen when placed.");
+        this.add("armorstatues.entity.armor_stand.pose.athena", "Athena");
+        this.add("armorstatues.entity.armor_stand.pose.brandish", "Brandish");
+        this.add("armorstatues.entity.armor_stand.pose.cancanA", "Cancan #1");
+        this.add("armorstatues.entity.armor_stand.pose.cancanB", "Cancan #2");
+        this.add("armorstatues.entity.armor_stand.pose.default", "Default");
+        this.add("armorstatues.entity.armor_stand.pose.entertain", "Entertain");
+        this.add("armorstatues.entity.armor_stand.pose.hero", "Hero");
+        this.add("armorstatues.entity.armor_stand.pose.honor", "Honor");
+        this.add("armorstatues.entity.armor_stand.pose.none", "None");
+        this.add("armorstatues.entity.armor_stand.pose.riposte", "Riposte");
+        this.add("armorstatues.entity.armor_stand.pose.salute", "Salute");
+        this.add("armorstatues.entity.armor_stand.pose.solemn", "Solemn");
+        this.add("armorstatues.entity.armor_stand.pose.zombie", "Zombie");
         this.add("armorstatues.screen.type.equipment", "Equipment");
         this.add("armorstatues.screen.type.rotations", "Rotations");
         this.add("armorstatues.screen.type.style", "Style");
@@ -44,6 +57,8 @@ public class ModLanguageProvider extends LanguageProvider {
         this.add("armorstatues.screen.position.centered", "Align Centered");
         this.add("armorstatues.screen.position.cornered", "Align Cornered");
         this.add("armorstatues.screen.position.aligned", "Aligned!");
+        this.add("armorstatues.screen.pose.randomize", "Randomize");
+        this.add("armorstatues.screen.pose.randomized", "Applied!");
         this.add("armorstatues.screen.copy", "Copy");
         this.add("armorstatues.screen.copied", "Copied!");
         this.add("armorstatues.screen.paste", "Paste");

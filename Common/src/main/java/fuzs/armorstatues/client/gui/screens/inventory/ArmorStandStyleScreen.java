@@ -24,6 +24,8 @@ public class ArmorStandStyleScreen extends AbstractArmorStandScreen {
 
     public ArmorStandStyleScreen(ArmorStandMenu menu, Inventory inventory, Component component) {
         super(menu, inventory, component);
+        this.inventoryEntityX = 14;
+        this.inventoryEntityY = 50;
     }
 
     @Override
@@ -96,12 +98,9 @@ public class ArmorStandStyleScreen extends AbstractArmorStandScreen {
         RenderSystem.setShader(GameRenderer::getPositionTexShader);
         RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
         RenderSystem.setShaderTexture(0, ARMOR_STAND_WIDGETS_LOCATION);
-        // armor stand background
-        this.blit(poseStack, this.leftPos + 14, this.topPos + 50, 0, 0, 76, 108);
         // name edit box background
         this.blit(poseStack, this.leftPos + 14, this.topPos + 30, 0, 108, 76, 12);
         this.name.render(poseStack, mouseX, mouseY, partialTick);
-        InventoryScreen.renderEntityInInventory(this.leftPos + 52, this.topPos + 148, 45, (float) (this.leftPos + 52 - 5) - this.mouseX, (float) (this.topPos + 148 - 66) - this.mouseY, this.menu.getArmorStand());
     }
 
     @Override

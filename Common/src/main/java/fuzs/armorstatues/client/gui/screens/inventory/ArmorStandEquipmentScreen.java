@@ -10,20 +10,17 @@ import net.minecraft.client.gui.screens.inventory.InventoryScreen;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.entity.decoration.ArmorStand;
 import net.minecraft.world.entity.player.Inventory;
 
 public class ArmorStandEquipmentScreen extends AbstractContainerScreen<ArmorStandMenu> implements ArmorStandScreen {
     private static final ResourceLocation ARMOR_STAND_EQUIPMENT_LOCATION = new ResourceLocation(ArmorStatues.MOD_ID, "textures/gui/container/armor_stand/equipment.png");
 
-    private final ArmorStand armorStand;
     private final Inventory inventory;
-    private float xMouse;
-    private float yMouse;
+    private float mouseX;
+    private float mouseY;
 
     public ArmorStandEquipmentScreen(ArmorStandMenu abstractContainerMenu, Inventory inventory, Component component) {
         super(abstractContainerMenu, inventory, component);
-        this.armorStand = this.getMenu().getArmorStand();
         this.inventory = inventory;
         this.imageWidth = 210;
         this.imageHeight = 188;
@@ -61,8 +58,8 @@ public class ArmorStandEquipmentScreen extends AbstractContainerScreen<ArmorStan
                 this.renderTooltip(poseStack, hoveredTab.getComponent(), mouseX, mouseY);
             });
         }
-        this.xMouse = (float) mouseX;
-        this.yMouse = (float) mouseY;
+        this.mouseX = (float) mouseX;
+        this.mouseY = (float) mouseY;
     }
 
     @Override
@@ -74,7 +71,7 @@ public class ArmorStandEquipmentScreen extends AbstractContainerScreen<ArmorStan
         int j = (this.height - this.imageHeight) / 2;
         this.blit(poseStack, i, j, 0, 0, this.imageWidth, this.imageHeight);
         AbstractArmorStandScreen.drawTabs(poseStack, this.leftPos, this.topPos, this.imageHeight, this);
-        InventoryScreen.renderEntityInInventory(i + 104, j + 84, 30, (float) (i + 104 - 10) - this.xMouse, (float) (j + 84 - 44) - this.yMouse, this.armorStand);
+        InventoryScreen.renderEntityInInventory(i + 104, j + 84, 30, (float) (i + 104 - 10) - this.mouseX, (float) (j + 84 - 44) - this.mouseY, this.menu.getArmorStand());
     }
 
     @Override

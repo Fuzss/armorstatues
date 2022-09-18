@@ -9,6 +9,7 @@ import net.minecraft.client.gui.components.AbstractButton;
 import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.components.ImageButton;
 import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.client.gui.screens.inventory.InventoryScreen;
 import net.minecraft.client.gui.screens.inventory.MenuAccess;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.client.renderer.entity.ItemRenderer;
@@ -30,6 +31,8 @@ public abstract class AbstractArmorStandScreen extends Screen implements MenuAcc
     protected final int imageHeight = 188;
     protected int leftPos;
     protected int topPos;
+    protected int inventoryEntityX;
+    protected int inventoryEntityY;
     protected int mouseX;
     protected int mouseY;
     private AbstractWidget closeButton;
@@ -55,12 +58,16 @@ public abstract class AbstractArmorStandScreen extends Screen implements MenuAcc
     }
 
     public static AbstractButton makeCloseButton(Screen screen, int leftPos, int imageWidth, int topPos) {
-        return new ImageButton(leftPos + imageWidth - 15 - 8, topPos + 8, 15, 15, 0, 189, ARMOR_STAND_WIDGETS_LOCATION, button -> {
+        return new ImageButton(leftPos + imageWidth - 15 - 8, topPos + 8, 15, 15, 136, 0, ARMOR_STAND_WIDGETS_LOCATION, button -> {
             screen.onClose();
         });
     }
 
     protected boolean withCloseButton() {
+        return true;
+    }
+
+    protected boolean renderInventoryEntity() {
         return true;
     }
 
@@ -115,6 +122,17 @@ public abstract class AbstractArmorStandScreen extends Screen implements MenuAcc
             RenderSystem.setShaderTexture(0, ARMOR_STAND_BACKGROUND_LOCATION);
             this.blit(poseStack, this.leftPos, this.topPos, 0, 0, this.imageWidth, this.imageHeight);
             drawTabs(poseStack, this.leftPos, this.topPos, this.imageHeight, this);
+            this.renderEntityInInventory(poseStack);
+        }
+    }
+
+    private void renderEntityInInventory(PoseStack poseStack) {
+        if (this.renderInventoryEntity()) {
+            RenderSystem.setShader(GameRenderer::getPositionTexShader);
+            RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
+            RenderSystem.setShaderTexture(0, ARMOR_STAND_WIDGETS_LOCATION);
+            this.blit(poseStack, this.leftPos + this.inventoryEntityX, this.topPos + this.inventoryEntityY, 0, 0, 76, 108);
+            InventoryScreen.renderEntityInInventory(this.leftPos + this.inventoryEntityX + 38, this.topPos + this.inventoryEntityY + 98, 45, (float) (this.leftPos + this.inventoryEntityX + 38 - 5) - this.mouseX, (float) (this.topPos + this.inventoryEntityY + 98 - 66) - this.mouseY, this.menu.getArmorStand());
         }
     }
 

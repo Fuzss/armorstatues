@@ -36,10 +36,10 @@ import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
 public class ArmorStandPositionScreen extends AbstractArmorStandScreen {
-    public static final DecimalFormat BLOCK_INCREMENT_FORMAT = Util.make(new DecimalFormat("#.####"), (decimalFormat) -> {
+    private static final DecimalFormat BLOCK_INCREMENT_FORMAT = Util.make(new DecimalFormat("#.####"), (decimalFormat) -> {
         decimalFormat.setDecimalFormatSymbols(DecimalFormatSymbols.getInstance(Locale.ROOT));
     });
-    private static final double[] INCREMENTS = {0.0625, 0.25, 0.5, 1.0, 4.0};
+    private static final double[] INCREMENTS = {0.0625, 0.25, 0.5, 1.0};
 
     private static double currentIncrement = INCREMENTS[0];
 
@@ -77,7 +77,7 @@ public class ArmorStandPositionScreen extends AbstractArmorStandScreen {
         if (this.activeWidget != null) {
             List<PositionScreenWidget> activeWidgets = Lists.newArrayList(this.activeWidget);
             for (PositionScreenWidget widget : this.widgets) {
-                if (widget.alwaysVisible()) activeWidgets.add(widget);
+                if (widget.alwaysVisible(this.activeWidget)) activeWidgets.add(widget);
             }
             return activeWidgets;
         }
@@ -95,6 +95,11 @@ public class ArmorStandPositionScreen extends AbstractArmorStandScreen {
     }
 
     @Override
+    protected boolean renderInventoryEntity() {
+        return false;
+    }
+
+    @Override
     protected boolean disableMenuRendering() {
         return this.activeWidget != null;
     }
@@ -103,7 +108,7 @@ public class ArmorStandPositionScreen extends AbstractArmorStandScreen {
     protected void toggleMenuRendering(boolean disableMenuRendering) {
         super.toggleMenuRendering(disableMenuRendering);
         for (PositionScreenWidget widget : this.widgets) {
-            if (widget != this.activeWidget && !widget.alwaysVisible()) widget.setVisible(!disableMenuRendering);
+            widget.setVisible(!disableMenuRendering || widget.alwaysVisible(this.activeWidget));
         }
     }
 
@@ -162,9 +167,9 @@ public class ArmorStandPositionScreen extends AbstractArmorStandScreen {
 
         void setVisible(boolean visible);
 
-        boolean alwaysVisible();
-
         void render(PoseStack poseStack, int mouseX, int mouseY, float partialTick);
+
+        boolean alwaysVisible(@Nullable PositionScreenWidget activeWidget);
     }
 
     private abstract class AbstractPositionScreenWidget implements PositionScreenWidget {
@@ -197,17 +202,17 @@ public class ArmorStandPositionScreen extends AbstractArmorStandScreen {
         }
 
         @Override
-        public boolean alwaysVisible() {
-            return false;
-        }
-
-        @Override
         public void render(PoseStack poseStack, int mouseX, int mouseY, float partialTick) {
             if (ArmorStandPositionScreen.this.disableMenuRendering()) {
                 NewTextureButton.drawCenteredString(poseStack, ArmorStandPositionScreen.this.font, this.title, this.posX + 36, this.posY + 6, -1, true);
             } else {
                 NewTextureButton.drawCenteredString(poseStack, ArmorStandPositionScreen.this.font, this.title, this.posX + 36, this.posY + 6, 4210752, false);
             }
+        }
+
+        @Override
+        public boolean alwaysVisible(@Nullable PositionScreenWidget activeWidget) {
+            return activeWidget == this;
         }
     }
 
@@ -222,7 +227,7 @@ public class ArmorStandPositionScreen extends AbstractArmorStandScreen {
             super.init(posX, posY);
             for (int i = 0; i < INCREMENTS.length; i++) {
                 double increment = INCREMENTS[i];
-                AbstractWidget widget = ArmorStandPositionScreen.this.addRenderableWidget(new NewTextureButton(posX + 78 + i * 24, posY + 1, 20, 20, 54, 142, ARMOR_STAND_WIDGETS_LOCATION, Component.literal(String.valueOf(getBlockPixelIncrement(increment))), button -> {
+                AbstractWidget widget = ArmorStandPositionScreen.this.addRenderableWidget(new NewTextureButton(posX + 76 + i * 24 + (i > 1 ? 1 : 0), posY + 1, 20, 20, 0, 189, ARMOR_STAND_WIDGETS_LOCATION, Component.literal(String.valueOf(getBlockPixelIncrement(increment))), button -> {
                     this.setActiveIncrement(button, increment);
                 }, (Button button, PoseStack poseStack, int mouseX, int mouseY) -> {
                     List<Component> lines = Lists.newArrayList(getPixelIncrementComponent(increment), getBlockIncrementComponent(increment));
@@ -233,6 +238,9 @@ public class ArmorStandPositionScreen extends AbstractArmorStandScreen {
                     widget.active = false;
                 }
             }
+            this.children.add(ArmorStandPositionScreen.this.addRenderableWidget(new ImageButton(posX + 174, posY + 1, 20, 20, 236, 64, ARMOR_STAND_WIDGETS_LOCATION, button -> {
+                ArmorStandPositionScreen.this.setActiveWidget(this);
+            })));
         }
 
         private void setActiveIncrement(AbstractWidget source, double increment) {
@@ -243,7 +251,7 @@ public class ArmorStandPositionScreen extends AbstractArmorStandScreen {
         }
 
         @Override
-        public boolean alwaysVisible() {
+        public boolean alwaysVisible(@Nullable PositionScreenWidget activeWidget) {
             return true;
         }
     }
@@ -268,30 +276,30 @@ public class ArmorStandPositionScreen extends AbstractArmorStandScreen {
             if (this.ticks > 0) this.ticks--;
             if (this.ticks == 0 && this.editBox != null) {
                 this.ticks = 10;
-                this.editBox.setValue(String.valueOf(this.getPositionValue()));
+                this.editBox.setValue(BLOCK_INCREMENT_FORMAT.format(this.getPositionValue()));
             }
         }
 
         @Override
         public void init(int posX, int posY) {
             super.init(posX, posY);
-            this.editBox = new EditBox(ArmorStandPositionScreen.this.font, posX + 78, posY, 66, 22, EntityType.ARMOR_STAND.getDescription());
+            this.editBox = new EditBox(ArmorStandPositionScreen.this.font, posX + 77, posY, 66, 22, EntityType.ARMOR_STAND.getDescription());
             this.editBox.setMaxLength(50);
             this.editBox.setEditable(false);
             this.editBox.setTextColorUneditable(14737632);
-            this.editBox.setValue(String.valueOf(this.getPositionValue()));
+            this.editBox.setValue(BLOCK_INCREMENT_FORMAT.format(this.getPositionValue()));
             this.children.add(this.editBox);
-            this.children.add(ArmorStandPositionScreen.this.addRenderableWidget(new ImageButton(posX + 149, posY + 1, 20, 10, 136, 82, 20, ARMOR_STAND_WIDGETS_LOCATION, 256, 256, button -> {
+            this.children.add(ArmorStandPositionScreen.this.addRenderableWidget(new ImageButton(posX + 149, posY + 1, 20, 10, 196, 64, 20, ARMOR_STAND_WIDGETS_LOCATION, 256, 256, button -> {
                 this.setPositionValue(this.getPositionValue() + currentIncrement);
             }, (Button button, PoseStack poseStack, int mouseX, int mouseY) -> {
                 ArmorStandPositionScreen.this.renderTooltip(poseStack, Component.translatable("armorstatues.screen.position.increment", getPixelIncrementComponent(currentIncrement)), mouseX, mouseY);
             }, CommonComponents.EMPTY)));
-            this.children.add(ArmorStandPositionScreen.this.addRenderableWidget(new ImageButton(posX + 149, posY + 11, 20, 10, 156, 92, 20, ARMOR_STAND_WIDGETS_LOCATION, 256, 256, button -> {
+            this.children.add(ArmorStandPositionScreen.this.addRenderableWidget(new ImageButton(posX + 149, posY + 11, 20, 10, 216, 74, 20, ARMOR_STAND_WIDGETS_LOCATION, 256, 256, button -> {
                 this.setPositionValue(this.getPositionValue() - currentIncrement);
             }, (Button button, PoseStack poseStack, int mouseX, int mouseY) -> {
                 ArmorStandPositionScreen.this.renderTooltip(poseStack, Component.translatable("armorstatues.screen.position.decrement", getPixelIncrementComponent(currentIncrement)), mouseX, mouseY);
             }, CommonComponents.EMPTY)));
-            this.children.add(ArmorStandPositionScreen.this.addRenderableWidget(new ImageButton(posX + 174, posY + 1, 20, 20, 176, 82, ARMOR_STAND_WIDGETS_LOCATION, button -> {
+            this.children.add(ArmorStandPositionScreen.this.addRenderableWidget(new ImageButton(posX + 174, posY + 1, 20, 20, 236, 64, ARMOR_STAND_WIDGETS_LOCATION, button -> {
                 ArmorStandPositionScreen.this.setActiveWidget(this);
             })));
         }
@@ -304,7 +312,7 @@ public class ArmorStandPositionScreen extends AbstractArmorStandScreen {
             this.ticks = 20;
             newValue = Math.round(newValue * 16.0) / 16.0;
             if (this.getPositionValue() != newValue) {
-                this.editBox.setValue(String.valueOf(newValue));
+                this.editBox.setValue(BLOCK_INCREMENT_FORMAT.format(newValue));
                 this.newValue.accept(newValue);
             }
         }
@@ -313,6 +321,11 @@ public class ArmorStandPositionScreen extends AbstractArmorStandScreen {
         public void render(PoseStack poseStack, int mouseX, int mouseY, float partialTick) {
             super.render(poseStack, mouseX, mouseY, partialTick);
             this.editBox.render(poseStack, mouseX, mouseY, partialTick);
+        }
+
+        @Override
+        public boolean alwaysVisible(@Nullable PositionScreenWidget activeWidget) {
+            return activeWidget instanceof PositionIncrementWidget || super.alwaysVisible(activeWidget);
         }
     }
 
