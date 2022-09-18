@@ -32,6 +32,19 @@ public class ModLanguageProvider extends LanguageProvider {
         this.add("armorstatues.screen.style.showName.description", "Render the armor stand's name tag above it's head.");
         this.add("armorstatues.screen.style.noGravity.description", "Prevents the armor stand from falling down, so it may float freely.");
         this.add("armorstatues.screen.style.glowing.description", "Adds a glowing outline to the armor stand, visible through blocks.");
-        this.add("armorstatues.screen.style.sealed.description", "The armor stand can no longer be destroyed, equipment cannot be removed.");
+        this.add("armorstatues.screen.style.sealed.description", "The armor stand can no longer be broken, equipment cannot be changed. Disallows opening this menu in survival mode.");
+        this.add("armorstatues.screen.position.moveBy", "Move By:");
+        this.add("armorstatues.screen.position.pixels", "%s pixel(s) (%s block(s))");
+        this.add("armorstatues.screen.position.x", "X-Position:");
+        this.add("armorstatues.screen.position.y", "Y-Position:");
+        this.add("armorstatues.screen.position.z", "Z-Position:");
+        this.add("armorstatues.screen.position.increment", "Increment by %s");
+        this.add("armorstatues.screen.position.decrement", "Decrement by %s");
+        this.add("armorstatues.screen.position.centered", "Align Centered");
+        this.add("armorstatues.screen.position.cornered", "Align Cornered");
+        this.add("armorstatues.screen.copy", "Copy");
+        this.add("armorstatues.screen.copied", "Copied!");
+        this.add("armorstatues.screen.paste", "Paste");
+        this.add("armorstatues.screen.pasted", "Pasted!");
     }
 }

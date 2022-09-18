@@ -5,6 +5,9 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import fuzs.armorstatues.ArmorStatues;
 import fuzs.armorstatues.world.inventory.ArmorStandMenu;
 import fuzs.puzzleslib.client.core.ClientCoreServices;
+import net.minecraft.client.gui.components.AbstractButton;
+import net.minecraft.client.gui.components.AbstractWidget;
+import net.minecraft.client.gui.components.ImageButton;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.gui.screens.inventory.MenuAccess;
 import net.minecraft.client.renderer.GameRenderer;
@@ -29,6 +32,7 @@ public abstract class AbstractArmorStandScreen extends Screen implements MenuAcc
     protected int topPos;
     protected int mouseX;
     protected int mouseY;
+    private AbstractWidget closeButton;
 
     public AbstractArmorStandScreen(ArmorStandMenu menu, Inventory inventory, Component component) {
         super(component);
@@ -45,12 +49,33 @@ public abstract class AbstractArmorStandScreen extends Screen implements MenuAcc
     protected void init() {
         this.leftPos = (this.width - this.imageWidth) / 2;
         this.topPos = (this.height - this.imageHeight) / 2;
+        if (this.withCloseButton()) {
+            this.closeButton = this.addRenderableWidget(makeCloseButton(this, this.leftPos, this.imageWidth, this.topPos));
+        }
+    }
+
+    public static AbstractButton makeCloseButton(Screen screen, int leftPos, int imageWidth, int topPos) {
+        return new ImageButton(leftPos + imageWidth - 15 - 8, topPos + 8, 15, 15, 0, 189, ARMOR_STAND_WIDGETS_LOCATION, button -> {
+            screen.onClose();
+        });
+    }
+
+    protected boolean withCloseButton() {
+        return true;
+    }
+
+    protected boolean disableMenuRendering() {
+        return false;
+    }
+
+    protected void toggleMenuRendering(boolean disableMenuRendering) {
+        this.closeButton.visible = !disableMenuRendering;
     }
 
     @Override
     public boolean mouseClicked(double mouseX, double mouseY, int button) {
         if (button == 0) {
-            if (handleTabClicked((int) mouseX, (int) mouseY, this.leftPos, this.topPos, this.imageHeight, this)) {
+            if (!this.disableMenuRendering() && handleTabClicked((int) mouseX, (int) mouseY, this.leftPos, this.topPos, this.imageHeight, this)) {
                 return true;
             }
         }
@@ -69,10 +94,12 @@ public abstract class AbstractArmorStandScreen extends Screen implements MenuAcc
 
     @Override
     public void render(PoseStack poseStack, int mouseX, int mouseY, float partialTick) {
-        this.renderBackground(poseStack);
+        if (!this.disableMenuRendering()) {
+            this.renderBackground(poseStack);
+        }
         this.renderBg(poseStack, partialTick, mouseX, mouseY);
         super.render(poseStack, mouseX, mouseY, partialTick);
-        if (this.menu.getCarried().isEmpty()) {
+        if (!this.disableMenuRendering() && this.menu.getCarried().isEmpty()) {
             findHoveredTab(this.leftPos, this.topPos, this.imageHeight, mouseX, mouseY).ifPresent(hoveredTab -> {
                 this.renderTooltip(poseStack, hoveredTab.getComponent(), mouseX, mouseY);
             });
@@ -82,11 +109,13 @@ public abstract class AbstractArmorStandScreen extends Screen implements MenuAcc
     }
 
     protected void renderBg(PoseStack poseStack, float partialTick, int mouseX, int mouseY) {
-        RenderSystem.setShader(GameRenderer::getPositionTexShader);
-        RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
-        RenderSystem.setShaderTexture(0, ARMOR_STAND_BACKGROUND_LOCATION);
-        this.blit(poseStack, this.leftPos, this.topPos, 0, 0, this.imageWidth, this.imageHeight);
-        drawTabs(poseStack, this.leftPos, this.topPos, this.imageHeight, this);
+        if (!this.disableMenuRendering()) {
+            RenderSystem.setShader(GameRenderer::getPositionTexShader);
+            RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
+            RenderSystem.setShaderTexture(0, ARMOR_STAND_BACKGROUND_LOCATION);
+            this.blit(poseStack, this.leftPos, this.topPos, 0, 0, this.imageWidth, this.imageHeight);
+            drawTabs(poseStack, this.leftPos, this.topPos, this.imageHeight, this);
+        }
     }
 
     public static <T extends Screen & ArmorStandScreen> void drawTabs(PoseStack poseStack, int leftPos, int topPos, int imageHeight, T screen) {

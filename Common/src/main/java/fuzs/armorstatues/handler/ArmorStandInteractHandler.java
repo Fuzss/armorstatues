@@ -22,6 +22,7 @@ public class ArmorStandInteractHandler {
                     return ArmorStandMenu.create(pContainerId, pPlayerInventory, armorStand);
                 }, entity.getDisplayName()), (serverPlayer1, friendlyByteBuf) -> {
                     friendlyByteBuf.writeInt(entity.getId());
+                    friendlyByteBuf.writeBoolean(entity.isInvulnerable());
                 });
             }
             return Optional.of(InteractionResult.sidedSuccess(level.isClientSide));

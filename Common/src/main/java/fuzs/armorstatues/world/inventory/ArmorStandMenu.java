@@ -23,7 +23,7 @@ import net.minecraft.world.inventory.InventoryMenu;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 
-public class ArmorStandMenu extends AbstractContainerMenu {
+public class ArmorStandMenu extends AbstractContainerMenu implements ArmorStandHolder {
     public static final ResourceLocation EMPTY_ARMOR_SLOT_SWORD = new ResourceLocation(ArmorStatues.MOD_ID, "item/empty_armor_slot_sword");
     static final ResourceLocation[] TEXTURE_EMPTY_SLOTS = new ResourceLocation[]{InventoryMenu.EMPTY_ARMOR_SLOT_BOOTS, InventoryMenu.EMPTY_ARMOR_SLOT_LEGGINGS, InventoryMenu.EMPTY_ARMOR_SLOT_CHESTPLATE, InventoryMenu.EMPTY_ARMOR_SLOT_HELMET, InventoryMenu.EMPTY_ARMOR_SLOT_SHIELD, EMPTY_ARMOR_SLOT_SWORD};
     private static final EquipmentSlot[] SLOT_IDS = new EquipmentSlot[]{EquipmentSlot.HEAD, EquipmentSlot.CHEST, EquipmentSlot.LEGS, EquipmentSlot.FEET};
@@ -31,8 +31,16 @@ public class ArmorStandMenu extends AbstractContainerMenu {
     private final Container armorStandInventory;
     private final ArmorStand armorStand;
 
-    public ArmorStandMenu(int containerId, Inventory inventory, FriendlyByteBuf buf) {
-        this(containerId, inventory, new SimpleContainer(6), (ArmorStand) inventory.player.level.getEntity(buf.readInt()));
+    public static ArmorStandMenu create(int containerId, Inventory inventory, FriendlyByteBuf buf) {
+        // not sure how likely it is for this to fail, in that case the menu should just close immediately
+        ArmorStand entity = (ArmorStand) inventory.player.level.getEntity(buf.readInt());
+        if (entity != null) {
+            // vanilla doesn't sync this automatically, we need it for one of our tick boxes
+            entity.setInvulnerable(buf.readBoolean());
+            // also create the armor stand container client side, so that visual update instantly instead of having to wait for the server to resync data
+            return create(containerId, inventory, entity);
+        }
+        return new ArmorStandMenu(containerId, inventory, new SimpleContainer(6), null);
     }
 
     public static ArmorStandMenu create(int containerId, Inventory inventory, ArmorStand armorStand) {
@@ -154,9 +162,10 @@ public class ArmorStandMenu extends AbstractContainerMenu {
 
     @Override
     public boolean stillValid(Player player) {
-        return !this.armorStand.isRemoved() && this.armorStand.position().closerThan(player.position(), 8.0D);
+        return this.armorStand != null && !this.armorStand.isRemoved() && this.armorStand.position().closerThan(player.position(), 8.0D);
     }
 
+    @Override
     public ArmorStand getArmorStand() {
         return this.armorStand;
     }

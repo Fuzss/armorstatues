@@ -35,6 +35,12 @@ public class ArmorStandEquipmentScreen extends AbstractContainerScreen<ArmorStan
     }
 
     @Override
+    protected void init() {
+        super.init();
+        this.addRenderableWidget(AbstractArmorStandScreen.makeCloseButton(this, this.leftPos, this.imageWidth, this.topPos));
+    }
+
+    @Override
     public boolean mouseClicked(double mouseX, double mouseY, int button) {
         if (button == 0) {
             if (AbstractArmorStandScreen.handleTabClicked((int) mouseX, (int) mouseY, this.leftPos, this.topPos, this.imageHeight, this)) {

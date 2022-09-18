@@ -9,7 +9,7 @@ import net.minecraft.world.inventory.MenuType;
 
 public class ModRegistry {
     private static final RegistryManager REGISTRY = CoreServices.FACTORIES.registration(ArmorStatues.MOD_ID);
-    public static final RegistryReference<MenuType<ArmorStandMenu>> ARMOR_STAND_MENU_TYPE = REGISTRY.registerExtendedMenuTypeSupplier("armor_stand", () -> ArmorStandMenu::new);
+    public static final RegistryReference<MenuType<ArmorStandMenu>> ARMOR_STAND_MENU_TYPE = REGISTRY.registerExtendedMenuTypeSupplier("armor_stand", () -> ArmorStandMenu::create);
 
     public static void touch() {
 
