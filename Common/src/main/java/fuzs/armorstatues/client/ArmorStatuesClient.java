@@ -1,6 +1,5 @@
 package fuzs.armorstatues.client;
 
-import fuzs.armorstatues.client.gui.screens.inventory.ArmorStandPositionScreen;
 import fuzs.armorstatues.client.gui.screens.inventory.ArmorStandScreenType;
 import fuzs.armorstatues.init.ModRegistry;
 import fuzs.armorstatues.world.inventory.ArmorStandMenu;
@@ -20,6 +19,5 @@ public class ArmorStatuesClient implements ClientModConstructor {
     @Override
     public void onRegisterAtlasSprites(AtlasSpritesContext context) {
         context.registerAtlasSprite(InventoryMenu.BLOCK_ATLAS, ArmorStandMenu.EMPTY_ARMOR_SLOT_SWORD);
-        context.registerAtlasSprite(InventoryMenu.BLOCK_ATLAS, ArmorStandPositionScreen.QUESTION_MARK_LOCATION);
     }
 }
