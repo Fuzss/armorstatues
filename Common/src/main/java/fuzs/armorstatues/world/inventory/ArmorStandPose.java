@@ -9,6 +9,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.Objects;
 import java.util.Random;
+import java.util.function.BiFunction;
 
 public class ArmorStandPose {
     private static final Random RANDOM = new Random();
@@ -34,6 +35,10 @@ public class ArmorStandPose {
     private final Rotations rightArmPose;
     private final Rotations leftLegPose;
     private final Rotations rightLegPose;
+
+    private ArmorStandPose(Builder builder) {
+        this(null, builder);
+    }
 
     private ArmorStandPose(String name, Builder builder) {
         this(name, builder.headPose, builder.bodyPose, builder.leftArmPose, builder.rightArmPose, builder.leftLegPose, builder.rightLegPose);
@@ -64,6 +69,58 @@ public class ArmorStandPose {
     public Component getComponent() {
         Objects.requireNonNull(this.name, "Trying to get component for transient armor stand pose");
         return Component.translatable("armorstatues.entity.armor_stand.pose." + this.name);
+    }
+
+    public Rotations getHeadPose() {
+        return this.headPose;
+    }
+
+    public Rotations getBodyPose() {
+        return this.bodyPose;
+    }
+
+    public Rotations getLeftArmPose() {
+        return this.leftArmPose;
+    }
+
+    public Rotations getRightArmPose() {
+        return this.rightArmPose;
+    }
+
+    public Rotations getLeftLegPose() {
+        return this.leftLegPose;
+    }
+
+    public Rotations getRightLegPose() {
+        return this.rightLegPose;
+    }
+
+    public ArmorStandPose setHeadPose(Rotations rotation) {
+        return this.setPose(rotation, Builder::headPose);
+    }
+
+    public ArmorStandPose setBodyPose(Rotations rotation) {
+        return this.setPose(rotation, Builder::bodyPose);
+    }
+
+    public ArmorStandPose setLeftArmPose(Rotations rotation) {
+        return this.setPose(rotation, Builder::leftArmPose);
+    }
+
+    public ArmorStandPose setRightArmPose(Rotations rotation) {
+        return this.setPose(rotation, Builder::rightArmPose);
+    }
+
+    public ArmorStandPose setLeftLegPose(Rotations rotation) {
+        return this.setPose(rotation, Builder::leftLegPose);
+    }
+
+    public ArmorStandPose setRightLegPose(Rotations rotation) {
+        return this.setPose(rotation, Builder::rightLegPose);
+    }
+
+    private ArmorStandPose setPose(Rotations rotation, BiFunction<Builder, Rotations, Builder> function) {
+        return new ArmorStandPose(function.apply(new Builder(this), rotation));
     }
 
     public void applyToEntity(ArmorStand armorStand) {
@@ -105,12 +162,30 @@ public class ArmorStandPose {
     }
 
     private static class Builder {
-        Rotations headPose = new Rotations(0.0F, 0.0F, 0.0F);
-        Rotations bodyPose = new Rotations(0.0F, 0.0F, 0.0F);
-        Rotations leftArmPose = new Rotations(0.0F, 0.0F, 0.0F);
-        Rotations rightArmPose = new Rotations(0.0F, 0.0F, 0.0F);
-        Rotations leftLegPose = new Rotations(0.0F, 0.0F, 0.0F);
-        Rotations rightLegPose = new Rotations(0.0F, 0.0F, 0.0F);
+        Rotations headPose;
+        Rotations bodyPose;
+        Rotations leftArmPose;
+        Rotations rightArmPose;
+        Rotations leftLegPose;
+        Rotations rightLegPose;
+
+        private Builder() {
+            this.headPose = new Rotations(0.0F, 0.0F, 0.0F);
+            this.bodyPose = new Rotations(0.0F, 0.0F, 0.0F);
+            this.leftArmPose = new Rotations(0.0F, 0.0F, 0.0F);
+            this.rightArmPose = new Rotations(0.0F, 0.0F, 0.0F);
+            this.leftLegPose = new Rotations(0.0F, 0.0F, 0.0F);
+            this.rightLegPose = new Rotations(0.0F, 0.0F, 0.0F);
+        }
+
+        private Builder(ArmorStandPose pose) {
+            this.headPose = pose.headPose;
+            this.bodyPose = pose.bodyPose;
+            this.leftArmPose = pose.leftArmPose;
+            this.rightArmPose = pose.rightArmPose;
+            this.leftLegPose = pose.leftLegPose;
+            this.rightLegPose = pose.rightLegPose;
+        }
 
         public Builder headPose(Rotations headPose) {
             this.headPose = headPose;

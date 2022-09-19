@@ -36,6 +36,7 @@ public class C2SArmorStandRotationMessage implements Message<C2SArmorStandRotati
                 if (player.containerMenu instanceof ArmorStandMenu menu && menu.stillValid(player)) {
                     ArmorStand armorStand = menu.getArmorStand();
                     armorStand.setYRot(message.rotation);
+                    // not sure if this is necessary...
                     armorStand.setYBodyRot(message.rotation);
                 }
             }

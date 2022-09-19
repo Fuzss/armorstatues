@@ -22,7 +22,8 @@ public abstract class NewTextureSliderButton extends AbstractSliderButton {
     public double snapInterval;
 
     public NewTextureSliderButton(int x, int y, int width, int height, int textureX, int textureY, ResourceLocation textureLocation, Component component, double value) {
-        this(x, y, width, height, textureX, textureY, textureLocation, component, value, (button, poseStack, mouseX, mouseY) -> {});
+        this(x, y, width, height, textureX, textureY, textureLocation, component, value, (button, poseStack, mouseX, mouseY) -> {
+        });
     }
 
     public NewTextureSliderButton(int x, int y, int width, int height, int textureX, int textureY, ResourceLocation textureLocation, Component component, double value, OnTooltip onTooltip) {
@@ -59,8 +60,8 @@ public abstract class NewTextureSliderButton extends AbstractSliderButton {
         RenderSystem.setShaderTexture(0, this.textureLocation);
         RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
         int i = (this.isHoveredOrFocused() ? 2 : 1) * 20;
-        this.blit(pPoseStack, this.x + (int)(this.value * (double)(this.width - 8)), this.y, this.textureX, this.textureY + i, 4, 20);
-        this.blit(pPoseStack, this.x + (int)(this.value * (double)(this.width - 8)) + 4, this.y, this.textureX + 196, this.textureY + i, 4, 20);
+        this.blit(pPoseStack, this.x + (int) (this.value * (double) (this.width - 8)), this.y, this.textureX, this.textureY + i, 4, 20);
+        this.blit(pPoseStack, this.x + (int) (this.value * (double) (this.width - 8)) + 4, this.y, this.textureX + 196, this.textureY + i, 4, 20);
     }
 
     @Override
@@ -73,34 +74,38 @@ public abstract class NewTextureSliderButton extends AbstractSliderButton {
         boolean bl = keyCode == 263;
         if (bl || keyCode == 262) {
             float f = bl ? -1.0F : 1.0F;
-            this.setValue(this.value + (double)(f / (float)(this.width - 8)));
+            this.setValue(this.value + (double) (f / (float) (this.width - 8)));
         }
 
         return false;
     }
 
     private void setValueFromMouse(double mouseX) {
-        this.setValue((mouseX - (double)(this.x + 4)) / (double)(this.width - 8));
+        this.setValue((mouseX - (double) (this.x + 4)) / (double) (this.width - 8));
     }
 
     private void setValue(double value) {
         double oldValue = this.value;
         this.value = Mth.clamp(value, 0.0, 1.0);
-        if (this.snapInterval > 0.0 && this.snapInterval < 1.0) {
-            double currentSnap = 0.0;
-            while (currentSnap < 1.0) {
-                double snapRegion = this.snapInterval * 0.1;
-                if (this.value >= currentSnap - snapRegion && this.value < currentSnap + snapRegion) {
-                    this.value = currentSnap;
-                    break;
-                }
-                currentSnap += this.snapInterval;
-            }
-        }
+        this.value = snapValue(this.value, this.snapInterval);
         if (oldValue != this.value) {
             this.applyValue();
         }
         this.updateMessage();
+    }
+
+    public static double snapValue(double value, double snapInterval) {
+        if (snapInterval > 0.0 && snapInterval < 1.0) {
+            double currentSnap = 0.0;
+            while (currentSnap < 1.0) {
+                double snapRegion = snapInterval * 0.1;
+                if (value >= currentSnap - snapRegion && value < currentSnap + snapRegion) {
+                    return currentSnap;
+                }
+                currentSnap += snapInterval;
+            }
+        }
+        return value;
     }
 
     @Override

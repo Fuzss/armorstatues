@@ -61,9 +61,16 @@ public class ModLanguageProvider extends LanguageProvider {
         this.add("armorstatues.screen.position.aligned", "Aligned!");
         this.add("armorstatues.screen.pose.randomize", "Randomize");
         this.add("armorstatues.screen.pose.randomized", "Applied!");
-        this.add("armorstatues.screen.copy", "Copy");
-        this.add("armorstatues.screen.copied", "Copied!");
-        this.add("armorstatues.screen.paste", "Paste");
-        this.add("armorstatues.screen.pasted", "Pasted!");
+        this.add("armorstatues.screen.rotations.randomize", "Random");
+        this.add("armorstatues.screen.rotations.randomized", "Applied!");
+        this.add("armorstatues.screen.rotations.apply", "Apply");
+        this.add("armorstatues.screen.rotations.applied", "Applied!");
+        this.add("armorstatues.screen.rotations.copy", "Copy");
+        this.add("armorstatues.screen.rotations.copied", "Copied!");
+        this.add("armorstatues.screen.rotations.paste", "Paste");
+        this.add("armorstatues.screen.rotations.pasted", "Pasted!");
+        this.add("armorstatues.screen.rotations.x", "X: %s");
+        this.add("armorstatues.screen.rotations.y", "Y: %s");
+        this.add("armorstatues.screen.rotations.z", "Z: %s");
     }
 }
