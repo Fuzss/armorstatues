@@ -14,22 +14,32 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.util.Mth;
 
 import java.util.function.Consumer;
+import java.util.function.DoubleSupplier;
 
-public abstract class BoxedSliderButton extends AbstractWidget {
+public abstract class BoxedSliderButton extends AbstractWidget implements LiveSliderButton {
     private final int sliderSize = 13;
+    private final DoubleSupplier currentHorizontalValue;
+    private final DoubleSupplier currentVerticalValue;
     protected final OnTooltip onTooltip;
     protected double horizontalValue;
     protected double verticalValue;
 
-    public BoxedSliderButton(int x, int y, double horizontalValue, double verticalValue) {
-        this(x, y, horizontalValue, verticalValue, (button, poseStack, mouseX, mouseY) -> {});
+    public BoxedSliderButton(int x, int y, DoubleSupplier currentHorizontalValue, DoubleSupplier currentVerticalValue) {
+        this(x, y, currentHorizontalValue, currentVerticalValue, (button, poseStack, mouseX, mouseY) -> {});
     }
 
-    public BoxedSliderButton(int x, int y, double horizontalValue, double verticalValue, OnTooltip onTooltip) {
+    public BoxedSliderButton(int x, int y, DoubleSupplier currentHorizontalValue, DoubleSupplier currentVerticalValue, OnTooltip onTooltip) {
         super(x, y, 54, 54, CommonComponents.EMPTY);
-        this.horizontalValue = horizontalValue;
-        this.verticalValue = verticalValue;
         this.onTooltip = onTooltip;
+        this.currentHorizontalValue = currentHorizontalValue;
+        this.currentVerticalValue = currentVerticalValue;
+        this.refreshValues();
+    }
+
+    @Override
+    public void refreshValues() {
+        this.horizontalValue = this.currentHorizontalValue.getAsDouble();
+        this.verticalValue = this.currentVerticalValue.getAsDouble();
     }
 
     @Override

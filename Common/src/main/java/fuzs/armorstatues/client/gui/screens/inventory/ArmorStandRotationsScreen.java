@@ -3,10 +3,12 @@ package fuzs.armorstatues.client.gui.screens.inventory;
 import com.google.common.collect.ImmutableList;
 import com.mojang.blaze3d.vertex.PoseStack;
 import fuzs.armorstatues.client.gui.components.BoxedSliderButton;
+import fuzs.armorstatues.client.gui.components.LiveSliderButton;
 import fuzs.armorstatues.client.gui.components.TickButton;
 import fuzs.armorstatues.client.gui.components.VerticalSliderButton;
 import fuzs.armorstatues.world.inventory.ArmorStandMenu;
 import fuzs.armorstatues.world.inventory.ArmorStandPose;
+import net.minecraft.client.gui.components.events.GuiEventListener;
 import net.minecraft.core.Rotations;
 import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.network.chat.Component;
@@ -54,7 +56,7 @@ public class ArmorStandRotationsScreen extends AbstractArmorStandScreen {
     protected void init() {
         super.init();
         this.tickButtons[0] = this.addRenderableWidget(new TickButton(this.leftPos + 80, this.topPos + 85, 50, 20, Component.translatable("armorstatues.screen.rotations.randomize"), CommonComponents.EMPTY, button -> {
-            this.currentPose = ArmorStandPose.random();
+            this.setCurrentPose(ArmorStandPose.random());
         }));
         this.tickButtons[1] = this.addRenderableWidget(new TickButton(this.leftPos + 80, this.topPos + 108, 50, 20, Component.translatable("armorstatues.screen.rotations.apply"), CommonComponents.EMPTY, button -> {
             ArmorStandPosesScreen.applyPoseAndSync(this.menu.getArmorStand(), this.currentPose);
@@ -64,14 +66,13 @@ public class ArmorStandRotationsScreen extends AbstractArmorStandScreen {
         }));
         this.tickButtons[3] = this.addRenderableWidget(new TickButton(this.leftPos + 80, this.topPos + 158, 50, 20, Component.translatable("armorstatues.screen.rotations.paste"), CommonComponents.EMPTY, button -> {
             if (clipboard != null) {
-                this.currentPose = clipboard;
+                this.setCurrentPose(clipboard);
                 ArmorStandPosesScreen.applyPoseAndSync(this.menu.getArmorStand(), this.currentPose);
             }
         }));
         for (int i = 0; i < POSE_MUTATORS.size(); i++) {
             PoseMutator mutator = POSE_MUTATORS.get(i);
-            Rotations initialRotations = mutator.get().apply(this.currentPose);
-            this.addRenderableWidget(new BoxedSliderButton(this.leftPos + 23 + i % 2 * 110, this.topPos + 7 + i / 2 * 60, ArmorStandPositionScreen.fromWrappedDegrees(initialRotations.getWrappedX()), ArmorStandPositionScreen.fromWrappedDegrees(initialRotations.getWrappedZ()), (button, poseStack, mouseX, mouseY) -> {
+            this.addRenderableWidget(new BoxedSliderButton(this.leftPos + 23 + i % 2 * 110, this.topPos + 7 + i / 2 * 60, () -> ArmorStandPositionScreen.fromWrappedDegrees(mutator.get().apply(this.currentPose).getWrappedX()), () -> ArmorStandPositionScreen.fromWrappedDegrees(mutator.get().apply(this.currentPose).getWrappedZ()), (button, poseStack, mouseX, mouseY) -> {
                 List<Component> list = Lists.newArrayList();
                 double mouseHorizontalValue = mutator.get().apply(ArmorStandRotationsScreen.this.currentPose).getWrappedX();
                 list.add(Component.translatable("armorstatues.screen.rotations.x", ArmorStandPositionScreen.ROTATION_FORMAT.format(mouseHorizontalValue)));
@@ -87,7 +88,7 @@ public class ArmorStandRotationsScreen extends AbstractArmorStandScreen {
                     ArmorStandRotationsScreen.this.currentPose = mutator.set().apply(ArmorStandRotationsScreen.this.currentPose, newRotations);
                 }
             });
-            this.addRenderableWidget(new VerticalSliderButton(this.leftPos + 6 + i % 2 * 183, this.topPos + 7 + i / 2 * 60, ArmorStandPositionScreen.fromWrappedDegrees(initialRotations.getWrappedY()), (button, poseStack, mouseX, mouseY) -> {
+            this.addRenderableWidget(new VerticalSliderButton(this.leftPos + 6 + i % 2 * 183, this.topPos + 7 + i / 2 * 60, () -> ArmorStandPositionScreen.fromWrappedDegrees(mutator.get().apply(this.currentPose).getWrappedY()), (button, poseStack, mouseX, mouseY) -> {
                 double mouseValue = mutator.get().apply(ArmorStandRotationsScreen.this.currentPose).getWrappedY();
                 this.renderTooltip(poseStack, Component.translatable("armorstatues.screen.rotations.y", ArmorStandPositionScreen.ROTATION_FORMAT.format(mouseValue)), mouseX, mouseY);
             }) {
@@ -119,6 +120,17 @@ public class ArmorStandRotationsScreen extends AbstractArmorStandScreen {
     @Override
     public ArmorStandScreenType<?> getScreenType() {
         return ArmorStandScreenType.ROTATIONS;
+    }
+
+    private void setCurrentPose(ArmorStandPose currentPose) {
+        this.currentPose = currentPose;
+        this.refreshLiveButtons();
+    }
+
+    private void refreshLiveButtons() {
+        for (GuiEventListener child : this.children()) {
+            if (child instanceof LiveSliderButton button) button.refreshValues();
+        }
     }
 
     private record PoseMutator(Function<ArmorStandPose, Rotations> get, BiFunction<ArmorStandPose, Rotations, ArmorStandPose> set) {

@@ -15,20 +15,28 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.util.Mth;
 
 import java.util.function.Consumer;
+import java.util.function.DoubleSupplier;
 
-public abstract class VerticalSliderButton extends AbstractWidget {
+public abstract class VerticalSliderButton extends AbstractWidget implements LiveSliderButton {
     private final int sliderSize = 13;
+    private final DoubleSupplier currentValue;
     protected final OnTooltip onTooltip;
     protected double value;
 
-    public VerticalSliderButton(int x, int y, double value) {
-        this(x, y, value, (button, poseStack, mouseX, mouseY) -> {});
+    public VerticalSliderButton(int x, int y, DoubleSupplier currentValue) {
+        this(x, y, currentValue, (button, poseStack, mouseX, mouseY) -> {});
     }
 
-    public VerticalSliderButton(int x, int y, double value, OnTooltip onTooltip) {
+    public VerticalSliderButton(int x, int y, DoubleSupplier currentValue, OnTooltip onTooltip) {
         super(x, y, 15, 54, CommonComponents.EMPTY);
-        this.value = value;
+        this.currentValue = currentValue;
         this.onTooltip = onTooltip;
+        this.refreshValues();
+    }
+
+    @Override
+    public void refreshValues() {
+        this.value = this.currentValue.getAsDouble();
     }
 
     @Override
