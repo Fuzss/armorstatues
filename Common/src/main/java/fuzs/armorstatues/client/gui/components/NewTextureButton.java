@@ -32,6 +32,11 @@ public class NewTextureButton extends Button {
     }
 
     @Override
+    protected int getYImage(boolean isHovered) {
+        return !this.active || isHovered ? 2 : 1;
+    }
+
+    @Override
     public void renderButton(PoseStack poseStack, int mouseX, int mouseY, float partialTick) {
         Minecraft minecraft = Minecraft.getInstance();
         Font font = minecraft.font;

@@ -46,6 +46,8 @@ public class ModLanguageProvider extends LanguageProvider {
         this.add("armorstatues.screen.style.noGravity.description", "Prevents the armor stand from falling down, so it may float freely.");
         this.add("armorstatues.screen.style.glowing.description", "Adds a glowing outline to the armor stand, visible through blocks.");
         this.add("armorstatues.screen.style.sealed.description", "The armor stand can no longer be broken, equipment cannot be changed. Disallows opening this menu in survival mode.");
+        this.add("armorstatues.screen.position.rotation", "Rotation:");
+        this.add("armorstatues.screen.position.degrees", "%s\u00B0");
         this.add("armorstatues.screen.position.moveBy", "Move By:");
         this.add("armorstatues.screen.position.pixels", "%s Pixel(s)");
         this.add("armorstatues.screen.position.blocks", "%s Block(s)");

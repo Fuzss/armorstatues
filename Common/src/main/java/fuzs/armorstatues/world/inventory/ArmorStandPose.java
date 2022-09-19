@@ -26,8 +26,6 @@ public class ArmorStandPose {
     public static final ArmorStandPose SOLEMN = new ArmorStandPose("solemn", new Builder().bodyPose(new Rotations(0.0F, 0.0F, 2.0F)).headPose(new Rotations(15.0F, 0.0F, 0.0F)).leftArmPose(new Rotations(-30.0F, 15.0F, 15.0F)).leftLegPose(new Rotations(-1.0F, 0.0F, -1.0F)).rightArmPose(new Rotations(-60.0F, -20.0F, -10.0F)).rightLegPose(new Rotations(1.0F, 0.0F, 1.0F)));
     public static final ArmorStandPose ZOMBIE = new ArmorStandPose("zombie", new Builder().headPose(new Rotations(-10.0F, 0.0F, -5.0F)).leftArmPose(new Rotations(-105.0F, 0.0F, 0.0F)).leftLegPose(new Rotations(7.0F, 0.0F, 0.0F)).rightArmPose(new Rotations(-100.0F, 0.0F, 0.0F)).rightLegPose(new Rotations(-46.0F, 0.0F, 0.0F)));
 
-    private static final ArmorStandPose[] VALUES = new ArmorStandPose[]{DEFAULT, NONE, SOLEMN, ATHENA, BRANDISH, HONOR, ENTERTAIN, SALUTE, HERO, RIPOSTE, ZOMBIE, CANCAN_A, CANCAN_B};
-
     @Nullable
     private final String name;
     private final Rotations headPose;
@@ -103,7 +101,7 @@ public class ArmorStandPose {
     }
 
     public static ArmorStandPose[] values() {
-        return VALUES;
+        return new ArmorStandPose[]{DEFAULT, NONE, SOLEMN, ATHENA, BRANDISH, HONOR, ENTERTAIN, SALUTE, HERO, RIPOSTE, ZOMBIE, CANCAN_A, CANCAN_B};
     }
 
     private static class Builder {

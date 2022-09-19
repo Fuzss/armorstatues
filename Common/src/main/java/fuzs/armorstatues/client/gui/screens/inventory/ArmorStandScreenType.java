@@ -11,11 +11,10 @@ import net.minecraft.world.item.Items;
 
 public final class ArmorStandScreenType<T extends Screen & MenuAccess<ArmorStandMenu> & ArmorStandScreen> {
     public static final ArmorStandScreenType<ArmorStandEquipmentScreen> EQUIPMENT = new ArmorStandScreenType<>("equipment", new ItemStack(Items.IRON_CHESTPLATE), ArmorStandEquipmentScreen::new);
-    public static final ArmorStandScreenType<ArmorStandEquipmentScreen> ROTATIONS = new ArmorStandScreenType<>("rotations", new ItemStack(Items.COMPASS), ArmorStandEquipmentScreen::new);
+    public static final ArmorStandScreenType<ArmorStandRotationsScreen> ROTATIONS = new ArmorStandScreenType<>("rotations", new ItemStack(Items.COMPASS), ArmorStandRotationsScreen::new);
     public static final ArmorStandScreenType<ArmorStandStyleScreen> STYLE = new ArmorStandScreenType<>("style", new ItemStack(Items.PAINTING), ArmorStandStyleScreen::new);
     public static final ArmorStandScreenType<ArmorStandPosesScreen> POSES = new ArmorStandScreenType<>("poses", new ItemStack(Items.SPYGLASS), ArmorStandPosesScreen::new);
     public static final ArmorStandScreenType<ArmorStandPositionScreen> POSITION = new ArmorStandScreenType<>("position", new ItemStack(Items.GRASS_BLOCK), ArmorStandPositionScreen::new);
-    private static final ArmorStandScreenType<?>[] VALUES = new ArmorStandScreenType[]{EQUIPMENT, ROTATIONS, STYLE, POSES, POSITION};
 
     private static ArmorStandScreenType<?> lastType = STYLE;
 
@@ -49,11 +48,11 @@ public final class ArmorStandScreenType<T extends Screen & MenuAccess<ArmorStand
         return screen;
     }
 
-    public static ArmorStandScreenType<?>[] values() {
-        return VALUES;
-    }
-
     public static ArmorStandScreenType<?> getLastType() {
         return lastType;
+    }
+
+    public static ArmorStandScreenType<?>[] values() {
+        return (ArmorStandScreenType<?>[]) new ArmorStandScreenType[]{STYLE, ROTATIONS, POSES, POSITION, EQUIPMENT};
     }
 }

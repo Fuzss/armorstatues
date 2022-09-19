@@ -1,10 +1,7 @@
 package fuzs.armorstatues;
 
 import fuzs.armorstatues.init.ModRegistry;
-import fuzs.armorstatues.network.client.C2SArmorStandNameMessage;
-import fuzs.armorstatues.network.client.C2SArmorStandPoseMessage;
-import fuzs.armorstatues.network.client.C2SArmorStandPositionMessage;
-import fuzs.armorstatues.network.client.C2SArmorStandStyleMessage;
+import fuzs.armorstatues.network.client.*;
 import fuzs.puzzleslib.core.CoreServices;
 import fuzs.puzzleslib.core.ModConstructor;
 import fuzs.puzzleslib.network.MessageDirection;
@@ -30,5 +27,6 @@ public class ArmorStatues implements ModConstructor {
         NETWORK.register(C2SArmorStandStyleMessage.class, C2SArmorStandStyleMessage::new, MessageDirection.TO_SERVER);
         NETWORK.register(C2SArmorStandPositionMessage.class, C2SArmorStandPositionMessage::new, MessageDirection.TO_SERVER);
         NETWORK.register(C2SArmorStandPoseMessage.class, C2SArmorStandPoseMessage::new, MessageDirection.TO_SERVER);
+        NETWORK.register(C2SArmorStandRotationMessage.class, C2SArmorStandRotationMessage::new, MessageDirection.TO_SERVER);
     }
 }

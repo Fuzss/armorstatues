@@ -14,13 +14,13 @@ public class TickButton extends NewTextureButton {
     public int lastClickedTicksDelay = 30;
 
     public TickButton(int x, int y, int width, int height, Component title, Component clickedTitle, OnPress onPress) {
-        super(x, y, width, height, 0, 189, AbstractArmorStandScreen.ARMOR_STAND_WIDGETS_LOCATION, title, onPress);
+        super(x, y, width, height, 0, 174, AbstractArmorStandScreen.ARMOR_STAND_WIDGETS_LOCATION, title, onPress);
         this.title = title;
         this.clickedTitle = clickedTitle;
     }
 
     public TickButton(int x, int y, int width, int height, Component title, Component clickedTitle, OnPress onPress, OnTooltip onTooltip) {
-        super(x, y, width, height, 0, 189, AbstractArmorStandScreen.ARMOR_STAND_WIDGETS_LOCATION, title, onPress, onTooltip);
+        super(x, y, width, height, 0, 174, AbstractArmorStandScreen.ARMOR_STAND_WIDGETS_LOCATION, title, onPress, onTooltip);
         this.title = title;
         this.clickedTitle = clickedTitle;
     }
@@ -47,7 +47,8 @@ public class TickButton extends NewTextureButton {
             RenderSystem.setShaderTexture(0, this.textureLocation);
             RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, this.alpha);
             final int i = this.getYImage(this.isHoveredOrFocused());
-            final int startX = (this.width - minecraft.font.width(this.clickedTitle) - 4 - 16) / 2;
+            int titleWidth = minecraft.font.width(this.clickedTitle);
+            final int startX = (this.width - titleWidth - (titleWidth > 0 ? 4 : 0) - 16) / 2;
             this.blit(poseStack, this.x + startX, this.y + 2, 196, 16 + i * 16, 16, 16);
         }
     }

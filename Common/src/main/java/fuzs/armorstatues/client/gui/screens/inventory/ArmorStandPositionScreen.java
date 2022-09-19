@@ -5,8 +5,10 @@ import com.google.common.collect.Lists;
 import com.mojang.blaze3d.vertex.PoseStack;
 import fuzs.armorstatues.ArmorStatues;
 import fuzs.armorstatues.client.gui.components.NewTextureButton;
+import fuzs.armorstatues.client.gui.components.NewTextureSliderButton;
 import fuzs.armorstatues.client.gui.components.TickButton;
 import fuzs.armorstatues.network.client.C2SArmorStandPositionMessage;
+import fuzs.armorstatues.network.client.C2SArmorStandRotationMessage;
 import fuzs.armorstatues.world.inventory.ArmorStandMenu;
 import fuzs.puzzleslib.util.PuzzlesUtil;
 import net.minecraft.Util;
@@ -17,6 +19,7 @@ import net.minecraft.client.gui.components.ImageButton;
 import net.minecraft.core.Direction;
 import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.network.chat.Component;
+import net.minecraft.util.Mth;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.decoration.ArmorStand;
 import net.minecraft.world.entity.player.Inventory;
@@ -39,6 +42,9 @@ public class ArmorStandPositionScreen extends AbstractArmorStandScreen {
     private static final DecimalFormat BLOCK_INCREMENT_FORMAT = Util.make(new DecimalFormat("#.####"), (decimalFormat) -> {
         decimalFormat.setDecimalFormatSymbols(DecimalFormatSymbols.getInstance(Locale.ROOT));
     });
+    private static final DecimalFormat ROTATION_FORMAT = Util.make(new DecimalFormat("#.##"), (decimalFormat) -> {
+        decimalFormat.setDecimalFormatSymbols(DecimalFormatSymbols.getInstance(Locale.ROOT));
+    });
     private static final double[] INCREMENTS = {0.0625, 0.25, 0.5, 1.0};
 
     private static double currentIncrement = INCREMENTS[0];
@@ -52,6 +58,11 @@ public class ArmorStandPositionScreen extends AbstractArmorStandScreen {
         super(menu, inventory, component);
         ArmorStand armorStand = menu.getArmorStand();
         this.widgets = ImmutableList.<PositionScreenWidget>builder()
+                .add(new RotationWidget(armorStand::getYRot, yRot -> {
+                    armorStand.setYRot(yRot);
+                    armorStand.setYBodyRot(yRot);
+                    ArmorStatues.NETWORK.sendToServer(new C2SArmorStandRotationMessage(yRot));
+                }))
                 .add(new PositionIncrementWidget())
                 .add(new PositionComponentWidget("x", armorStand::getX, x -> {
                     syncMove(x, armorStand.getY(), armorStand.getZ());
@@ -95,6 +106,11 @@ public class ArmorStandPositionScreen extends AbstractArmorStandScreen {
     }
 
     @Override
+    protected boolean withCloseButton() {
+        return false;
+    }
+
+    @Override
     protected boolean renderInventoryEntity() {
         return false;
     }
@@ -106,7 +122,6 @@ public class ArmorStandPositionScreen extends AbstractArmorStandScreen {
 
     @Override
     protected void toggleMenuRendering(boolean disableMenuRendering) {
-        super.toggleMenuRendering(disableMenuRendering);
         for (PositionScreenWidget widget : this.widgets) {
             widget.setVisible(!disableMenuRendering || widget.alwaysVisible(this.activeWidget));
         }
@@ -122,9 +137,9 @@ public class ArmorStandPositionScreen extends AbstractArmorStandScreen {
     protected void init() {
         super.init();
         this.minecraft.keyboardHandler.setSendRepeatsToGui(true);
-        int startY = (this.imageHeight - this.widgets.size() * 22 - (this.widgets.size() - 1) * 10) / 2;
+        int startY = (this.imageHeight - this.widgets.size() * 22 - (this.widgets.size() - 1) * 7) / 2;
         for (int i = 0; i < this.widgets.size(); i++) {
-            this.widgets.get(i).init(this.leftPos + 8, this.topPos + startY + 7 + i * 32);
+            this.widgets.get(i).init(this.leftPos + 8, this.topPos + startY + i * 29);
         }
     }
 
@@ -216,6 +231,41 @@ public class ArmorStandPositionScreen extends AbstractArmorStandScreen {
         }
     }
 
+    private class RotationWidget extends AbstractPositionScreenWidget {
+        private final Supplier<Float> currentRotation;
+        private final Consumer<Float> newRotation;
+
+        public RotationWidget(Supplier<Float> currentRotation, Consumer<Float> newRotation) {
+            super(Component.translatable("armorstatues.screen.position.rotation"));
+            this.currentRotation = currentRotation;
+            this.newRotation = newRotation;
+        }
+
+        @Override
+        public void init(int posX, int posY) {
+            super.init(posX, posY);
+            NewTextureSliderButton sliderButton = ArmorStandPositionScreen.this.addRenderableWidget(new NewTextureSliderButton(posX + 76, posY + 1, 90, 20, 0, 174, ARMOR_STAND_WIDGETS_LOCATION, CommonComponents.EMPTY, (Mth.wrapDegrees(this.currentRotation.get()) + 180.0F) / 360.0F, (button, poseStack, mouseX, mouseY) -> {
+                ArmorStandPositionScreen.this.renderTooltip(poseStack, Component.translatable("armorstatues.screen.position.degrees", ROTATION_FORMAT.format(Mth.wrapDegrees(this.currentRotation.get()))), mouseX, mouseY);
+            }) {
+
+                @Override
+                protected void updateMessage() {
+
+                }
+
+                @Override
+                protected void applyValue() {
+                    RotationWidget.this.newRotation.accept((float) Mth.wrapDegrees(this.value * 360.0 - 180.0));
+                }
+            });
+            sliderButton.snapInterval = 0.125;
+            this.children.add(sliderButton);
+            this.children.add(ArmorStandPositionScreen.this.addRenderableWidget(new ImageButton(posX + 174, posY + 1, 20, 20, 236, 64, ARMOR_STAND_WIDGETS_LOCATION, button -> {
+                ArmorStandPositionScreen.this.setActiveWidget(this);
+            })));
+        }
+    }
+
     private class PositionIncrementWidget extends AbstractPositionScreenWidget {
 
         public PositionIncrementWidget() {
@@ -227,7 +277,7 @@ public class ArmorStandPositionScreen extends AbstractArmorStandScreen {
             super.init(posX, posY);
             for (int i = 0; i < INCREMENTS.length; i++) {
                 double increment = INCREMENTS[i];
-                AbstractWidget widget = ArmorStandPositionScreen.this.addRenderableWidget(new NewTextureButton(posX + 76 + i * 24 + (i > 1 ? 1 : 0), posY + 1, 20, 20, 0, 189, ARMOR_STAND_WIDGETS_LOCATION, Component.literal(String.valueOf(getBlockPixelIncrement(increment))), button -> {
+                AbstractWidget widget = ArmorStandPositionScreen.this.addRenderableWidget(new NewTextureButton(posX + 76 + i * 24 + (i > 1 ? 1 : 0), posY + 1, 20, 20, 0, 174, ARMOR_STAND_WIDGETS_LOCATION, Component.literal(String.valueOf(getBlockPixelIncrement(increment))), button -> {
                     this.setActiveIncrement(button, increment);
                 }, (Button button, PoseStack poseStack, int mouseX, int mouseY) -> {
                     List<Component> lines = Lists.newArrayList(getPixelIncrementComponent(increment), getBlockIncrementComponent(increment));
@@ -252,7 +302,7 @@ public class ArmorStandPositionScreen extends AbstractArmorStandScreen {
 
         @Override
         public boolean alwaysVisible(@Nullable PositionScreenWidget activeWidget) {
-            return true;
+            return !(activeWidget instanceof RotationWidget);
         }
     }
 

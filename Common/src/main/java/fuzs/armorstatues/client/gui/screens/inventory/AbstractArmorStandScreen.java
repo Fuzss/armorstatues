@@ -33,6 +33,7 @@ public abstract class AbstractArmorStandScreen extends Screen implements MenuAcc
     protected int topPos;
     protected int inventoryEntityX;
     protected int inventoryEntityY;
+    protected boolean smallInventoryEntity;
     protected int mouseX;
     protected int mouseY;
     private AbstractWidget closeButton;
@@ -131,8 +132,13 @@ public abstract class AbstractArmorStandScreen extends Screen implements MenuAcc
             RenderSystem.setShader(GameRenderer::getPositionTexShader);
             RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
             RenderSystem.setShaderTexture(0, ARMOR_STAND_WIDGETS_LOCATION);
-            this.blit(poseStack, this.leftPos + this.inventoryEntityX, this.topPos + this.inventoryEntityY, 0, 0, 76, 108);
-            InventoryScreen.renderEntityInInventory(this.leftPos + this.inventoryEntityX + 38, this.topPos + this.inventoryEntityY + 98, 45, (float) (this.leftPos + this.inventoryEntityX + 38 - 5) - this.mouseX, (float) (this.topPos + this.inventoryEntityY + 98 - 66) - this.mouseY, this.menu.getArmorStand());
+            if (this.smallInventoryEntity) {
+                this.blit(poseStack, this.leftPos + this.inventoryEntityX, this.topPos + this.inventoryEntityY, 200, 174, 50, 72);
+                InventoryScreen.renderEntityInInventory(this.leftPos + this.inventoryEntityX + 24, this.topPos + this.inventoryEntityY + 65, 30, this.leftPos + this.inventoryEntityX + 24 - 10 - this.mouseX, this.topPos + this.inventoryEntityY + 65 - 44 - this.mouseY, this.menu.getArmorStand());
+            } else {
+                this.blit(poseStack, this.leftPos + this.inventoryEntityX, this.topPos + this.inventoryEntityY, 0, 0, 76, 108);
+                InventoryScreen.renderEntityInInventory(this.leftPos + this.inventoryEntityX + 38, this.topPos + this.inventoryEntityY + 98, 45, (float) (this.leftPos + this.inventoryEntityX + 38 - 5) - this.mouseX, (float) (this.topPos + this.inventoryEntityY + 98 - 66) - this.mouseY, this.menu.getArmorStand());
+            }
         }
     }
 

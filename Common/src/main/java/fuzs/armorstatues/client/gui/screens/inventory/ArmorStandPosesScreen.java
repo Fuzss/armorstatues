@@ -44,7 +44,6 @@ public class ArmorStandPosesScreen extends AbstractArmorStandScreen {
         this.randomizeButton = this.addRenderableWidget(new TickButton(this.leftPos + 5, this.topPos + 128, 76, 20, Component.translatable("armorstatues.screen.pose.randomize"), Component.translatable("armorstatues.screen.pose.randomized"), button -> {
             this.applyPoseToEntity(ArmorStandPose.random());
         }));
-        this.randomizeButton.lastClickedTicksDelay = 15;
         this.cycleButtons[0] = this.addRenderableWidget(new ImageButton(this.leftPos + 17, this.topPos + 153, 20, 20, 156, 64, ARMOR_STAND_WIDGETS_LOCATION, button -> {
             firstPoseIndex -= POSES_PER_PAGE;
             this.toggleCycleButtons();
@@ -73,7 +72,11 @@ public class ArmorStandPosesScreen extends AbstractArmorStandScreen {
     }
 
     private void applyPoseToEntity(ArmorStandPose pose) {
-        pose.applyToEntity(this.menu.getArmorStand());
+        applyPoseAndSync(this.menu.getArmorStand(), pose);
+    }
+
+    public static void applyPoseAndSync(ArmorStand armorStand, ArmorStandPose pose) {
+        pose.applyToEntity(armorStand);
         ArmorStatues.NETWORK.sendToServer(new C2SArmorStandPoseMessage(pose));
     }
 
