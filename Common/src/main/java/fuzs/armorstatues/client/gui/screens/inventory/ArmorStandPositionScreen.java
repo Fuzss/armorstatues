@@ -7,6 +7,7 @@ import fuzs.armorstatues.ArmorStatues;
 import fuzs.armorstatues.client.gui.components.NewTextureButton;
 import fuzs.armorstatues.client.gui.components.NewTextureSliderButton;
 import fuzs.armorstatues.client.gui.components.TickButton;
+import fuzs.armorstatues.client.gui.components.UnboundedSliderButton;
 import fuzs.armorstatues.network.client.C2SArmorStandPositionMessage;
 import fuzs.armorstatues.network.client.C2SArmorStandRotationMessage;
 import fuzs.armorstatues.world.inventory.ArmorStandMenu;
@@ -16,6 +17,7 @@ import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.EditBox;
 import net.minecraft.client.gui.components.ImageButton;
+import net.minecraft.client.gui.components.events.GuiEventListener;
 import net.minecraft.core.Direction;
 import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.network.chat.Component;
@@ -155,12 +157,6 @@ public class ArmorStandPositionScreen extends AbstractArmorStandScreen {
     }
 
     @Override
-    public boolean mouseReleased(double mouseX, double mouseY, int button) {
-        if (((RotationWidget) this.widgets.get(0)).mouseReleased(mouseX, mouseY, button)) return true;
-        return super.mouseReleased(mouseX, mouseY, button);
-    }
-
-    @Override
     public ArmorStandScreenType<?> getScreenType() {
         return ArmorStandScreenType.POSITION;
     }
@@ -245,8 +241,6 @@ public class ArmorStandPositionScreen extends AbstractArmorStandScreen {
     private class RotationWidget extends AbstractPositionScreenWidget {
         private final Supplier<Float> currentRotation;
         private final Consumer<Float> newRotation;
-        private NewTextureSliderButton sliderButton;
-        private boolean applyRotationValue;
 
         public RotationWidget(Supplier<Float> currentRotation, Consumer<Float> newRotation) {
             super(Component.translatable("armorstatues.screen.position.rotation"));
@@ -257,10 +251,11 @@ public class ArmorStandPositionScreen extends AbstractArmorStandScreen {
         @Override
         public void init(int posX, int posY) {
             super.init(posX, posY);
-            this.sliderButton = ArmorStandPositionScreen.this.addRenderableWidget(new NewTextureSliderButton(posX + 76, posY + 1, 90, 20, 0, 174, ARMOR_STAND_WIDGETS_LOCATION, CommonComponents.EMPTY, fromWrappedDegrees(this.currentRotation.get()), (button, poseStack, mouseX, mouseY) -> {
+            NewTextureSliderButton sliderButton = ArmorStandPositionScreen.this.addRenderableWidget(new NewTextureSliderButton(posX + 76, posY + 1, 90, 20, 0, 174, ARMOR_STAND_WIDGETS_LOCATION, CommonComponents.EMPTY, fromWrappedDegrees(this.currentRotation.get()), (button, poseStack, mouseX, mouseY) -> {
                 double mouseValue = NewTextureSliderButton.snapValue((mouseX - button.x) / (double) button.getWidth(), 0.125);
                 ArmorStandPositionScreen.this.renderTooltip(poseStack, Component.translatable("armorstatues.screen.position.degrees", ROTATION_FORMAT.format(toWrappedDegrees(mouseValue))), mouseX, mouseY);
             }) {
+                private boolean dirty;
 
                 @Override
                 protected void updateMessage() {
@@ -269,32 +264,29 @@ public class ArmorStandPositionScreen extends AbstractArmorStandScreen {
 
                 @Override
                 protected void applyValue() {
-                    RotationWidget.this.applyRotationValue = true;
+                    this.dirty = true;
                 }
 
                 @Override
                 public void onRelease(double mouseX, double mouseY) {
                     super.onRelease(mouseX, mouseY);
                     // we use #onRelease instead of directly applying in #applyValue as the armor stand will otherwise glitch out visually since the server constantly sends outdated values
-                    if (RotationWidget.this.applyRotationValue) {
-                        RotationWidget.this.applyRotationValue = false;
+                    if (this.isDirty()) {
+                        this.dirty = false;
                         RotationWidget.this.newRotation.accept(toWrappedDegrees(this.value));
                     }
                 }
+
+                @Override
+                public boolean isDirty() {
+                    return this.dirty;
+                }
             });
-            this.sliderButton.snapInterval = 0.125;
-            this.children.add(this.sliderButton);
+            sliderButton.snapInterval = 0.125;
+            this.children.add(sliderButton);
             this.children.add(ArmorStandPositionScreen.this.addRenderableWidget(new ImageButton(posX + 174, posY + 1, 20, 20, 236, 64, ARMOR_STAND_WIDGETS_LOCATION, button -> {
                 ArmorStandPositionScreen.this.setActiveWidget(this);
             })));
-        }
-
-        public boolean mouseReleased(double mouseX, double mouseY, int button) {
-            // make sure value is sent to server when mouse is released outside of slider widget, but when the slider value has been changed
-            if (this.applyRotationValue) {
-                return this.sliderButton.mouseReleased(mouseX, mouseY, button);
-            }
-            return false;
         }
     }
 

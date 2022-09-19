@@ -11,7 +11,7 @@ public class TickButton extends NewTextureButton {
     private final Component title;
     private final Component clickedTitle;
     private int lastClickedTicks;
-    public int lastClickedTicksDelay = 30;
+    private int lastClickedTicksDelay = 30;
 
     public TickButton(int x, int y, int width, int height, Component title, Component clickedTitle, OnPress onPress) {
         super(x, y, width, height, 0, 174, AbstractArmorStandScreen.ARMOR_STAND_WIDGETS_LOCATION, title, onPress);
@@ -59,5 +59,12 @@ public class TickButton extends NewTextureButton {
             return (16 + 4) / 2;
         }
         return super.getMessageXOffset();
+    }
+
+    public TickButton setLastClickedTicksDelay(int lastClickedTicksDelay) {
+        if (lastClickedTicksDelay > 0) {
+            this.lastClickedTicksDelay = lastClickedTicksDelay;
+        }
+        return this;
     }
 }

@@ -24,7 +24,6 @@ public class ArmorStandPosesScreen extends AbstractArmorStandScreen {
 
     private final AbstractWidget[] cycleButtons = new AbstractWidget[2];
     private final AbstractWidget[] poseButtons = new AbstractWidget[POSES_PER_PAGE];
-    private TickButton randomizeButton;
 
     public ArmorStandPosesScreen(ArmorStandMenu menu, Inventory inventory, Component component) {
         super(menu, inventory, component);
@@ -33,17 +32,11 @@ public class ArmorStandPosesScreen extends AbstractArmorStandScreen {
     }
 
     @Override
-    public void tick() {
-        super.tick();
-        this.randomizeButton.tick();
-    }
-
-    @Override
     protected void init() {
         super.init();
-        this.randomizeButton = this.addRenderableWidget(new TickButton(this.leftPos + 5, this.topPos + 128, 76, 20, Component.translatable("armorstatues.screen.pose.randomize"), Component.translatable("armorstatues.screen.pose.randomized"), button -> {
+        this.addRenderableWidget(new TickButton(this.leftPos + 5, this.topPos + 128, 76, 20, Component.translatable("armorstatues.screen.pose.randomize"), Component.translatable("armorstatues.screen.pose.randomized"), button -> {
             this.applyPoseToEntity(ArmorStandPose.random());
-        }));
+        })).setLastClickedTicksDelay(15);
         this.cycleButtons[0] = this.addRenderableWidget(new ImageButton(this.leftPos + 17, this.topPos + 153, 20, 20, 156, 64, ARMOR_STAND_WIDGETS_LOCATION, button -> {
             firstPoseIndex -= POSES_PER_PAGE;
             this.toggleCycleButtons();

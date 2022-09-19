@@ -3,11 +3,14 @@ package fuzs.armorstatues.client.gui.screens.inventory;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import fuzs.armorstatues.ArmorStatues;
+import fuzs.armorstatues.client.gui.components.TickButton;
+import fuzs.armorstatues.client.gui.components.UnboundedSliderButton;
 import fuzs.armorstatues.world.inventory.ArmorStandMenu;
 import fuzs.puzzleslib.client.core.ClientCoreServices;
 import net.minecraft.client.gui.components.AbstractButton;
 import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.components.ImageButton;
+import net.minecraft.client.gui.components.events.GuiEventListener;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.gui.screens.inventory.InventoryScreen;
 import net.minecraft.client.gui.screens.inventory.MenuAccess;
@@ -45,8 +48,11 @@ public abstract class AbstractArmorStandScreen extends Screen implements MenuAcc
     }
 
     @Override
-    public Screen createTabScreen(ArmorStandScreenType<?> screenType) {
-        return screenType.createTabScreen(this.menu, this.inventory, this.title);
+    public void tick() {
+        super.tick();
+        for (GuiEventListener child : this.children()) {
+            if (child instanceof TickButton button) button.tick();
+        }
     }
 
     @Override
@@ -142,6 +148,20 @@ public abstract class AbstractArmorStandScreen extends Screen implements MenuAcc
         }
     }
 
+    @Override
+    public boolean mouseReleased(double mouseX, double mouseY, int button) {
+        // make sure value is sent to server when mouse is released outside of slider widget, but when the slider value has been changed
+        boolean mouseReleased = false;
+        for (GuiEventListener child : this.children()) {
+            if (child instanceof UnboundedSliderButton sliderButton) {
+                if (sliderButton.isDirty()) {
+                    mouseReleased |= child.mouseReleased(mouseX, mouseY, button);
+                }
+            }
+        }
+        return mouseReleased || super.mouseReleased(mouseX, mouseY, button);
+    }
+
     public static <T extends Screen & ArmorStandScreen> void drawTabs(PoseStack poseStack, int leftPos, int topPos, int imageHeight, T screen) {
         int tabsStartY = getTabsStartY(imageHeight);
         for (int i = 0; i < ArmorStandScreenType.values().length; i++) {
@@ -190,5 +210,10 @@ public abstract class AbstractArmorStandScreen extends Screen implements MenuAcc
     public void onClose() {
         this.minecraft.player.closeContainer();
         super.onClose();
+    }
+
+    @Override
+    public Screen createTabScreen(ArmorStandScreenType<?> screenType) {
+        return screenType.createTabScreen(this.menu, this.inventory, this.title);
     }
 }

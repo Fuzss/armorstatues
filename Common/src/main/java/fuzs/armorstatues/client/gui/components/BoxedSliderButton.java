@@ -16,7 +16,7 @@ import net.minecraft.util.Mth;
 import java.util.function.Consumer;
 import java.util.function.DoubleSupplier;
 
-public abstract class BoxedSliderButton extends AbstractWidget implements LiveSliderButton {
+public abstract class BoxedSliderButton extends AbstractWidget implements UnboundedSliderButton, LiveSliderButton {
     private final int sliderSize = 13;
     private final DoubleSupplier currentHorizontalValue;
     private final DoubleSupplier currentVerticalValue;

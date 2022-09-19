@@ -14,7 +14,7 @@ import net.minecraft.util.Mth;
 
 import java.util.function.Consumer;
 
-public abstract class NewTextureSliderButton extends AbstractSliderButton {
+public abstract class NewTextureSliderButton extends AbstractSliderButton implements UnboundedSliderButton {
     private final int textureX;
     private final int textureY;
     protected final ResourceLocation textureLocation;
@@ -32,6 +32,11 @@ public abstract class NewTextureSliderButton extends AbstractSliderButton {
         this.textureY = textureY;
         this.textureLocation = textureLocation;
         this.onTooltip = onTooltip;
+    }
+
+    @Override
+    public boolean isDirty() {
+        return false;
     }
 
     @Override
