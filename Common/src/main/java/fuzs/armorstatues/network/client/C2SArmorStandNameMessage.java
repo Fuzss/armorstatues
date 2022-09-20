@@ -1,12 +1,9 @@
 package fuzs.armorstatues.network.client;
 
+import fuzs.armorstatues.network.client.data.DataSyncHandler;
 import fuzs.armorstatues.world.inventory.ArmorStandMenu;
 import fuzs.puzzleslib.network.Message;
-import net.minecraft.SharedConstants;
 import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.network.chat.Component;
-import net.minecraft.world.entity.EntityType;
-import net.minecraft.world.entity.decoration.ArmorStand;
 import net.minecraft.world.entity.player.Player;
 
 public class C2SArmorStandNameMessage implements Message<C2SArmorStandNameMessage> {
@@ -37,17 +34,9 @@ public class C2SArmorStandNameMessage implements Message<C2SArmorStandNameMessag
             @Override
             public void handle(C2SArmorStandNameMessage message, Player player, Object gameInstance) {
                 if (player.containerMenu instanceof ArmorStandMenu menu && menu.stillValid(player)) {
-                    setCustomNameArmorStand(message.name, menu.getArmorStand());
+                    DataSyncHandler.setCustomArmorStandName(menu.getArmorStand(), message.name);
                 }
             }
         };
-    }
-
-    public static void setCustomNameArmorStand(String name, ArmorStand armorStand) {
-        String s = SharedConstants.filterText(name);
-        if (s.length() <= 50) {
-            boolean remove = s.isBlank() || s.equals(EntityType.ARMOR_STAND.getDescription().getString());
-            armorStand.setCustomName(remove ? null : Component.literal(s));
-        }
     }
 }

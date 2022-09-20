@@ -2,15 +2,12 @@ package fuzs.armorstatues.client.gui.screens.inventory;
 
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
-import fuzs.armorstatues.ArmorStatues;
 import fuzs.armorstatues.client.gui.components.TickBoxButton;
-import fuzs.armorstatues.network.client.C2SArmorStandNameMessage;
-import fuzs.armorstatues.network.client.C2SArmorStandStyleMessage;
-import fuzs.armorstatues.world.inventory.ArmorStandMenu;
+import fuzs.armorstatues.network.client.data.DataSyncHandler;
+import fuzs.armorstatues.world.inventory.ArmorStandHolder;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.EditBox;
-import net.minecraft.client.gui.screens.inventory.InventoryScreen;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.EntityType;
@@ -22,8 +19,8 @@ import java.util.stream.Stream;
 public class ArmorStandStyleScreen extends AbstractArmorStandScreen {
     private EditBox name;
 
-    public ArmorStandStyleScreen(ArmorStandMenu menu, Inventory inventory, Component component) {
-        super(menu, inventory, component);
+    public ArmorStandStyleScreen(ArmorStandHolder holder, Inventory inventory, Component component, DataSyncHandler dataSyncHandler) {
+        super(holder, inventory, component, dataSyncHandler);
         this.inventoryEntityX = 14;
         this.inventoryEntityY = 50;
     }
@@ -37,7 +34,7 @@ public class ArmorStandStyleScreen extends AbstractArmorStandScreen {
     @Override
     protected void init() {
         super.init();
-        ArmorStand armorStand = this.menu.getArmorStand();
+        ArmorStand armorStand = this.holder.getArmorStand();
         this.minecraft.keyboardHandler.setSendRepeatsToGui(true);
         this.name = new EditBox(this.font, this.leftPos + 16, this.topPos + 32, 66, 9, EntityType.ARMOR_STAND.getDescription());
         this.name.setTextColor(16777215);
@@ -53,9 +50,7 @@ public class ArmorStandStyleScreen extends AbstractArmorStandScreen {
             ArmorStandStyleOption option = ArmorStandStyleOption.values()[i];
             if (!this.minecraft.player.getAbilities().instabuild && option.onlyCreative()) continue;
             this.addRenderableWidget(new TickBoxButton(this.leftPos + 98, this.topPos + buttonStartY + j++ * 22, option.getComponent(), option.getOption(armorStand), (Button button) -> {
-                boolean setting = ((TickBoxButton) button).isSelected();
-                option.setOption(armorStand, setting);
-                ArmorStatues.NETWORK.sendToServer(new C2SArmorStandStyleMessage(option, setting));
+                this.dataSyncHandler.sendStyleOption(option, ((TickBoxButton) button).isSelected());
             }, (Button button, PoseStack poseStack, int mouseX, int mouseY) -> {
                 this.renderTooltip(poseStack, option.getDescriptionComponent(), mouseX, mouseY);
             }));
@@ -63,10 +58,9 @@ public class ArmorStandStyleScreen extends AbstractArmorStandScreen {
     }
 
     private void onNameChanged(String input) {
-        ArmorStand armorStand = this.menu.getArmorStand();
+        ArmorStand armorStand = this.holder.getArmorStand();
         if (!input.equals(armorStand.getName().getString())) {
-            C2SArmorStandNameMessage.setCustomNameArmorStand(input, armorStand);
-            ArmorStatues.NETWORK.sendToServer(new C2SArmorStandNameMessage(input));
+            this.dataSyncHandler.sendName(input);
         }
     }
 
@@ -104,7 +98,7 @@ public class ArmorStandStyleScreen extends AbstractArmorStandScreen {
     }
 
     @Override
-    public ArmorStandScreenType<?> getScreenType() {
+    public ArmorStandScreenType getScreenType() {
         return ArmorStandScreenType.STYLE;
     }
 }

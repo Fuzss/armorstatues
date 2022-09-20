@@ -14,9 +14,8 @@ public class C2SArmorStandPoseMessage implements Message<C2SArmorStandPoseMessag
 
     }
 
-    public C2SArmorStandPoseMessage(ArmorStandPose pose) {
-        this.tag = new CompoundTag();
-        pose.serialize(this.tag);
+    public C2SArmorStandPoseMessage(CompoundTag tag) {
+        this.tag = tag;
     }
 
     @Override

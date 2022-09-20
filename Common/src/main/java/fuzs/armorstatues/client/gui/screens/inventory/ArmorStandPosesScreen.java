@@ -1,10 +1,9 @@
 package fuzs.armorstatues.client.gui.screens.inventory;
 
 import com.mojang.blaze3d.vertex.PoseStack;
-import fuzs.armorstatues.ArmorStatues;
 import fuzs.armorstatues.client.gui.components.TickButton;
-import fuzs.armorstatues.network.client.C2SArmorStandPoseMessage;
-import fuzs.armorstatues.world.inventory.ArmorStandMenu;
+import fuzs.armorstatues.network.client.data.DataSyncHandler;
+import fuzs.armorstatues.world.inventory.ArmorStandHolder;
 import fuzs.armorstatues.world.inventory.ArmorStandPose;
 import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.components.Button;
@@ -25,8 +24,8 @@ public class ArmorStandPosesScreen extends AbstractArmorStandScreen {
     private final AbstractWidget[] cycleButtons = new AbstractWidget[2];
     private final AbstractWidget[] poseButtons = new AbstractWidget[POSES_PER_PAGE];
 
-    public ArmorStandPosesScreen(ArmorStandMenu menu, Inventory inventory, Component component) {
-        super(menu, inventory, component);
+    public ArmorStandPosesScreen(ArmorStandHolder holder, Inventory inventory, Component component, DataSyncHandler dataSyncHandler) {
+        super(holder, inventory, component, dataSyncHandler);
         this.inventoryEntityX = 5;
         this.inventoryEntityY = 15;
     }
@@ -35,8 +34,8 @@ public class ArmorStandPosesScreen extends AbstractArmorStandScreen {
     protected void init() {
         super.init();
         this.addRenderableWidget(new TickButton(this.leftPos + 5, this.topPos + 128, 76, 20, Component.translatable("armorstatues.screen.pose.randomize"), Component.translatable("armorstatues.screen.pose.randomized"), button -> {
-            this.applyPoseToEntity(ArmorStandPose.random());
-        })).setLastClickedTicksDelay(15);
+            this.applyPoseAndSync(ArmorStandPose.random());
+        })).setLastClickedTicksDelay(20);
         this.cycleButtons[0] = this.addRenderableWidget(new ImageButton(this.leftPos + 17, this.topPos + 153, 20, 20, 156, 64, ARMOR_STAND_WIDGETS_LOCATION, button -> {
             firstPoseIndex -= POSES_PER_PAGE;
             this.toggleCycleButtons();
@@ -48,7 +47,7 @@ public class ArmorStandPosesScreen extends AbstractArmorStandScreen {
         for (int i = 0; i < this.poseButtons.length; i++) {
             final int ii = i;
             this.poseButtons[i] = this.addRenderableWidget(new ImageButton(this.leftPos + 83 + i % 2 * 62, this.topPos + 9 + i / 2 * 88, 60, 82, 76, 0, 82, ARMOR_STAND_WIDGETS_LOCATION, 256, 256, button -> {
-                getPoseAt(ii).ifPresent(this::applyPoseToEntity);
+                getPoseAt(ii).ifPresent(this::applyPoseAndSync);
             }, (Button button, PoseStack poseStack, int mouseX, int mouseY) -> {
                 getPoseAt(ii).ifPresent(pose -> this.renderTooltip(poseStack, pose.getComponent(), mouseX, mouseY));
             }, CommonComponents.EMPTY));
@@ -64,19 +63,10 @@ public class ArmorStandPosesScreen extends AbstractArmorStandScreen {
         }
     }
 
-    private void applyPoseToEntity(ArmorStandPose pose) {
-        applyPoseAndSync(this.menu.getArmorStand(), pose);
-    }
-
-    public static void applyPoseAndSync(ArmorStand armorStand, ArmorStandPose pose) {
-        pose.applyToEntity(armorStand);
-        ArmorStatues.NETWORK.sendToServer(new C2SArmorStandPoseMessage(pose));
-    }
-
     @Override
     protected void renderBg(PoseStack poseStack, float partialTick, int mouseX, int mouseY) {
         super.renderBg(poseStack, partialTick, mouseX, mouseY);
-        ArmorStand armorStand = this.menu.getArmorStand();
+        ArmorStand armorStand = this.holder.getArmorStand();
         ArmorStandPose entityPose = ArmorStandPose.fromEntity(armorStand);
         for (int i = 0; i < POSES_PER_PAGE; i++) {
             Optional<ArmorStandPose> pose = getPoseAt(i);
@@ -94,7 +84,7 @@ public class ArmorStandPosesScreen extends AbstractArmorStandScreen {
     }
 
     @Override
-    public ArmorStandScreenType<?> getScreenType() {
+    public ArmorStandScreenType getScreenType() {
         return ArmorStandScreenType.POSES;
     }
 

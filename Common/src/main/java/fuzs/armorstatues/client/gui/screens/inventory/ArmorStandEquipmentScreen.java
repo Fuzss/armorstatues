@@ -3,10 +3,13 @@ package fuzs.armorstatues.client.gui.screens.inventory;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import fuzs.armorstatues.ArmorStatues;
+import fuzs.armorstatues.network.client.data.DataSyncHandler;
+import fuzs.armorstatues.world.inventory.ArmorStandHolder;
 import fuzs.armorstatues.world.inventory.ArmorStandMenu;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.client.gui.screens.inventory.InventoryScreen;
+import net.minecraft.client.gui.screens.inventory.MenuAccess;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
@@ -16,19 +19,21 @@ public class ArmorStandEquipmentScreen extends AbstractContainerScreen<ArmorStan
     private static final ResourceLocation ARMOR_STAND_EQUIPMENT_LOCATION = new ResourceLocation(ArmorStatues.MOD_ID, "textures/gui/container/armor_stand/equipment.png");
 
     private final Inventory inventory;
+    private final DataSyncHandler dataSyncHandler;
     private float mouseX;
     private float mouseY;
 
-    public ArmorStandEquipmentScreen(ArmorStandMenu abstractContainerMenu, Inventory inventory, Component component) {
-        super(abstractContainerMenu, inventory, component);
+    public ArmorStandEquipmentScreen(ArmorStandHolder holder, Inventory inventory, Component component, DataSyncHandler dataSyncHandler) {
+        super((ArmorStandMenu) holder, inventory, component);
         this.inventory = inventory;
+        this.dataSyncHandler = dataSyncHandler;
         this.imageWidth = 210;
         this.imageHeight = 188;
     }
 
     @Override
-    public Screen createTabScreen(ArmorStandScreenType<?> screenType) {
-        return screenType.createTabScreen(this.menu, this.inventory, this.title);
+    public <T extends Screen & MenuAccess<ArmorStandMenu> & ArmorStandScreen> T createScreenType(ArmorStandScreenType screenType) {
+        return (T) screenType.createScreenType(this.menu, this.inventory, this.title, this.dataSyncHandler);
     }
 
     @Override
@@ -40,7 +45,7 @@ public class ArmorStandEquipmentScreen extends AbstractContainerScreen<ArmorStan
     @Override
     public boolean mouseClicked(double mouseX, double mouseY, int button) {
         if (button == 0) {
-            if (AbstractArmorStandScreen.handleTabClicked((int) mouseX, (int) mouseY, this.leftPos, this.topPos, this.imageHeight, this)) {
+            if (AbstractArmorStandScreen.handleTabClicked((int) mouseX, (int) mouseY, this.leftPos, this.topPos, this.imageHeight, this, this.dataSyncHandler.tabs())) {
                 return true;
             }
         }
@@ -54,7 +59,7 @@ public class ArmorStandEquipmentScreen extends AbstractContainerScreen<ArmorStan
         super.render(poseStack, mouseX, mouseY, pPartialTick);
         this.renderTooltip(poseStack, mouseX, mouseY);
         if (this.menu.getCarried().isEmpty()) {
-            AbstractArmorStandScreen.findHoveredTab(this.leftPos, this.topPos, this.imageHeight, mouseX, mouseY).ifPresent(hoveredTab -> {
+            AbstractArmorStandScreen.findHoveredTab(this.leftPos, this.topPos, this.imageHeight, mouseX, mouseY, this.dataSyncHandler.tabs()).ifPresent(hoveredTab -> {
                 this.renderTooltip(poseStack, hoveredTab.getComponent(), mouseX, mouseY);
             });
         }
@@ -70,7 +75,7 @@ public class ArmorStandEquipmentScreen extends AbstractContainerScreen<ArmorStan
         int i = (this.width - this.imageWidth) / 2;
         int j = (this.height - this.imageHeight) / 2;
         this.blit(poseStack, i, j, 0, 0, this.imageWidth, this.imageHeight);
-        AbstractArmorStandScreen.drawTabs(poseStack, this.leftPos, this.topPos, this.imageHeight, this);
+        AbstractArmorStandScreen.drawTabs(poseStack, this.leftPos, this.topPos, this.imageHeight, this, this.dataSyncHandler.tabs());
         InventoryScreen.renderEntityInInventory(i + 104, j + 84, 30, (float) (i + 104 - 10) - this.mouseX, (float) (j + 84 - 44) - this.mouseY, this.menu.getArmorStand());
     }
 
@@ -80,7 +85,7 @@ public class ArmorStandEquipmentScreen extends AbstractContainerScreen<ArmorStan
     }
 
     @Override
-    public ArmorStandScreenType<?> getScreenType() {
+    public ArmorStandScreenType getScreenType() {
         return ArmorStandScreenType.EQUIPMENT;
     }
 }

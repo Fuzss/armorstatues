@@ -162,7 +162,8 @@ public class ArmorStandMenu extends AbstractContainerMenu implements ArmorStandH
 
     @Override
     public boolean stillValid(Player player) {
-        return this.armorStand != null && !this.armorStand.isRemoved() && this.armorStand.position().closerThan(player.position(), 8.0D);
+        // no distance check to avoid annoying issues when editing armor stand
+        return this.armorStand != null && !this.armorStand.isRemoved();
     }
 
     @Override

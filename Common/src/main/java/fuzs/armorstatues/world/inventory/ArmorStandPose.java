@@ -132,13 +132,38 @@ public class ArmorStandPose {
         armorStand.setRightLegPose(this.rightLegPose);
     }
     
-    public void serialize(CompoundTag tag) {
-        tag.put("Head", this.headPose.save());
-        tag.put("Body", this.bodyPose.save());
-        tag.put("LeftArm", this.leftArmPose.save());
-        tag.put("RightArm", this.rightArmPose.save());
-        tag.put("LeftLeg", this.leftLegPose.save());
-        tag.put("RightLeg", this.rightLegPose.save());
+    public boolean serializeAllPoses(CompoundTag tag, ArmorStandPose lastSentPose) {
+        boolean changed = this.serializeBodyPoses(tag, lastSentPose);
+        changed |= this.serializeArmPoses(tag, lastSentPose);
+        changed |= this.serializeLegPoses(tag, lastSentPose);
+        return changed;
+    }
+
+    public boolean serializeBodyPoses(CompoundTag tag, ArmorStandPose lastSentPose) {
+        if (!this.headPose.equals(lastSentPose.headPose) || !this.bodyPose.equals(lastSentPose.bodyPose)) {
+            tag.put("Head", this.headPose.save());
+            tag.put("Body", this.bodyPose.save());
+            return true;
+        }
+        return false;
+    }
+
+    public boolean serializeArmPoses(CompoundTag tag, ArmorStandPose lastSentPose) {
+        if (!this.leftArmPose.equals(lastSentPose.leftArmPose) || !this.rightArmPose.equals(lastSentPose.rightArmPose)) {
+            tag.put("LeftArm", this.leftArmPose.save());
+            tag.put("RightArm", this.rightArmPose.save());
+            return true;
+        }
+        return false;
+    }
+
+    public boolean serializeLegPoses(CompoundTag tag, ArmorStandPose lastSentPose) {
+        if (!this.leftLegPose.equals(lastSentPose.leftLegPose) || !this.rightLegPose.equals(lastSentPose.rightLegPose)) {
+            tag.put("LeftLeg", this.leftLegPose.save());
+            tag.put("RightLeg", this.rightLegPose.save());
+            return true;
+        }
+        return false;
     }
     
     public static ArmorStandPose fromEntity(ArmorStand armorStand) {

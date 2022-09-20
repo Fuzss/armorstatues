@@ -2,6 +2,7 @@ package fuzs.armorstatues.client;
 
 import fuzs.armorstatues.client.gui.screens.inventory.ArmorStandScreenType;
 import fuzs.armorstatues.init.ModRegistry;
+import fuzs.armorstatues.network.client.data.NetworkDataSyncHandler;
 import fuzs.armorstatues.world.inventory.ArmorStandMenu;
 import fuzs.puzzleslib.client.core.ClientModConstructor;
 import net.minecraft.network.chat.Component;
@@ -13,7 +14,7 @@ public class ArmorStatuesClient implements ClientModConstructor {
     @Override
     public void onRegisterMenuScreens(MenuScreensContext context) {
         // don't use method reference, it will ignore any changes made to ArmorStandScreenType::getLastType
-        context.registerMenuScreen(ModRegistry.ARMOR_STAND_MENU_TYPE.get(), (ArmorStandMenu menu, Inventory inventory, Component component) -> ArmorStandScreenType.getLastType().createTabScreen(menu, inventory, component));
+        context.registerMenuScreen(ModRegistry.ARMOR_STAND_MENU_TYPE.get(), (ArmorStandMenu menu, Inventory inventory, Component component) -> ArmorStandScreenType.createLastScreenType(menu, inventory, component, new NetworkDataSyncHandler(menu.getArmorStand())));
     }
 
     @Override

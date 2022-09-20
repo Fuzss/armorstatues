@@ -51,7 +51,7 @@ public class C2SArmorStandPositionMessage implements Message<C2SArmorStandPositi
         };
     }
 
-    public static boolean tryMoveArmorStandTo(ArmorStand armorStand, double posX, double posY, double posZ) {
+    private static boolean tryMoveArmorStandTo(ArmorStand armorStand, double posX, double posY, double posZ) {
         if (!testDistance(armorStand, posX, posY, posZ)) return false;
         armorStand.moveTo(posX, posY, posZ);
         return true;

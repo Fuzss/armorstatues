@@ -1,5 +1,6 @@
 package fuzs.armorstatues.handler;
 
+import fuzs.armorstatues.ArmorStatues;
 import fuzs.armorstatues.world.inventory.ArmorStandMenu;
 import fuzs.puzzleslib.core.CoreServices;
 import net.minecraft.server.level.ServerPlayer;
@@ -24,6 +25,9 @@ public class ArmorStandInteractHandler {
                     friendlyByteBuf.writeInt(entity.getId());
                     friendlyByteBuf.writeBoolean(entity.isInvulnerable());
                 });
+            } else if (level.isClientSide) {
+                // better to check for client once more, we don't want to accidentally run on the server thread when showing the screen
+                ArmorStatues.PROXY.openArmorStandScreen(armorStand, player);
             }
             return Optional.of(InteractionResult.sidedSuccess(level.isClientSide));
         }

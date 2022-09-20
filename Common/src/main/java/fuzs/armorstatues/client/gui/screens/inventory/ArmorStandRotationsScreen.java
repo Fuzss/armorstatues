@@ -6,7 +6,8 @@ import fuzs.armorstatues.client.gui.components.BoxedSliderButton;
 import fuzs.armorstatues.client.gui.components.LiveSliderButton;
 import fuzs.armorstatues.client.gui.components.TickButton;
 import fuzs.armorstatues.client.gui.components.VerticalSliderButton;
-import fuzs.armorstatues.world.inventory.ArmorStandMenu;
+import fuzs.armorstatues.network.client.data.DataSyncHandler;
+import fuzs.armorstatues.world.inventory.ArmorStandHolder;
 import fuzs.armorstatues.world.inventory.ArmorStandPose;
 import net.minecraft.client.gui.components.events.GuiEventListener;
 import net.minecraft.core.Rotations;
@@ -37,12 +38,12 @@ public class ArmorStandRotationsScreen extends AbstractArmorStandScreen {
 
     private ArmorStandPose currentPose;
 
-    public ArmorStandRotationsScreen(ArmorStandMenu menu, Inventory inventory, Component component) {
-        super(menu, inventory, component);
+    public ArmorStandRotationsScreen(ArmorStandHolder holder, Inventory inventory, Component component, DataSyncHandler dataSyncHandler) {
+        super(holder, inventory, component, dataSyncHandler);
         this.inventoryEntityX = 80;
         this.inventoryEntityY = 15;
         this.smallInventoryEntity = true;
-        this.currentPose = ArmorStandPose.fromEntity(menu.getArmorStand());
+        this.currentPose = ArmorStandPose.fromEntity(holder.getArmorStand());
     }
 
     @Override
@@ -82,7 +83,7 @@ public class ArmorStandRotationsScreen extends AbstractArmorStandScreen {
                     super.onRelease(mouseX, mouseY);
                     if (this.isDirty()) {
                         this.dirty = false;
-                        ArmorStandRotationsScreen.this.applyCurrentPoseToEntity();
+                        ArmorStandRotationsScreen.this.applyPoseAndSync(ArmorStandRotationsScreen.this.currentPose);
                     }
                 }
 
@@ -110,7 +111,7 @@ public class ArmorStandRotationsScreen extends AbstractArmorStandScreen {
                     super.onRelease(mouseX, mouseY);
                     if (this.isDirty()) {
                         this.dirty = false;
-                        ArmorStandRotationsScreen.this.applyCurrentPoseToEntity();
+                        ArmorStandRotationsScreen.this.applyPoseAndSync(ArmorStandRotationsScreen.this.currentPose);
                     }
                 }
 
@@ -124,7 +125,7 @@ public class ArmorStandRotationsScreen extends AbstractArmorStandScreen {
 
     @Override
     protected void renderBg(PoseStack poseStack, float partialTick, int mouseX, int mouseY) {
-        ArmorStand armorStand = this.menu.getArmorStand();
+        ArmorStand armorStand = this.holder.getArmorStand();
         ArmorStandPose entityPose = ArmorStandPose.fromEntity(armorStand);
         this.currentPose.applyToEntity(armorStand);
         super.renderBg(poseStack, partialTick, mouseX, mouseY);
@@ -137,18 +138,14 @@ public class ArmorStandRotationsScreen extends AbstractArmorStandScreen {
     }
 
     @Override
-    public ArmorStandScreenType<?> getScreenType() {
+    public ArmorStandScreenType getScreenType() {
         return ArmorStandScreenType.ROTATIONS;
     }
 
     private void setCurrentPose(ArmorStandPose currentPose) {
         this.currentPose = currentPose;
-        this.applyCurrentPoseToEntity();
+        this.applyPoseAndSync(this.currentPose);
         this.refreshLiveButtons();
-    }
-
-    private void applyCurrentPoseToEntity() {
-        ArmorStandPosesScreen.applyPoseAndSync(this.menu.getArmorStand(), this.currentPose);
     }
 
     private void refreshLiveButtons() {

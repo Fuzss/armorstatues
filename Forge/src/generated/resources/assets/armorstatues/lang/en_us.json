@@ -13,6 +13,7 @@
   "armorstatues.entity.armor_stand.pose.solemn": "Solemn",
   "armorstatues.entity.armor_stand.pose.zombie": "Zombie",
   "armorstatues.item.armor_stand.description": "Shift + right-click to open configuration screen when placed.",
+  "armorstatues.screen.noPermission": "Unable to set new armor stand data; no permission",
   "armorstatues.screen.pose.randomize": "Randomize",
   "armorstatues.screen.pose.randomized": "Applied!",
   "armorstatues.screen.position.aligned": "Aligned!",

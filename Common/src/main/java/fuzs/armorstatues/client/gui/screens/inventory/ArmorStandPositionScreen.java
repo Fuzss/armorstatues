@@ -3,21 +3,17 @@ package fuzs.armorstatues.client.gui.screens.inventory;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
 import com.mojang.blaze3d.vertex.PoseStack;
-import fuzs.armorstatues.ArmorStatues;
 import fuzs.armorstatues.client.gui.components.NewTextureButton;
 import fuzs.armorstatues.client.gui.components.NewTextureSliderButton;
 import fuzs.armorstatues.client.gui.components.TickButton;
-import fuzs.armorstatues.client.gui.components.UnboundedSliderButton;
-import fuzs.armorstatues.network.client.C2SArmorStandPositionMessage;
-import fuzs.armorstatues.network.client.C2SArmorStandRotationMessage;
-import fuzs.armorstatues.world.inventory.ArmorStandMenu;
+import fuzs.armorstatues.network.client.data.DataSyncHandler;
+import fuzs.armorstatues.world.inventory.ArmorStandHolder;
 import fuzs.puzzleslib.util.PuzzlesUtil;
 import net.minecraft.Util;
 import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.EditBox;
 import net.minecraft.client.gui.components.ImageButton;
-import net.minecraft.client.gui.components.events.GuiEventListener;
 import net.minecraft.core.Direction;
 import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.network.chat.Component;
@@ -55,32 +51,26 @@ public class ArmorStandPositionScreen extends AbstractArmorStandScreen {
     @Nullable
     private PositionScreenWidget activeWidget;
 
-    public ArmorStandPositionScreen(ArmorStandMenu menu, Inventory inventory, Component component) {
-        super(menu, inventory, component);
-        ArmorStand armorStand = menu.getArmorStand();
+    public ArmorStandPositionScreen(ArmorStandHolder holder, Inventory inventory, Component component, DataSyncHandler dataSyncHandler) {
+        super(holder, inventory, component, dataSyncHandler);
+        ArmorStand armorStand = holder.getArmorStand();
+        // only move server-side to prevent rubber banding
         this.widgets = ImmutableList.<PositionScreenWidget>builder()
-                .add(new RotationWidget(armorStand::getYRot, yRot -> {
-                    ArmorStatues.NETWORK.sendToServer(new C2SArmorStandRotationMessage(yRot));
-                }))
+                .add(new RotationWidget(armorStand::getYRot, this.dataSyncHandler::sendRotation))
                 .add(new PositionIncrementWidget())
                 .add(new PositionComponentWidget("x", armorStand::getX, x -> {
-                    syncMove(x, armorStand.getY(), armorStand.getZ());
+                    this.dataSyncHandler.sendPosition(x, armorStand.getY(), armorStand.getZ());
                 }))
                 .add(new PositionComponentWidget("y", armorStand::getY, y -> {
-                    syncMove(armorStand.getX(), y, armorStand.getZ());
+                    this.dataSyncHandler.sendPosition(armorStand.getX(), y, armorStand.getZ());
                 }))
                 .add(new PositionComponentWidget("z", armorStand::getZ, z -> {
-                    syncMove(armorStand.getX(), armorStand.getY(), z);
+                    this.dataSyncHandler.sendPosition(armorStand.getX(), armorStand.getY(), z);
                 }))
                 .add(new PositionAlignWidget(armorStand::position, vec3 -> {
-                    syncMove(vec3.x(), vec3.y(), vec3.z());
+                    this.dataSyncHandler.sendPosition(vec3.x(), vec3.y(), vec3.z());
                 }))
                 .build();
-    }
-
-    private static void syncMove(double posX, double posY, double posZ) {
-        // only move server-side to prevent rubber banding
-        ArmorStatues.NETWORK.sendToServer(new C2SArmorStandPositionMessage(posX, posY, posZ));
     }
 
     private Collection<PositionScreenWidget> getActivePositionComponentWidgets() {
@@ -157,7 +147,7 @@ public class ArmorStandPositionScreen extends AbstractArmorStandScreen {
     }
 
     @Override
-    public ArmorStandScreenType<?> getScreenType() {
+    public ArmorStandScreenType getScreenType() {
         return ArmorStandScreenType.POSITION;
     }
 

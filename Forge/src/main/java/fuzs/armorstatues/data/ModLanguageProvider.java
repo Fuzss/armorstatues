@@ -72,5 +72,6 @@ public class ModLanguageProvider extends LanguageProvider {
         this.add("armorstatues.screen.rotations.x", "X: %s");
         this.add("armorstatues.screen.rotations.y", "Y: %s");
         this.add("armorstatues.screen.rotations.z", "Z: %s");
+        this.add("armorstatues.screen.noPermission", "Unable to set new armor stand data; no permission");
     }
 }
