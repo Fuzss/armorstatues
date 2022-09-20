@@ -1,6 +1,6 @@
 package fuzs.armorstatues.client;
 
-import fuzs.armorstatues.client.gui.screens.inventory.ArmorStandScreenType;
+import fuzs.armorstatues.client.gui.screens.armorstand.data.ArmorStandScreenType;
 import fuzs.armorstatues.init.ModRegistry;
 import fuzs.armorstatues.network.client.data.NetworkDataSyncHandler;
 import fuzs.armorstatues.world.inventory.ArmorStandMenu;

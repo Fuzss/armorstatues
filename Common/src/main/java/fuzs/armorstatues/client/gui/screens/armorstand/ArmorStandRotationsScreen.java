@@ -1,4 +1,4 @@
-package fuzs.armorstatues.client.gui.screens.inventory;
+package fuzs.armorstatues.client.gui.screens.armorstand;
 
 import com.google.common.collect.ImmutableList;
 import com.mojang.blaze3d.vertex.PoseStack;
@@ -6,6 +6,7 @@ import fuzs.armorstatues.client.gui.components.BoxedSliderButton;
 import fuzs.armorstatues.client.gui.components.LiveSliderButton;
 import fuzs.armorstatues.client.gui.components.TickButton;
 import fuzs.armorstatues.client.gui.components.VerticalSliderButton;
+import fuzs.armorstatues.client.gui.screens.armorstand.data.ArmorStandScreenType;
 import fuzs.armorstatues.network.client.data.DataSyncHandler;
 import fuzs.armorstatues.world.inventory.ArmorStandHolder;
 import fuzs.armorstatues.world.inventory.ArmorStandPose;

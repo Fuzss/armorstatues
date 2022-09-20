@@ -1,9 +1,10 @@
-package fuzs.armorstatues.client.gui.screens.inventory;
+package fuzs.armorstatues.client.gui.screens.armorstand;
 
 import com.google.common.collect.Lists;
 import com.mojang.blaze3d.vertex.PoseStack;
 import fuzs.armorstatues.client.gui.components.NewTextureButton;
 import fuzs.armorstatues.client.gui.components.NewTextureSliderButton;
+import fuzs.armorstatues.client.gui.screens.armorstand.data.ArmorStandScreenType;
 import fuzs.armorstatues.network.client.data.DataSyncHandler;
 import fuzs.armorstatues.world.inventory.ArmorStandHolder;
 import fuzs.puzzleslib.util.PuzzlesUtil;

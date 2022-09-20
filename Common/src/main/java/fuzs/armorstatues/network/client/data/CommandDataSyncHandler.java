@@ -1,7 +1,7 @@
 package fuzs.armorstatues.network.client.data;
 
-import fuzs.armorstatues.client.gui.screens.inventory.ArmorStandScreenType;
-import fuzs.armorstatues.client.gui.screens.inventory.ArmorStandStyleOption;
+import fuzs.armorstatues.client.gui.screens.armorstand.data.ArmorStandScreenType;
+import fuzs.armorstatues.client.gui.screens.armorstand.data.ArmorStandStyleOption;
 import fuzs.armorstatues.world.inventory.ArmorStandPose;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;

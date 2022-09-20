@@ -1,7 +1,10 @@
-package fuzs.armorstatues.client.gui.screens.inventory;
+package fuzs.armorstatues.client.gui.screens.armorstand;
 
 import com.google.common.collect.Lists;
 import fuzs.armorstatues.client.gui.components.TickButton;
+import fuzs.armorstatues.client.gui.screens.armorstand.data.ArmorStandAlignment;
+import fuzs.armorstatues.client.gui.screens.armorstand.data.ArmorStandScreenType;
+import fuzs.armorstatues.client.gui.screens.armorstand.data.ArmorStandStyleOption;
 import fuzs.armorstatues.network.client.data.DataSyncHandler;
 import fuzs.armorstatues.world.inventory.ArmorStandHolder;
 import net.minecraft.Util;

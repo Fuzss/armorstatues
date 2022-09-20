@@ -1,6 +1,6 @@
 package fuzs.armorstatues.proxy;
 
-import fuzs.armorstatues.client.gui.screens.inventory.ArmorStandScreenType;
+import fuzs.armorstatues.client.gui.screens.armorstand.data.ArmorStandScreenType;
 import fuzs.armorstatues.network.client.data.CommandDataSyncHandler;
 import fuzs.armorstatues.world.inventory.ArmorStandHolder;
 import net.minecraft.client.Minecraft;
@@ -8,7 +8,7 @@ import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.world.entity.decoration.ArmorStand;
 import net.minecraft.world.entity.player.Player;
 
-public class ClientProxy implements Proxy {
+public class ClientProxy extends ServerProxy {
 
     @Override
     public void openArmorStandScreen(ArmorStand armorStand, Player player) {

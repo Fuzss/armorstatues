@@ -1,4 +1,4 @@
-package fuzs.armorstatues.client.gui.screens.inventory;
+package fuzs.armorstatues.client.gui.screens.armorstand.data;
 
 import fuzs.armorstatues.mixin.accessor.ArmorStandAccessor;
 import net.minecraft.network.chat.Component;

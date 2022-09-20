@@ -2,9 +2,8 @@ package fuzs.armorstatues.client.gui.components;
 
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
-import fuzs.armorstatues.client.gui.screens.inventory.AbstractArmorStandScreen;
+import fuzs.armorstatues.client.gui.screens.armorstand.AbstractArmorStandScreen;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.components.AbstractSliderButton;
 import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.narration.NarratedElementType;
 import net.minecraft.client.gui.narration.NarrationElementOutput;

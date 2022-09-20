@@ -1,5 +1,6 @@
-package fuzs.armorstatues.client.gui.screens.inventory;
+package fuzs.armorstatues.client.gui.screens.armorstand.data;
 
+import fuzs.armorstatues.client.gui.screens.armorstand.*;
 import fuzs.armorstatues.network.client.data.DataSyncHandler;
 import fuzs.armorstatues.world.inventory.ArmorStandHolder;
 import fuzs.armorstatues.world.inventory.ArmorStandMenu;

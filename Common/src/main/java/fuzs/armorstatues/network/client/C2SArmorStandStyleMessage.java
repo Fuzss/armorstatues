@@ -1,6 +1,6 @@
 package fuzs.armorstatues.network.client;
 
-import fuzs.armorstatues.client.gui.screens.inventory.ArmorStandStyleOption;
+import fuzs.armorstatues.client.gui.screens.armorstand.data.ArmorStandStyleOption;
 import fuzs.armorstatues.world.inventory.ArmorStandMenu;
 import fuzs.puzzleslib.network.Message;
 import net.minecraft.network.FriendlyByteBuf;

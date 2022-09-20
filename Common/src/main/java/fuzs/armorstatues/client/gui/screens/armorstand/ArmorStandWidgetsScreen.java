@@ -1,4 +1,4 @@
-package fuzs.armorstatues.client.gui.screens.inventory;
+package fuzs.armorstatues.client.gui.screens.armorstand;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;

@@ -1,8 +1,10 @@
-package fuzs.armorstatues.client.gui.screens.inventory;
+package fuzs.armorstatues.client.gui.screens.armorstand;
 
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import fuzs.armorstatues.client.gui.components.TickBoxButton;
+import fuzs.armorstatues.client.gui.screens.armorstand.data.ArmorStandScreenType;
+import fuzs.armorstatues.client.gui.screens.armorstand.data.ArmorStandStyleOption;
 import fuzs.armorstatues.network.client.data.DataSyncHandler;
 import fuzs.armorstatues.world.inventory.ArmorStandHolder;
 import net.minecraft.client.Minecraft;
