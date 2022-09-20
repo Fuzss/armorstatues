@@ -30,6 +30,7 @@ public class ModLanguageProvider extends LanguageProvider {
         this.add("armorstatues.screen.type.style", "Style");
         this.add("armorstatues.screen.type.poses", "Poses");
         this.add("armorstatues.screen.type.position", "Position");
+        this.add("armorstatues.screen.type.alignments", "Alignments");
         this.add("armorstatues.screen.style.showArms", "Show Arms");
         this.add("armorstatues.screen.style.small", "Small");
         this.add("armorstatues.screen.style.invisible", "Invisible");
@@ -72,6 +73,11 @@ public class ModLanguageProvider extends LanguageProvider {
         this.add("armorstatues.screen.rotations.x", "X: %s");
         this.add("armorstatues.screen.rotations.y", "Y: %s");
         this.add("armorstatues.screen.rotations.z", "Z: %s");
+        this.add("armorstatues.screen.alignments.block", "Align Block");
+        this.add("armorstatues.screen.alignments.itemFloating", "Align Item As Floating");
+        this.add("armorstatues.screen.alignments.itemFlat", "Align Item As Flat");
+        this.add("armorstatues.screen.alignments.tool", "Align Tool As Flat");
+        this.add("armorstatues.screen.alignments.credit", "Alignment values are taken from the Vanilla Tweaks \"Armor Statues\" data pack. Click this button to go to their website!");
         this.add("armorstatues.screen.noPermission", "Unable to set new armor stand data; no permission");
     }
 }

@@ -1,11 +1,9 @@
 package fuzs.armorstatues.client.gui.screens.inventory;
 
-import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
 import com.mojang.blaze3d.vertex.PoseStack;
 import fuzs.armorstatues.client.gui.components.NewTextureButton;
 import fuzs.armorstatues.client.gui.components.NewTextureSliderButton;
-import fuzs.armorstatues.client.gui.components.TickButton;
 import fuzs.armorstatues.network.client.data.DataSyncHandler;
 import fuzs.armorstatues.world.inventory.ArmorStandHolder;
 import fuzs.puzzleslib.util.PuzzlesUtil;
@@ -14,20 +12,16 @@ import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.EditBox;
 import net.minecraft.client.gui.components.ImageButton;
-import net.minecraft.core.Direction;
 import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.decoration.ArmorStand;
 import net.minecraft.world.entity.player.Inventory;
-import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.Nullable;
 
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
-import java.util.Collection;
-import java.util.EnumSet;
 import java.util.List;
 import java.util.Locale;
 import java.util.function.Consumer;
@@ -36,7 +30,7 @@ import java.util.function.DoubleSupplier;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
-public class ArmorStandPositionScreen extends AbstractArmorStandScreen {
+public class ArmorStandPositionScreen extends ArmorStandWidgetsScreen {
     private static final DecimalFormat BLOCK_INCREMENT_FORMAT = Util.make(new DecimalFormat("#.####"), (decimalFormat) -> {
         decimalFormat.setDecimalFormatSymbols(DecimalFormatSymbols.getInstance(Locale.ROOT));
     });
@@ -47,103 +41,26 @@ public class ArmorStandPositionScreen extends AbstractArmorStandScreen {
 
     private static double currentIncrement = INCREMENTS[0];
 
-    private final List<PositionScreenWidget> widgets;
-    @Nullable
-    private PositionScreenWidget activeWidget;
-
     public ArmorStandPositionScreen(ArmorStandHolder holder, Inventory inventory, Component component, DataSyncHandler dataSyncHandler) {
         super(holder, inventory, component, dataSyncHandler);
-        ArmorStand armorStand = holder.getArmorStand();
+    }
+
+    @Override
+    protected List<ArmorStandWidgetsScreen.PositionScreenWidget> buildWidgets(ArmorStand armorStand) {
         // only move server-side to prevent rubber banding
-        this.widgets = ImmutableList.<PositionScreenWidget>builder()
-                .add(new RotationWidget(armorStand::getYRot, this.dataSyncHandler::sendRotation))
-                .add(new PositionIncrementWidget())
-                .add(new PositionComponentWidget("x", armorStand::getX, x -> {
+        return Lists.newArrayList(
+                new RotationWidget(armorStand::getYRot, this.dataSyncHandler::sendRotation),
+                new PositionIncrementWidget(),
+                new PositionComponentWidget("x", armorStand::getX, x -> {
                     this.dataSyncHandler.sendPosition(x, armorStand.getY(), armorStand.getZ());
-                }))
-                .add(new PositionComponentWidget("y", armorStand::getY, y -> {
+                }),
+                new PositionComponentWidget("y", armorStand::getY, y -> {
                     this.dataSyncHandler.sendPosition(armorStand.getX(), y, armorStand.getZ());
-                }))
-                .add(new PositionComponentWidget("z", armorStand::getZ, z -> {
+                }),
+                new PositionComponentWidget("z", armorStand::getZ, z -> {
                     this.dataSyncHandler.sendPosition(armorStand.getX(), armorStand.getY(), z);
-                }))
-                .add(new PositionAlignWidget(armorStand::position, vec3 -> {
-                    this.dataSyncHandler.sendPosition(vec3.x(), vec3.y(), vec3.z());
-                }))
-                .build();
-    }
-
-    private Collection<PositionScreenWidget> getActivePositionComponentWidgets() {
-        if (this.activeWidget != null) {
-            List<PositionScreenWidget> activeWidgets = Lists.newArrayList(this.activeWidget);
-            for (PositionScreenWidget widget : this.widgets) {
-                if (widget.alwaysVisible(this.activeWidget)) activeWidgets.add(widget);
-            }
-            return activeWidgets;
-        }
-        return this.widgets;
-    }
-
-    void setActiveWidget(PositionScreenWidget widget) {
-        if (this.activeWidget == widget) {
-            this.toggleMenuRendering(false);
-            this.activeWidget = null;
-        } else {
-            this.activeWidget = widget;
-            this.toggleMenuRendering(true);
-        }
-    }
-
-    @Override
-    protected boolean withCloseButton() {
-        return false;
-    }
-
-    @Override
-    protected boolean renderInventoryEntity() {
-        return false;
-    }
-
-    @Override
-    protected boolean disableMenuRendering() {
-        return this.activeWidget != null;
-    }
-
-    @Override
-    protected void toggleMenuRendering(boolean disableMenuRendering) {
-        for (PositionScreenWidget widget : this.widgets) {
-            widget.setVisible(!disableMenuRendering || widget.alwaysVisible(this.activeWidget));
-        }
-    }
-
-    @Override
-    public void tick() {
-        super.tick();
-        this.getActivePositionComponentWidgets().forEach(PositionScreenWidget::tick);
-    }
-
-    @Override
-    protected void init() {
-        super.init();
-        this.minecraft.keyboardHandler.setSendRepeatsToGui(true);
-        int startY = (this.imageHeight - this.widgets.size() * 22 - (this.widgets.size() - 1) * 7) / 2;
-        for (int i = 0; i < this.widgets.size(); i++) {
-            this.widgets.get(i).init(this.leftPos + 8, this.topPos + startY + i * 29);
-        }
-    }
-
-    @Override
-    public void removed() {
-        super.removed();
-        this.minecraft.keyboardHandler.setSendRepeatsToGui(false);
-    }
-
-    @Override
-    protected void renderBg(PoseStack poseStack, float partialTick, int mouseX, int mouseY) {
-        super.renderBg(poseStack, partialTick, mouseX, mouseY);
-        for (PositionScreenWidget widget : this.getActivePositionComponentWidgets()) {
-            widget.render(poseStack, mouseX, mouseY, partialTick);
-        }
+                })
+        );
     }
 
     @Override
@@ -169,63 +86,6 @@ public class ArmorStandPositionScreen extends AbstractArmorStandScreen {
 
     public static float toWrappedDegrees(double value) {
         return (float) Mth.wrapDegrees(value * 360.0 - 180.0);
-    }
-
-    private interface PositionScreenWidget {
-
-        void tick();
-
-        void init(int posX, int posY);
-
-        void setVisible(boolean visible);
-
-        void render(PoseStack poseStack, int mouseX, int mouseY, float partialTick);
-
-        boolean alwaysVisible(@Nullable PositionScreenWidget activeWidget);
-    }
-
-    private abstract class AbstractPositionScreenWidget implements PositionScreenWidget {
-        protected final Component title;
-        protected int posX;
-        protected int posY;
-        protected List<AbstractWidget> children;
-
-        protected AbstractPositionScreenWidget(Component title) {
-            this.title = title;
-        }
-
-        @Override
-        public void tick() {
-
-        }
-
-        @Override
-        public void init(int posX, int posY) {
-            this.posX = posX;
-            this.posY = posY;
-            this.children = Lists.newArrayList();
-        }
-
-        @Override
-        public final void setVisible(boolean visible) {
-            for (AbstractWidget widget : this.children) {
-                widget.visible = visible;
-            }
-        }
-
-        @Override
-        public void render(PoseStack poseStack, int mouseX, int mouseY, float partialTick) {
-            if (ArmorStandPositionScreen.this.disableMenuRendering()) {
-                NewTextureButton.drawCenteredString(poseStack, ArmorStandPositionScreen.this.font, this.title, this.posX + 36, this.posY + 6, -1, true);
-            } else {
-                NewTextureButton.drawCenteredString(poseStack, ArmorStandPositionScreen.this.font, this.title, this.posX + 36, this.posY + 6, 4210752, false);
-            }
-        }
-
-        @Override
-        public boolean alwaysVisible(@Nullable PositionScreenWidget activeWidget) {
-            return activeWidget == this;
-        }
     }
 
     private class RotationWidget extends AbstractPositionScreenWidget {
@@ -390,38 +250,6 @@ public class ArmorStandPositionScreen extends AbstractArmorStandScreen {
         @Override
         public boolean alwaysVisible(@Nullable PositionScreenWidget activeWidget) {
             return activeWidget instanceof PositionIncrementWidget || super.alwaysVisible(activeWidget);
-        }
-    }
-
-    private class PositionAlignWidget extends AbstractPositionScreenWidget {
-        private final Supplier<Vec3> currentPosition;
-        private final Consumer<Vec3> newPosition;
-
-        public PositionAlignWidget(Supplier<Vec3> currentPosition, Consumer<Vec3> newPosition) {
-            super(Component.empty());
-            this.currentPosition = currentPosition;
-            this.newPosition = newPosition;
-        }
-
-        @Override
-        public void init(int posX, int posY) {
-            super.init(posX, posY);
-            this.children.add(ArmorStandPositionScreen.this.addRenderableWidget(new TickButton(posX, posY + 1, 94, 20, Component.translatable("armorstatues.screen.position.centered"), Component.translatable("armorstatues.screen.position.aligned"), button -> {
-                this.newPosition.accept(this.currentPosition.get().align(EnumSet.allOf(Direction.Axis.class)).add(0.5, 0.0, 0.5));
-            })));
-            this.children.add(ArmorStandPositionScreen.this.addRenderableWidget(new TickButton(posX + 100, posY + 1, 94, 20, Component.translatable("armorstatues.screen.position.cornered"), Component.translatable("armorstatues.screen.position.aligned"), button -> {
-                this.newPosition.accept(this.currentPosition.get().align(EnumSet.allOf(Direction.Axis.class)));
-            })));
-        }
-
-        @Override
-        public void tick() {
-            super.tick();
-            for (AbstractWidget widget : this.children) {
-                if (widget instanceof TickButton tickButton) {
-                    tickButton.tick();
-                }
-            }
         }
     }
 }

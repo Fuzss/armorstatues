@@ -20,10 +20,15 @@ import java.util.function.Predicate;
 import java.util.stream.Stream;
 
 public class CommandDataSyncHandler implements DataSyncHandler {
+    @Nullable
+    static ArmorStandScreenType lastType;
+
     private final ArmorStand armorStand;
+    private ArmorStandPose lastSyncedPose;
 
     public CommandDataSyncHandler(ArmorStand armorStand) {
         this.armorStand = armorStand;
+        this.lastSyncedPose = ArmorStandPose.fromEntity(armorStand);
     }
 
     @Override
@@ -41,13 +46,14 @@ public class CommandDataSyncHandler implements DataSyncHandler {
     }
 
     @Override
-    public void sendPose(ArmorStandPose currentPose, ArmorStandPose lastSyncedPose) {
+    public void sendPose(ArmorStandPose currentPose) {
         if (!this.testPermissionLevel()) return;
-        DataSyncHandler.super.sendPose(currentPose, lastSyncedPose);
+        DataSyncHandler.super.sendPose(currentPose);
         // split this into multiple chat messages as the client chat field has a very low character limit
-        this.sendPosePart(currentPose::serializeBodyPoses, lastSyncedPose);
-        this.sendPosePart(currentPose::serializeArmPoses, lastSyncedPose);
-        this.sendPosePart(currentPose::serializeLegPoses, lastSyncedPose);
+        this.sendPosePart(currentPose::serializeBodyPoses, this.lastSyncedPose);
+        this.sendPosePart(currentPose::serializeArmPoses, this.lastSyncedPose);
+        this.sendPosePart(currentPose::serializeLegPoses, this.lastSyncedPose);
+        this.lastSyncedPose = currentPose;
     }
 
     private void sendPosePart(BiPredicate<CompoundTag, ArmorStandPose> dataWriter, ArmorStandPose lastSyncedPose) {
@@ -111,8 +117,13 @@ public class CommandDataSyncHandler implements DataSyncHandler {
     }
 
     @Override
-    public Optional<ArmorStandScreenType> getLastType(@Nullable ArmorStandScreenType lastType) {
+    public Optional<ArmorStandScreenType> getLastType() {
         return Optional.ofNullable(lastType).filter(Predicate.not(ArmorStandScreenType::requiresServer));
+    }
+
+    @Override
+    public void setLastType(ArmorStandScreenType lastType) {
+        CommandDataSyncHandler.lastType = lastType;
     }
 
     private boolean testPermissionLevel() {

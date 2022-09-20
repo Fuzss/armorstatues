@@ -132,15 +132,14 @@ public class ArmorStandPose {
         armorStand.setRightLegPose(this.rightLegPose);
     }
     
-    public boolean serializeAllPoses(CompoundTag tag, ArmorStandPose lastSentPose) {
-        boolean changed = this.serializeBodyPoses(tag, lastSentPose);
-        changed |= this.serializeArmPoses(tag, lastSentPose);
-        changed |= this.serializeLegPoses(tag, lastSentPose);
-        return changed;
+    public void serializeAllPoses(CompoundTag tag) {
+        this.serializeBodyPoses(tag, null);
+        this.serializeArmPoses(tag, null);
+        this.serializeLegPoses(tag, null);
     }
 
-    public boolean serializeBodyPoses(CompoundTag tag, ArmorStandPose lastSentPose) {
-        if (!this.headPose.equals(lastSentPose.headPose) || !this.bodyPose.equals(lastSentPose.bodyPose)) {
+    public boolean serializeBodyPoses(CompoundTag tag, @Nullable ArmorStandPose lastSentPose) {
+        if (lastSentPose == null || !this.headPose.equals(lastSentPose.headPose) || !this.bodyPose.equals(lastSentPose.bodyPose)) {
             tag.put("Head", this.headPose.save());
             tag.put("Body", this.bodyPose.save());
             return true;
@@ -148,8 +147,8 @@ public class ArmorStandPose {
         return false;
     }
 
-    public boolean serializeArmPoses(CompoundTag tag, ArmorStandPose lastSentPose) {
-        if (!this.leftArmPose.equals(lastSentPose.leftArmPose) || !this.rightArmPose.equals(lastSentPose.rightArmPose)) {
+    public boolean serializeArmPoses(CompoundTag tag, @Nullable ArmorStandPose lastSentPose) {
+        if (lastSentPose == null || !this.leftArmPose.equals(lastSentPose.leftArmPose) || !this.rightArmPose.equals(lastSentPose.rightArmPose)) {
             tag.put("LeftArm", this.leftArmPose.save());
             tag.put("RightArm", this.rightArmPose.save());
             return true;
@@ -157,8 +156,8 @@ public class ArmorStandPose {
         return false;
     }
 
-    public boolean serializeLegPoses(CompoundTag tag, ArmorStandPose lastSentPose) {
-        if (!this.leftLegPose.equals(lastSentPose.leftLegPose) || !this.rightLegPose.equals(lastSentPose.rightLegPose)) {
+    public boolean serializeLegPoses(CompoundTag tag, @Nullable ArmorStandPose lastSentPose) {
+        if (lastSentPose == null || !this.leftLegPose.equals(lastSentPose.leftLegPose) || !this.rightLegPose.equals(lastSentPose.rightLegPose)) {
             tag.put("LeftLeg", this.leftLegPose.save());
             tag.put("RightLeg", this.rightLegPose.save());
             return true;

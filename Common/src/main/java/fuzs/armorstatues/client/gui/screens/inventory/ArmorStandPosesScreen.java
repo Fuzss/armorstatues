@@ -34,7 +34,7 @@ public class ArmorStandPosesScreen extends AbstractArmorStandScreen {
     protected void init() {
         super.init();
         this.addRenderableWidget(new TickButton(this.leftPos + 5, this.topPos + 128, 76, 20, Component.translatable("armorstatues.screen.pose.randomize"), Component.translatable("armorstatues.screen.pose.randomized"), button -> {
-            this.applyPoseAndSync(ArmorStandPose.random());
+            this.dataSyncHandler.sendPose(ArmorStandPose.random());
         })).setLastClickedTicksDelay(20);
         this.cycleButtons[0] = this.addRenderableWidget(new ImageButton(this.leftPos + 17, this.topPos + 153, 20, 20, 156, 64, ARMOR_STAND_WIDGETS_LOCATION, button -> {
             firstPoseIndex -= POSES_PER_PAGE;
@@ -47,7 +47,7 @@ public class ArmorStandPosesScreen extends AbstractArmorStandScreen {
         for (int i = 0; i < this.poseButtons.length; i++) {
             final int ii = i;
             this.poseButtons[i] = this.addRenderableWidget(new ImageButton(this.leftPos + 83 + i % 2 * 62, this.topPos + 9 + i / 2 * 88, 60, 82, 76, 0, 82, ARMOR_STAND_WIDGETS_LOCATION, 256, 256, button -> {
-                getPoseAt(ii).ifPresent(this::applyPoseAndSync);
+                getPoseAt(ii).ifPresent(currentPose -> this.dataSyncHandler.sendPose(currentPose));
             }, (Button button, PoseStack poseStack, int mouseX, int mouseY) -> {
                 getPoseAt(ii).ifPresent(pose -> this.renderTooltip(poseStack, pose.getComponent(), mouseX, mouseY));
             }, CommonComponents.EMPTY));

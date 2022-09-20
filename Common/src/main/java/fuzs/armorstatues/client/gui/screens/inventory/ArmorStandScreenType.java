@@ -9,7 +9,6 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
-import org.jetbrains.annotations.Nullable;
 
 public final class ArmorStandScreenType {
     public static final ArmorStandScreenType EQUIPMENT = new ArmorStandScreenType("equipment", new ItemStack(Items.IRON_CHESTPLATE), ArmorStandEquipmentScreen::new);
@@ -17,9 +16,7 @@ public final class ArmorStandScreenType {
     public static final ArmorStandScreenType STYLE = new ArmorStandScreenType("style", new ItemStack(Items.PAINTING), ArmorStandStyleScreen::new);
     public static final ArmorStandScreenType POSES = new ArmorStandScreenType("poses", new ItemStack(Items.SPYGLASS), ArmorStandPosesScreen::new);
     public static final ArmorStandScreenType POSITION = new ArmorStandScreenType("position", new ItemStack(Items.GRASS_BLOCK), ArmorStandPositionScreen::new);
-
-    @Nullable
-    private static ArmorStandScreenType lastType;
+    public static final ArmorStandScreenType ALIGNMENTS = new ArmorStandScreenType("alignments", new ItemStack(Items.DIAMOND_PICKAXE), ArmorStandAlignmentsScreen::new);
 
     private final String name;
     private final ItemStack icon;
@@ -45,7 +42,7 @@ public final class ArmorStandScreenType {
     }
 
     public <T extends Screen & MenuAccess<ArmorStandMenu> & ArmorStandScreen> T createScreenType(ArmorStandHolder holder, Inventory inventory, Component component, DataSyncHandler dataSyncHandler) {
-        lastType = this;
+        dataSyncHandler.setLastType(this);
         T screen = (T) this.factory.create(holder, inventory, component, dataSyncHandler);
         if (screen.getScreenType() != this) throw new IllegalStateException("Armor stand screen type mismatch: %s and %s".formatted(screen.getScreenType(), this));
         return screen;
@@ -56,11 +53,11 @@ public final class ArmorStandScreenType {
     }
 
     public static <T extends Screen & MenuAccess<ArmorStandMenu> & ArmorStandScreen> T createLastScreenType(ArmorStandHolder holder, Inventory inventory, Component component, DataSyncHandler dataSyncHandler) {
-        return dataSyncHandler.getLastType(lastType).orElse(STYLE).createScreenType(holder, inventory, component, dataSyncHandler);
+        return dataSyncHandler.getLastType().orElse(STYLE).createScreenType(holder, inventory, component, dataSyncHandler);
     }
 
     public static ArmorStandScreenType[] values() {
-        return new ArmorStandScreenType[]{STYLE, ROTATIONS, POSES, POSITION, EQUIPMENT};
+        return new ArmorStandScreenType[]{STYLE, ROTATIONS, POSES, POSITION, ALIGNMENTS, EQUIPMENT};
     }
 
     @FunctionalInterface

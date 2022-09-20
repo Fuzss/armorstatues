@@ -83,7 +83,7 @@ public class ArmorStandRotationsScreen extends AbstractArmorStandScreen {
                     super.onRelease(mouseX, mouseY);
                     if (this.isDirty()) {
                         this.dirty = false;
-                        ArmorStandRotationsScreen.this.applyPoseAndSync(ArmorStandRotationsScreen.this.currentPose);
+                        ArmorStandRotationsScreen.this.dataSyncHandler.sendPose(ArmorStandRotationsScreen.this.currentPose);
                     }
                 }
 
@@ -111,7 +111,7 @@ public class ArmorStandRotationsScreen extends AbstractArmorStandScreen {
                     super.onRelease(mouseX, mouseY);
                     if (this.isDirty()) {
                         this.dirty = false;
-                        ArmorStandRotationsScreen.this.applyPoseAndSync(ArmorStandRotationsScreen.this.currentPose);
+                        ArmorStandRotationsScreen.this.dataSyncHandler.sendPose(ArmorStandRotationsScreen.this.currentPose);
                     }
                 }
 
@@ -144,7 +144,7 @@ public class ArmorStandRotationsScreen extends AbstractArmorStandScreen {
 
     private void setCurrentPose(ArmorStandPose currentPose) {
         this.currentPose = currentPose;
-        this.applyPoseAndSync(this.currentPose);
+        this.dataSyncHandler.sendPose(this.currentPose);
         this.refreshLiveButtons();
     }
 

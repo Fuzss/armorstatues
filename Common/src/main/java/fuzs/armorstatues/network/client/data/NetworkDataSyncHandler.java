@@ -12,6 +12,9 @@ import org.jetbrains.annotations.Nullable;
 import java.util.Optional;
 
 public class NetworkDataSyncHandler implements DataSyncHandler {
+    @Nullable
+    private static ArmorStandScreenType lastType;
+
     private final ArmorStand armorStand;
 
     public NetworkDataSyncHandler(ArmorStand armorStand) {
@@ -30,12 +33,11 @@ public class NetworkDataSyncHandler implements DataSyncHandler {
     }
 
     @Override
-    public void sendPose(ArmorStandPose currentPose, ArmorStandPose lastSyncedPose) {
-        DataSyncHandler.super.sendPose(currentPose, lastSyncedPose);
+    public void sendPose(ArmorStandPose currentPose) {
+        DataSyncHandler.super.sendPose(currentPose);
         CompoundTag tag = new CompoundTag();
-        if (currentPose.serializeAllPoses(tag, lastSyncedPose)) {
-            ArmorStatues.NETWORK.sendToServer(new C2SArmorStandPoseMessage(tag));
-        }
+        currentPose.serializeAllPoses(tag);
+        ArmorStatues.NETWORK.sendToServer(new C2SArmorStandPoseMessage(tag));
     }
 
     @Override
@@ -62,7 +64,12 @@ public class NetworkDataSyncHandler implements DataSyncHandler {
     }
 
     @Override
-    public Optional<ArmorStandScreenType> getLastType(@Nullable ArmorStandScreenType lastType) {
+    public Optional<ArmorStandScreenType> getLastType() {
         return Optional.ofNullable(lastType);
+    }
+
+    @Override
+    public void setLastType(ArmorStandScreenType lastType) {
+        NetworkDataSyncHandler.lastType = CommandDataSyncHandler.lastType = lastType;
     }
 }

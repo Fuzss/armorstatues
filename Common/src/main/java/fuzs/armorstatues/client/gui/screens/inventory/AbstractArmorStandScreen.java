@@ -8,7 +8,6 @@ import fuzs.armorstatues.client.gui.components.UnboundedSliderButton;
 import fuzs.armorstatues.network.client.data.DataSyncHandler;
 import fuzs.armorstatues.world.inventory.ArmorStandHolder;
 import fuzs.armorstatues.world.inventory.ArmorStandMenu;
-import fuzs.armorstatues.world.inventory.ArmorStandPose;
 import fuzs.puzzleslib.client.core.ClientCoreServices;
 import net.minecraft.client.gui.components.AbstractButton;
 import net.minecraft.client.gui.components.AbstractWidget;
@@ -44,14 +43,12 @@ public abstract class AbstractArmorStandScreen extends Screen implements MenuAcc
     protected int mouseX;
     protected int mouseY;
     private AbstractWidget closeButton;
-    private ArmorStandPose lastSyncedPose;
 
     public AbstractArmorStandScreen(ArmorStandHolder holder, Inventory inventory, Component component, DataSyncHandler dataSyncHandler) {
         super(component);
         this.holder = holder;
         this.inventory = inventory;
         this.dataSyncHandler = dataSyncHandler;
-        this.lastSyncedPose = ArmorStandPose.fromEntity(holder.getArmorStand());
     }
 
     @Override
@@ -96,11 +93,6 @@ public abstract class AbstractArmorStandScreen extends Screen implements MenuAcc
 
     protected void toggleMenuRendering(boolean disableMenuRendering) {
         this.closeButton.visible = !disableMenuRendering;
-    }
-
-    protected void applyPoseAndSync(ArmorStandPose currentPose) {
-        this.dataSyncHandler.sendPose(currentPose, this.lastSyncedPose);
-        this.lastSyncedPose = currentPose;
     }
 
     @Override

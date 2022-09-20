@@ -18,7 +18,7 @@ public interface DataSyncHandler extends ArmorStandHolder {
         setCustomArmorStandName(this.getArmorStand(), name);
     }
 
-    default void sendPose(ArmorStandPose currentPose, ArmorStandPose lastSyncedPose) {
+    default void sendPose(ArmorStandPose currentPose) {
         currentPose.applyToEntity(this.getArmorStand());
     }
 
@@ -36,7 +36,9 @@ public interface DataSyncHandler extends ArmorStandHolder {
 
     ArmorStandScreenType[] tabs();
 
-    Optional<ArmorStandScreenType> getLastType(@Nullable ArmorStandScreenType lastType);
+    Optional<ArmorStandScreenType> getLastType();
+
+    void setLastType(ArmorStandScreenType lastType);
 
     static void setCustomArmorStandName(ArmorStand armorStand, String name) {
         String s = SharedConstants.filterText(name);
