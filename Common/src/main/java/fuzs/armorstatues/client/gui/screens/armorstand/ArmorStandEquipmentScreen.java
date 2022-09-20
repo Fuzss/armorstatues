@@ -21,8 +21,8 @@ public class ArmorStandEquipmentScreen extends AbstractContainerScreen<ArmorStan
 
     private final Inventory inventory;
     private final DataSyncHandler dataSyncHandler;
-    private float mouseX;
-    private float mouseY;
+    private int mouseX;
+    private int mouseY;
 
     public ArmorStandEquipmentScreen(ArmorStandHolder holder, Inventory inventory, Component component, DataSyncHandler dataSyncHandler) {
         super((ArmorStandMenu) holder, inventory, component);
@@ -64,8 +64,8 @@ public class ArmorStandEquipmentScreen extends AbstractContainerScreen<ArmorStan
                 this.renderTooltip(poseStack, hoveredTab.getComponent(), mouseX, mouseY);
             });
         }
-        this.mouseX = (float) mouseX;
-        this.mouseY = (float) mouseY;
+        this.mouseX = mouseX;
+        this.mouseY = mouseY;
     }
 
     @Override

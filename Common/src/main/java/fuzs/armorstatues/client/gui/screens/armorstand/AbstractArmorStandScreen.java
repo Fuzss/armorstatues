@@ -24,6 +24,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.inventory.AbstractContainerMenu;
 
 import java.util.Optional;
 
@@ -218,7 +219,9 @@ public abstract class AbstractArmorStandScreen extends Screen implements MenuAcc
 
     @Override
     public void onClose() {
-        this.minecraft.player.closeContainer();
+        if (this.holder instanceof AbstractContainerMenu) {
+            this.minecraft.player.closeContainer();
+        }
         super.onClose();
     }
 }
