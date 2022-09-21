@@ -3,9 +3,13 @@ package fuzs.armorstatues.client.renderer.entity;
 import com.mojang.authlib.GameProfile;
 import com.mojang.authlib.minecraft.MinecraftProfileTexture;
 import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.datafixers.util.Either;
 import com.mojang.math.Vector3f;
+import fuzs.armorstatues.ArmorStatues;
 import fuzs.armorstatues.client.init.ModClientRegistry;
 import fuzs.armorstatues.client.model.PlayerStatueModel;
+import fuzs.armorstatues.client.renderer.entity.layers.PlayerStatueCapeLayer;
+import fuzs.armorstatues.client.renderer.entity.layers.PlayerStatueDeadmau5EarsLayer;
 import fuzs.armorstatues.world.entity.decoration.PlayerStatue;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.ArmorStandArmorModel;
@@ -21,6 +25,7 @@ import net.minecraft.client.resources.DefaultPlayerSkin;
 import net.minecraft.core.UUIDUtil;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.decoration.ArmorStand;
 import net.minecraft.world.entity.player.PlayerModelPart;
 import org.jetbrains.annotations.Nullable;
@@ -28,12 +33,15 @@ import org.jetbrains.annotations.Nullable;
 import java.util.Map;
 
 public class PlayerStatueRenderer extends LivingEntityRenderer<ArmorStand, PlayerStatueModel> {
+    private static final ResourceLocation STRAW_STATUE_LOCATION = new ResourceLocation(ArmorStatues.MOD_ID, "textures/entity/straw_statue.png");
 
     public PlayerStatueRenderer(EntityRendererProvider.Context context) {
         super(context, new PlayerStatueModel(context.bakeLayer(ModClientRegistry.PLAYER_STATUE), false), 0.0F);
         this.addLayer(new HumanoidArmorLayer<>(this, new ArmorStandArmorModel(context.bakeLayer(ModClientRegistry.PLAYER_STATUE_INNER_ARMOR)), new ArmorStandArmorModel(context.bakeLayer(ModClientRegistry.PLAYER_STATUE_OUTER_ARMOR))));
         this.addLayer(new ItemInHandLayer<>(this, context.getItemInHandRenderer()));
         this.addLayer(new ElytraLayer<>(this, context.getModelSet()));
+        this.addLayer(new PlayerStatueDeadmau5EarsLayer(this));
+        this.addLayer(new PlayerStatueCapeLayer(this));
         this.addLayer(new CustomHeadLayer<>(this, context.getModelSet(), context.getItemInHandRenderer()));
     }
 
@@ -58,15 +66,20 @@ public class PlayerStatueRenderer extends LivingEntityRenderer<ArmorStand, Playe
 
     @Override
     public ResourceLocation getTextureLocation(ArmorStand entity) {
+        Either<ResourceLocation, ResourceLocation> texture = getPlayerProfileTexture(entity, MinecraftProfileTexture.Type.SKIN);
+        return texture.left().orElseGet(texture.right()::get);
+    }
+
+    public static Either<ResourceLocation, ResourceLocation> getPlayerProfileTexture(Entity entity, MinecraftProfileTexture.Type type) {
         if (entity instanceof PlayerStatue playerStatue) {
             GameProfile gameProfile = playerStatue.getOwner();
             if (gameProfile != null) {
                 Minecraft minecraft = Minecraft.getInstance();
                 Map<MinecraftProfileTexture.Type, MinecraftProfileTexture> map = minecraft.getSkinManager().getInsecureSkinInformation(gameProfile);
-                return map.containsKey(MinecraftProfileTexture.Type.SKIN) ? minecraft.getSkinManager().registerTexture(map.get(MinecraftProfileTexture.Type.SKIN), MinecraftProfileTexture.Type.SKIN) : DefaultPlayerSkin.getDefaultSkin(UUIDUtil.getOrCreatePlayerUUID(gameProfile));
+                return map.containsKey(type) ? Either.left(minecraft.getSkinManager().registerTexture(map.get(type), type)) : Either.right(STRAW_STATUE_LOCATION);
             }
         }
-        return DefaultPlayerSkin.getDefaultSkin(entity.getUUID());
+        return Either.right(STRAW_STATUE_LOCATION);
     }
 
     @Override

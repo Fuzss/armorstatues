@@ -66,5 +66,6 @@
   "armorstatues.screen.type.poses": "Poses",
   "armorstatues.screen.type.position": "Position",
   "armorstatues.screen.type.rotations": "Rotations",
-  "armorstatues.screen.type.style": "Style"
+  "armorstatues.screen.type.style": "Style",
+  "entity.armorstatues.player_statue": "Player Statue"
 }
