@@ -10,6 +10,7 @@ import fuzs.puzzleslib.core.DistTypeExecutor;
 import fuzs.puzzleslib.core.ModConstructor;
 import fuzs.puzzleslib.network.MessageDirection;
 import fuzs.puzzleslib.network.NetworkHandler;
+import net.minecraft.world.entity.LivingEntity;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -34,5 +35,11 @@ public class ArmorStatues implements ModConstructor {
         NETWORK.register(C2SArmorStandPositionMessage.class, C2SArmorStandPositionMessage::new, MessageDirection.TO_SERVER);
         NETWORK.register(C2SArmorStandPoseMessage.class, C2SArmorStandPoseMessage::new, MessageDirection.TO_SERVER);
         NETWORK.register(C2SArmorStandRotationMessage.class, C2SArmorStandRotationMessage::new, MessageDirection.TO_SERVER);
+        NETWORK.register(C2SPlayerStateModelPartMessage.class, C2SPlayerStateModelPartMessage::new, MessageDirection.TO_SERVER);
+    }
+
+    @Override
+    public void onEntityAttributeCreation(EntityAttributesCreateContext context) {
+        context.registerEntityAttributes(ModRegistry.PLAYER_STATUE_ENTITY_TYPE.get(), LivingEntity.createLivingAttributes());
     }
 }

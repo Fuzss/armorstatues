@@ -51,7 +51,7 @@ public class ArmorStandStyleScreen extends AbstractArmorStandScreen {
         for (int i = 0, j = 0; i < ArmorStandStyleOption.values().length; i++) {
             ArmorStandStyleOption option = ArmorStandStyleOption.values()[i];
             if (!this.minecraft.player.getAbilities().instabuild && option.onlyCreative()) continue;
-            this.addRenderableWidget(new TickBoxButton(this.leftPos + 98, this.topPos + buttonStartY + j++ * 22, option.getComponent(), option.getOption(armorStand), (Button button) -> {
+            this.addRenderableWidget(new TickBoxButton(this.leftPos + 98, this.topPos + buttonStartY + j++ * 22, 73, option.getComponent(), option.getOption(armorStand), (Button button) -> {
                 this.dataSyncHandler.sendStyleOption(option, ((TickBoxButton) button).isSelected());
             }, (Button button, PoseStack poseStack, int mouseX, int mouseY) -> {
                 this.renderTooltip(poseStack, option.getDescriptionComponent(), mouseX, mouseY);
@@ -60,6 +60,7 @@ public class ArmorStandStyleScreen extends AbstractArmorStandScreen {
     }
 
     private void onNameChanged(String input) {
+        input = input.trim();
         ArmorStand armorStand = this.holder.getArmorStand();
         if (!input.equals(armorStand.getName().getString())) {
             this.dataSyncHandler.sendName(input);

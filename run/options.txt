@@ -1,5 +1,5 @@
 version:3120
-autoJump:false
+autoJump:true
 autoSuggestions:true
 chatColors:true
 chatLinks:true
@@ -112,10 +112,10 @@ key_key.hotbar.7:key.keyboard.7
 key_key.hotbar.8:key.keyboard.8
 key_key.hotbar.9:key.keyboard.9
 key_key.modmenu.open_menu:key.keyboard.unknown
-soundCategory_master:1.0
+soundCategory_master:0.5032789
 soundCategory_music:0.0
 soundCategory_record:1.0
-soundCategory_weather:0.056338027
+soundCategory_weather:0.15838194
 soundCategory_block:1.0
 soundCategory_hostile:1.0
 soundCategory_neutral:1.0

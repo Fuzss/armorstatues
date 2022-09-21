@@ -1,5 +1,6 @@
 package fuzs.armorstatues.data;
 
+import fuzs.armorstatues.init.ModRegistry;
 import net.minecraft.data.DataGenerator;
 import net.minecraftforge.common.data.LanguageProvider;
 
@@ -11,6 +12,7 @@ public class ModLanguageProvider extends LanguageProvider {
 
     @Override
     protected void addTranslations() {
+        this.add(ModRegistry.PLAYER_STATUE_ENTITY_TYPE.get(), "Player Statue");
         this.add("armorstatues.item.armor_stand.description", "Shift + right-click to open configuration screen when placed.");
         this.add("armorstatues.entity.armor_stand.pose.athena", "Athena");
         this.add("armorstatues.entity.armor_stand.pose.brandish", "Brandish");

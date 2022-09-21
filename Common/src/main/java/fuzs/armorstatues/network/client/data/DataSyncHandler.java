@@ -14,7 +14,7 @@ import java.util.Optional;
 public interface DataSyncHandler extends ArmorStandHolder {
 
     default void sendName(String name) {
-        setCustomArmorStandName(this.getArmorStand(), name);
+//        setCustomArmorStandName(this.getArmorStand(), name);
     }
 
     default void sendPose(ArmorStandPose currentPose) {

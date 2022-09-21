@@ -18,6 +18,7 @@ public final class ArmorStandScreenType {
     public static final ArmorStandScreenType POSES = new ArmorStandScreenType("poses", new ItemStack(Items.SPYGLASS), ArmorStandPosesScreen::new);
     public static final ArmorStandScreenType POSITION = new ArmorStandScreenType("position", new ItemStack(Items.GRASS_BLOCK), ArmorStandPositionScreen::new);
     public static final ArmorStandScreenType ALIGNMENTS = new ArmorStandScreenType("alignments", new ItemStack(Items.DIAMOND_PICKAXE), ArmorStandAlignmentsScreen::new);
+    public static final ArmorStandScreenType MODEL_PARTS = new ArmorStandScreenType("model_parts", new ItemStack(Items.YELLOW_WOOL), PlayerStatueModelPartsScreen::new);
 
     private final String name;
     private final ItemStack icon;
@@ -58,7 +59,7 @@ public final class ArmorStandScreenType {
     }
 
     public static ArmorStandScreenType[] values() {
-        return new ArmorStandScreenType[]{STYLE, ROTATIONS, POSES, POSITION, ALIGNMENTS, EQUIPMENT};
+        return new ArmorStandScreenType[]{STYLE, MODEL_PARTS, ROTATIONS, POSES, POSITION, ALIGNMENTS, EQUIPMENT};
     }
 
     @FunctionalInterface
