@@ -13,16 +13,16 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.util.Mth;
 
 public class TickBoxButton extends Button {
-    private static final int TEXT_MARGIN = 8;
-
+    private final int textMargin;
     private boolean selected;
 
     public TickBoxButton(int posX, int posY, boolean selected, OnPress onPress, OnTooltip onTooltip) {
-        this(posX, posY, 0, CommonComponents.EMPTY, selected, onPress, onTooltip);
+        this(posX, posY, 0, 0, CommonComponents.EMPTY, selected, onPress, onTooltip);
     }
 
-    public TickBoxButton(int posX, int posY, int textWidth, Component component, boolean selected, OnPress onPress, OnTooltip onTooltip) {
-        super(posX, posY, 20 + (textWidth > 0 ? TEXT_MARGIN + textWidth : 0), 20, component, onPress, onTooltip);
+    public TickBoxButton(int posX, int posY, int textMargin, int textWidth, Component component, boolean selected, OnPress onPress, OnTooltip onTooltip) {
+        super(posX, posY, 20 + textMargin + textWidth, 20, component, onPress, onTooltip);
+        this.textMargin = textMargin;
         this.selected = selected;
     }
 
@@ -51,7 +51,7 @@ public class TickBoxButton extends Button {
             blit(poseStack, this.x + 2, this.y + 2, 196.0F, 32.0F + (this.isHoveredOrFocused() ? 16.0F : 0.0F), 16, 16, 256, 256);
         }
         final int textColor = this.active ? (this.isHoveredOrFocused() ? ChatFormatting.YELLOW.getColor() : 16777215) : 10526880;
-        drawString(poseStack, font, this.getMessage(), this.x + 20 + TEXT_MARGIN, this.y + 2 + 4, textColor | Mth.ceil(this.alpha * 255.0F) << 24);
+        drawString(poseStack, font, this.getMessage(), this.x + 20 + this.textMargin, this.y + 2 + 4, textColor | Mth.ceil(this.alpha * 255.0F) << 24);
         if (this.isHoveredOrFocused()) {
             this.renderToolTip(poseStack, mouseX, mouseY);
         }

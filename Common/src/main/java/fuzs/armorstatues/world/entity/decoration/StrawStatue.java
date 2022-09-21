@@ -1,10 +1,9 @@
 package fuzs.armorstatues.world.entity.decoration;
 
 import com.mojang.authlib.GameProfile;
-import fuzs.armorstatues.client.gui.screens.armorstand.data.ArmorStandStyleOption;
 import fuzs.armorstatues.init.ModRegistry;
 import fuzs.armorstatues.mixin.accessor.ArmorStandAccessor;
-import net.minecraft.core.Registry;
+import fuzs.armorstatues.world.inventory.ArmorStandScreenType;
 import net.minecraft.core.particles.BlockParticleOption;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
@@ -14,7 +13,6 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
@@ -35,34 +33,26 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.Optional;
 
-public class PlayerStatue extends ArmorStand {
-    private static final String TRUE_COLORS_KEY = "TrueColors";
-    private static final String BLOCK_MATERIAL_KEY = "BlockMaterial";
+public class StrawStatue extends ArmorStand implements ArmorStandDataProvider {
     private static final String OWNER_KEY = "Owner";
     private static final String SLIM_ARMS_KEY = "SlimArms";
     private static final String MODEL_PARTS_KEY = "ModelParts";
-    public static final EntityDataAccessor<Boolean> DATA_TRUE_COLORS = SynchedEntityData.defineId(PlayerStatue.class, EntityDataSerializers.BOOLEAN);
-    public static final EntityDataAccessor<Block> DATA_BLOCK_MATERIAL = SynchedEntityData.defineId(PlayerStatue.class, ModRegistry.BLOCK_ENTITY_DATA_SERIALIZER);
-    public static final EntityDataAccessor<Optional<GameProfile>> DATA_OWNER = SynchedEntityData.defineId(PlayerStatue.class, ModRegistry.GAME_PROFILE_ENTITY_DATA_SERIALIZER);
-    public static final EntityDataAccessor<Boolean> DATA_SLIM_ARMS = SynchedEntityData.defineId(PlayerStatue.class, EntityDataSerializers.BOOLEAN);
-    public static final EntityDataAccessor<Byte> DATA_PLAYER_MODE_CUSTOMISATION = SynchedEntityData.defineId(PlayerStatue.class, EntityDataSerializers.BYTE);
+    public static final EntityDataAccessor<Optional<GameProfile>> DATA_OWNER = SynchedEntityData.defineId(StrawStatue.class, ModRegistry.GAME_PROFILE_ENTITY_DATA_SERIALIZER);
+    public static final EntityDataAccessor<Boolean> DATA_SLIM_ARMS = SynchedEntityData.defineId(StrawStatue.class, EntityDataSerializers.BOOLEAN);
+    public static final EntityDataAccessor<Byte> DATA_PLAYER_MODE_CUSTOMISATION = SynchedEntityData.defineId(StrawStatue.class, EntityDataSerializers.BYTE);
 
-    public PlayerStatue(EntityType<? extends PlayerStatue> entityType, Level level) {
+    public StrawStatue(EntityType<? extends StrawStatue> entityType, Level level) {
         super(entityType, level);
-        ArmorStandStyleOption.setArmorStandData(this, true, ArmorStand.CLIENT_FLAG_SHOW_ARMS);
-        ArmorStandStyleOption.setArmorStandData(this, true, ArmorStand.CLIENT_FLAG_NO_BASEPLATE);
     }
 
-    public PlayerStatue(Level level, Block blockMaterial) {
-        this(ModRegistry.PLAYER_STATUE_ENTITY_TYPE.get(), level);
-        this.entityData.set(DATA_BLOCK_MATERIAL, blockMaterial);
+    public StrawStatue(Level level, double x, double y, double z) {
+        this(ModRegistry.STRAW_STATUE_ENTITY_TYPE.get(), level);
+        this.setPos(x, y, z);
     }
 
     @Override
     protected void defineSynchedData() {
         super.defineSynchedData();
-        this.entityData.define(DATA_TRUE_COLORS, false);
-        this.entityData.define(DATA_BLOCK_MATERIAL, Blocks.AIR);
         this.entityData.define(DATA_OWNER, Optional.empty());
         this.entityData.define(DATA_SLIM_ARMS, false);
         this.entityData.define(DATA_PLAYER_MODE_CUSTOMISATION, getAllModelParts());
@@ -79,8 +69,6 @@ public class PlayerStatue extends ArmorStand {
     @Override
     public void addAdditionalSaveData(CompoundTag compound) {
         super.addAdditionalSaveData(compound);
-        compound.putBoolean(TRUE_COLORS_KEY, this.showsTrueColors());
-        compound.putString(BLOCK_MATERIAL_KEY, Registry.BLOCK.getKey(this.getBlockMaterial()).toString());
         compound.putBoolean(SLIM_ARMS_KEY, this.slimArms());
         compound.putByte(MODEL_PARTS_KEY, this.entityData.get(DATA_PLAYER_MODE_CUSTOMISATION));
         this.entityData.get(DATA_OWNER).ifPresent(owner -> {
@@ -93,10 +81,12 @@ public class PlayerStatue extends ArmorStand {
     @Override
     public void readAdditionalSaveData(CompoundTag compound) {
         super.readAdditionalSaveData(compound);
-        this.setTrueColors(compound.getBoolean(TRUE_COLORS_KEY));
-        this.setBlockMaterial(Registry.BLOCK.get(new ResourceLocation(compound.getString(BLOCK_MATERIAL_KEY))));
-        this.setSlimArms(compound.getBoolean(SLIM_ARMS_KEY));
-        this.entityData.set(DATA_PLAYER_MODE_CUSTOMISATION, compound.getByte(MODEL_PARTS_KEY));
+        if (compound.contains(SLIM_ARMS_KEY, Tag.TAG_BYTE)) {
+            this.setSlimArms(compound.getBoolean(SLIM_ARMS_KEY));
+        }
+        if (compound.contains(MODEL_PARTS_KEY, Tag.TAG_BYTE)) {
+            this.entityData.set(DATA_PLAYER_MODE_CUSTOMISATION, compound.getByte(MODEL_PARTS_KEY));
+        }
         if (compound.contains(OWNER_KEY, Tag.TAG_COMPOUND)) {
             this.setOwner(NbtUtils.readGameProfile(compound.getCompound(OWNER_KEY)));
         }
@@ -120,22 +110,6 @@ public class PlayerStatue extends ArmorStand {
 
     private void setOwner(@Nullable GameProfile value) {
         this.entityData.set(DATA_OWNER, Optional.ofNullable(value));
-    }
-
-    public boolean showsTrueColors() {
-        return this.entityData.get(DATA_TRUE_COLORS);
-    }
-
-    public void setTrueColors(boolean trueColors) {
-        this.entityData.set(DATA_TRUE_COLORS, trueColors);
-    }
-
-    public Block getBlockMaterial() {
-        return this.entityData.get(DATA_BLOCK_MATERIAL);
-    }
-
-    private void setBlockMaterial(Block blockMaterial) {
-        this.entityData.set(DATA_BLOCK_MATERIAL, blockMaterial);
     }
 
     public boolean slimArms() {
@@ -205,7 +179,7 @@ public class PlayerStatue extends ArmorStand {
                             this.gameEvent(GameEvent.ENTITY_DAMAGE, source.getEntity());
                             this.lastHit = l;
                         } else {
-                            ((ArmorStandAccessor) this).callBrokenByAnything(source);
+                            this.brokenByPlayer(source);
                             this.showBreakingParticles();
                             this.kill();
                         }
@@ -221,13 +195,18 @@ public class PlayerStatue extends ArmorStand {
         }
     }
 
+    private void brokenByPlayer(DamageSource source) {
+        Block.popResource(this.level, this.blockPosition(), new ItemStack(ModRegistry.STRAW_STATUE_ITEM.get()));
+        ((ArmorStandAccessor) this).callBrokenByAnything(source);
+    }
+
     private void playBrokenSound() {
-        this.level.playSound(null, this.getX(), this.getY(), this.getZ(), this.getDeathSound(), this.getSoundSource(), 1.0F, 1.0F);
+        this.level.playSound(null, this.getX(), this.getY(), this.getZ(), SoundEvents.GRASS_BREAK, this.getSoundSource(), 1.0F, 1.0F);
     }
 
     private void showBreakingParticles() {
         if (this.level instanceof ServerLevel) {
-            ((ServerLevel)this.level).sendParticles(new BlockParticleOption(ParticleTypes.BLOCK, Blocks.REDSTONE_BLOCK.defaultBlockState()), this.getX(), this.getY(0.6666666666666666), this.getZ(), 10, (double)(this.getBbWidth() / 4.0F), (double)(this.getBbHeight() / 4.0F), (double)(this.getBbWidth() / 4.0F), 0.05);
+            ((ServerLevel)this.level).sendParticles(new BlockParticleOption(ParticleTypes.BLOCK, Blocks.HAY_BLOCK.defaultBlockState()), this.getX(), this.getY(0.6666666666666666), this.getZ(), 10, (double)(this.getBbWidth() / 4.0F), (double)(this.getBbHeight() / 4.0F), (double)(this.getBbWidth() / 4.0F), 0.05);
         }
     }
 
@@ -235,7 +214,7 @@ public class PlayerStatue extends ArmorStand {
     public void handleEntityEvent(byte id) {
         if (id == 32) {
             if (this.level.isClientSide) {
-                this.level.playLocalSound(this.getX(), this.getY(), this.getZ(), SoundEvents.PLAYER_HURT, this.getSoundSource(), 0.3F, 1.0F, false);
+                this.level.playLocalSound(this.getX(), this.getY(), this.getZ(), SoundEvents.GRASS_HIT, this.getSoundSource(), 0.3F, 1.0F, false);
                 this.lastHit = this.level.getGameTime();
             }
         } else {
@@ -246,24 +225,29 @@ public class PlayerStatue extends ArmorStand {
 
     @Override
     public LivingEntity.Fallsounds getFallSounds() {
-        return new LivingEntity.Fallsounds(SoundEvents.PLAYER_SMALL_FALL, SoundEvents.PLAYER_BIG_FALL);
+        return new LivingEntity.Fallsounds(SoundEvents.GRASS_FALL, SoundEvents.GRASS_FALL);
     }
 
     @Override
     @Nullable
     protected SoundEvent getHurtSound(DamageSource damageSource) {
-        return SoundEvents.PLAYER_HURT;
+        return SoundEvents.GRASS_HIT;
     }
 
     @Override
     @Nullable
     protected SoundEvent getDeathSound() {
-        return SoundEvents.PLAYER_DEATH;
+        return SoundEvents.GRASS_BREAK;
     }
 
     @Override
     @Nullable
     public ItemStack getPickResult() {
-        return null;
+        return new ItemStack(ModRegistry.STRAW_STATUE_ITEM.get());
+    }
+
+    @Override
+    public ArmorStandScreenType[] getScreenTypes() {
+        return new ArmorStandScreenType[]{ArmorStandScreenType.POSES, ArmorStandScreenType.ROTATIONS, ArmorStandScreenType.STRAW_STATUE_STYLE, ArmorStandScreenType.MODEL_PARTS, ArmorStandScreenType.POSITION, ArmorStandScreenType.EQUIPMENT};
     }
 }

@@ -2,6 +2,7 @@ package fuzs.armorstatues.client.model;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Iterables;
+import net.minecraft.client.model.HumanoidModel;
 import net.minecraft.client.model.PlayerModel;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.world.entity.EquipmentSlot;
@@ -9,10 +10,10 @@ import net.minecraft.world.entity.decoration.ArmorStand;
 
 import java.util.stream.StreamSupport;
 
-public class PlayerStatueModel extends PlayerModel<ArmorStand> {
+public class StrawStatueModel<T extends ArmorStand> extends PlayerModel<T> {
     private final ModelPart cloak;
 
-    public PlayerStatueModel(ModelPart modelPart, boolean slim) {
+    public StrawStatueModel(ModelPart modelPart, boolean slim) {
         super(modelPart, slim);
         this.cloak = modelPart.getChild("cloak");
     }
@@ -28,26 +29,12 @@ public class PlayerStatueModel extends PlayerModel<ArmorStand> {
     }
 
     @Override
-    public void setupAnim(ArmorStand entity, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch) {
-        this.head.xRot = 0.017453292F * entity.getHeadPose().getX();
-        this.head.yRot = 0.017453292F * entity.getHeadPose().getY();
-        this.head.zRot = 0.017453292F * entity.getHeadPose().getZ();
+    public void setupAnim(T entity, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch) {
+        setupPoseAnim(this, entity);
         // use cloak instead of body, changing body rotations looks just weird
         this.cloak.xRot = -0.017453292F * entity.getBodyPose().getX();
         this.cloak.yRot = 0.017453292F * entity.getBodyPose().getY();
         this.cloak.zRot = -0.017453292F * entity.getBodyPose().getZ();
-        this.leftArm.xRot = 0.017453292F * entity.getLeftArmPose().getX();
-        this.leftArm.yRot = 0.017453292F * entity.getLeftArmPose().getY();
-        this.leftArm.zRot = 0.017453292F * entity.getLeftArmPose().getZ();
-        this.rightArm.xRot = 0.017453292F * entity.getRightArmPose().getX();
-        this.rightArm.yRot = 0.017453292F * entity.getRightArmPose().getY();
-        this.rightArm.zRot = 0.017453292F * entity.getRightArmPose().getZ();
-        this.leftLeg.xRot = 0.017453292F * entity.getLeftLegPose().getX();
-        this.leftLeg.yRot = 0.017453292F * entity.getLeftLegPose().getY();
-        this.leftLeg.zRot = 0.017453292F * entity.getLeftLegPose().getZ();
-        this.rightLeg.xRot = 0.017453292F * entity.getRightLegPose().getX();
-        this.rightLeg.yRot = 0.017453292F * entity.getRightLegPose().getY();
-        this.rightLeg.zRot = 0.017453292F * entity.getRightLegPose().getZ();
         this.hat.copyFrom(this.head);
         this.leftPants.copyFrom(this.leftLeg);
         this.rightPants.copyFrom(this.rightLeg);
@@ -69,5 +56,23 @@ public class PlayerStatueModel extends PlayerModel<ArmorStand> {
             this.cloak.z = -1.1F;
             this.cloak.y = -0.85F;
         }
+    }
+
+    public static <T extends ArmorStand> void setupPoseAnim(HumanoidModel<T> model, T entity) {
+        model.head.xRot = 0.017453292F * entity.getHeadPose().getX();
+        model.head.yRot = 0.017453292F * entity.getHeadPose().getY();
+        model.head.zRot = 0.017453292F * entity.getHeadPose().getZ();
+        model.leftArm.xRot = 0.017453292F * entity.getLeftArmPose().getX();
+        model.leftArm.yRot = 0.017453292F * entity.getLeftArmPose().getY();
+        model.leftArm.zRot = 0.017453292F * entity.getLeftArmPose().getZ();
+        model.rightArm.xRot = 0.017453292F * entity.getRightArmPose().getX();
+        model.rightArm.yRot = 0.017453292F * entity.getRightArmPose().getY();
+        model.rightArm.zRot = 0.017453292F * entity.getRightArmPose().getZ();
+        model.leftLeg.xRot = 0.017453292F * entity.getLeftLegPose().getX();
+        model.leftLeg.yRot = 0.017453292F * entity.getLeftLegPose().getY();
+        model.leftLeg.zRot = 0.017453292F * entity.getLeftLegPose().getZ();
+        model.rightLeg.xRot = 0.017453292F * entity.getRightLegPose().getX();
+        model.rightLeg.yRot = 0.017453292F * entity.getRightLegPose().getY();
+        model.rightLeg.zRot = 0.017453292F * entity.getRightLegPose().getZ();
     }
 }

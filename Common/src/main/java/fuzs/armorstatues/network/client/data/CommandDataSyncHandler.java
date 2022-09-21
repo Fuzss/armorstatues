@@ -1,6 +1,6 @@
 package fuzs.armorstatues.network.client.data;
 
-import fuzs.armorstatues.client.gui.screens.armorstand.data.ArmorStandScreenType;
+import fuzs.armorstatues.world.inventory.ArmorStandScreenType;
 import fuzs.armorstatues.client.gui.screens.armorstand.data.ArmorStandStyleOption;
 import fuzs.armorstatues.world.inventory.ArmorStandPose;
 import net.minecraft.ChatFormatting;
@@ -14,6 +14,8 @@ import net.minecraft.world.entity.decoration.ArmorStand;
 import net.minecraft.world.entity.player.Player;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.Arrays;
+import java.util.List;
 import java.util.Optional;
 import java.util.function.BiPredicate;
 import java.util.function.Predicate;
@@ -113,12 +115,13 @@ public class CommandDataSyncHandler implements DataSyncHandler {
 
     @Override
     public ArmorStandScreenType[] tabs() {
-        return Stream.of(ArmorStandScreenType.values()).filter(Predicate.not(ArmorStandScreenType::requiresServer)).toArray(ArmorStandScreenType[]::new);
+        return Stream.of(this.getDataProvider().getScreenTypes()).filter(Predicate.not(ArmorStandScreenType::requiresServer)).toArray(ArmorStandScreenType[]::new);
     }
 
     @Override
     public Optional<ArmorStandScreenType> getLastType() {
-        return Optional.ofNullable(lastType).filter(Predicate.not(ArmorStandScreenType::requiresServer));
+        List<ArmorStandScreenType> screenTypes = Arrays.asList(this.getDataProvider().getScreenTypes());
+        return Optional.ofNullable(lastType).filter(screenTypes::contains).filter(Predicate.not(ArmorStandScreenType::requiresServer));
     }
 
     @Override

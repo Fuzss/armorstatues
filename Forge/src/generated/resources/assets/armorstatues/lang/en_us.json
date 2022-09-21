@@ -13,6 +13,7 @@
   "armorstatues.entity.armor_stand.pose.solemn": "Solemn",
   "armorstatues.entity.armor_stand.pose.zombie": "Zombie",
   "armorstatues.item.armor_stand.description": "Shift + right-click to open configuration screen when placed.",
+  "armorstatues.item.straw_statue.description": "Shift + right-click to open configuration screen when placed.",
   "armorstatues.screen.alignments.block": "Align Block",
   "armorstatues.screen.alignments.credit": "Alignment values are taken from the Vanilla Tweaks \"Armor Statues\" data pack. Click this button to go to their website!",
   "armorstatues.screen.alignments.itemFlat": "Align Item As Flat",
@@ -40,6 +41,12 @@
   "armorstatues.screen.rotations.copy": "Copy",
   "armorstatues.screen.rotations.paste": "Paste",
   "armorstatues.screen.rotations.pasted": "Pasted!",
+  "armorstatues.screen.rotations.pose.body": "Body",
+  "armorstatues.screen.rotations.pose.head": "Head",
+  "armorstatues.screen.rotations.pose.leftArm": "Left Arm",
+  "armorstatues.screen.rotations.pose.leftLeg": "Left Leg",
+  "armorstatues.screen.rotations.pose.rightArm": "Right Arm",
+  "armorstatues.screen.rotations.pose.rightLeg": "Right Leg",
   "armorstatues.screen.rotations.randomize": "Random",
   "armorstatues.screen.rotations.randomized": "Applied!",
   "armorstatues.screen.rotations.x": "X: %s",
@@ -63,9 +70,11 @@
   "armorstatues.screen.style.small.description": "Makes the armor stand half it's size like a baby mob.",
   "armorstatues.screen.type.alignments": "Alignments",
   "armorstatues.screen.type.equipment": "Equipment",
+  "armorstatues.screen.type.modelParts": "Model Parts",
   "armorstatues.screen.type.poses": "Poses",
   "armorstatues.screen.type.position": "Position",
   "armorstatues.screen.type.rotations": "Rotations",
   "armorstatues.screen.type.style": "Style",
-  "entity.armorstatues.player_statue": "Player Statue"
+  "entity.armorstatues.straw_statue": "Straw Statue",
+  "item.armorstatues.straw_statue": "Straw Statue"
 }

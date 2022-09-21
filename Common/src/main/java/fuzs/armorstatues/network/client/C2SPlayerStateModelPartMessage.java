@@ -1,6 +1,6 @@
 package fuzs.armorstatues.network.client;
 
-import fuzs.armorstatues.world.entity.decoration.PlayerStatue;
+import fuzs.armorstatues.world.entity.decoration.StrawStatue;
 import fuzs.armorstatues.world.inventory.ArmorStandMenu;
 import fuzs.puzzleslib.network.Message;
 import net.minecraft.network.FriendlyByteBuf;
@@ -39,9 +39,7 @@ public class C2SPlayerStateModelPartMessage implements Message<C2SPlayerStateMod
             @Override
             public void handle(C2SPlayerStateModelPartMessage message, Player player, Object gameInstance) {
                 if (player.containerMenu instanceof ArmorStandMenu menu && menu.stillValid(player)) {
-                    if (menu.getArmorStand() instanceof PlayerStatue playerStatue) {
-                        playerStatue.setModelPart(message.modelPart, message.value);
-                    }
+                    ((StrawStatue) menu.getArmorStand()).setModelPart(message.modelPart, message.value);
                 }
             }
         };

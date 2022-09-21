@@ -7,7 +7,10 @@ import net.minecraft.client.model.geom.ModelLayerLocation;
 
 public class ModClientRegistry {
     private static final ModelLayerRegistry REGISTRY = ClientCoreServices.FACTORIES.modelLayerRegistration(ArmorStatues.MOD_ID);
-    public static final ModelLayerLocation PLAYER_STATUE = REGISTRY.register("player_statue");
-    public static final ModelLayerLocation PLAYER_STATUE_INNER_ARMOR = REGISTRY.registerInnerArmor("player_statue");
-    public static final ModelLayerLocation PLAYER_STATUE_OUTER_ARMOR = REGISTRY.registerOuterArmor("player_statue");
+    public static final ModelLayerLocation STRAW_STATUE = REGISTRY.register("straw_statue");
+    public static final ModelLayerLocation STRAW_STATUE_INNER_ARMOR = REGISTRY.registerInnerArmor("straw_statue");
+    public static final ModelLayerLocation STRAW_STATUE_OUTER_ARMOR = REGISTRY.registerOuterArmor("straw_statue");
+    public static final ModelLayerLocation STRAW_STATUE_SLIM = REGISTRY.register("straw_statue_slim");
+    public static final ModelLayerLocation STRAW_STATUE_SLIM_INNER_ARMOR = REGISTRY.registerInnerArmor("straw_statue_slim");
+    public static final ModelLayerLocation STRAW_STATUE_SLIM_OUTER_ARMOR = REGISTRY.registerOuterArmor("straw_statue_slim");
 }

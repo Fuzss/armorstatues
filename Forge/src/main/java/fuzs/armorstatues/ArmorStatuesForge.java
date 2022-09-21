@@ -1,7 +1,10 @@
 package fuzs.armorstatues;
 
 import fuzs.armorstatues.api.event.entity.player.PlayerEntityInteractEvent;
+import fuzs.armorstatues.data.ModItemModelProvider;
 import fuzs.armorstatues.data.ModLanguageProvider;
+import fuzs.armorstatues.data.ModLootTableProvider;
+import fuzs.armorstatues.data.ModRecipeProvider;
 import fuzs.armorstatues.handler.ArmorStandInteractHandler;
 import fuzs.puzzleslib.core.CoreServices;
 import net.minecraft.data.DataGenerator;
@@ -44,6 +47,9 @@ public class ArmorStatuesForge {
     public static void onGatherData(final GatherDataEvent evt) {
         DataGenerator generator = evt.getGenerator();
         final ExistingFileHelper existingFileHelper = evt.getExistingFileHelper();
+        generator.addProvider(true, new ModRecipeProvider(generator));
         generator.addProvider(true, new ModLanguageProvider(generator, ArmorStatues.MOD_ID));
+        generator.addProvider(true, new ModLootTableProvider(generator, ArmorStatues.MOD_ID));
+        generator.addProvider(true, new ModItemModelProvider(generator, ArmorStatues.MOD_ID, existingFileHelper));
     }
 }

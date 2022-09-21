@@ -5,7 +5,7 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import fuzs.armorstatues.ArmorStatues;
 import fuzs.armorstatues.client.gui.components.TickButton;
 import fuzs.armorstatues.client.gui.components.UnboundedSliderButton;
-import fuzs.armorstatues.client.gui.screens.armorstand.data.ArmorStandScreenType;
+import fuzs.armorstatues.world.inventory.ArmorStandScreenType;
 import fuzs.armorstatues.network.client.data.DataSyncHandler;
 import fuzs.armorstatues.world.inventory.ArmorStandHolder;
 import fuzs.armorstatues.world.inventory.ArmorStandMenu;
@@ -55,7 +55,20 @@ public abstract class AbstractArmorStandScreen extends Screen implements MenuAcc
 
     @Override
     public <T extends Screen & MenuAccess<ArmorStandMenu> & ArmorStandScreen> T createScreenType(ArmorStandScreenType screenType) {
-        return (T) screenType.createScreenType(this.holder, this.inventory, this.title, this.dataSyncHandler);
+        T screen = ArmorStandScreenFactory.createScreenType(screenType, this.holder, this.inventory, this.title, this.dataSyncHandler);
+        screen.setMouseX(this.mouseX);
+        screen.setMouseY(this.mouseY);
+        return screen;
+    }
+
+    @Override
+    public void setMouseX(int mouseX) {
+        this.mouseX = mouseX;
+    }
+
+    @Override
+    public void setMouseY(int mouseY) {
+        this.mouseY = mouseY;
     }
 
     @Override

@@ -12,7 +12,9 @@ public class ModLanguageProvider extends LanguageProvider {
 
     @Override
     protected void addTranslations() {
-        this.add(ModRegistry.PLAYER_STATUE_ENTITY_TYPE.get(), "Player Statue");
+        this.add(ModRegistry.STRAW_STATUE_ITEM.get(), "Straw Statue");
+        this.add(ModRegistry.STRAW_STATUE_ENTITY_TYPE.get(), "Straw Statue");
+        this.add("armorstatues.item.straw_statue.description", "Shift + right-click to open configuration screen when placed.");
         this.add("armorstatues.item.armor_stand.description", "Shift + right-click to open configuration screen when placed.");
         this.add("armorstatues.entity.armor_stand.pose.athena", "Athena");
         this.add("armorstatues.entity.armor_stand.pose.brandish", "Brandish");
@@ -33,6 +35,7 @@ public class ModLanguageProvider extends LanguageProvider {
         this.add("armorstatues.screen.type.poses", "Poses");
         this.add("armorstatues.screen.type.position", "Position");
         this.add("armorstatues.screen.type.alignments", "Alignments");
+        this.add("armorstatues.screen.type.modelParts", "Model Parts");
         this.add("armorstatues.screen.style.showArms", "Show Arms");
         this.add("armorstatues.screen.style.small", "Small");
         this.add("armorstatues.screen.style.invisible", "Invisible");
@@ -64,6 +67,12 @@ public class ModLanguageProvider extends LanguageProvider {
         this.add("armorstatues.screen.position.aligned", "Aligned!");
         this.add("armorstatues.screen.pose.randomize", "Randomize");
         this.add("armorstatues.screen.pose.randomized", "Applied!");
+        this.add("armorstatues.screen.rotations.pose.head", "Head");
+        this.add("armorstatues.screen.rotations.pose.body", "Body");
+        this.add("armorstatues.screen.rotations.pose.leftArm", "Left Arm");
+        this.add("armorstatues.screen.rotations.pose.rightArm", "Right Arm");
+        this.add("armorstatues.screen.rotations.pose.leftLeg", "Left Leg");
+        this.add("armorstatues.screen.rotations.pose.rightLeg", "Right Leg");
         this.add("armorstatues.screen.rotations.randomize", "Random");
         this.add("armorstatues.screen.rotations.randomized", "Applied!");
         this.add("armorstatues.screen.rotations.apply", "Apply");

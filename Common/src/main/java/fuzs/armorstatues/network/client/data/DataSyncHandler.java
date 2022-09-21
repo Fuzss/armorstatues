@@ -1,6 +1,6 @@
 package fuzs.armorstatues.network.client.data;
 
-import fuzs.armorstatues.client.gui.screens.armorstand.data.ArmorStandScreenType;
+import fuzs.armorstatues.world.inventory.ArmorStandScreenType;
 import fuzs.armorstatues.client.gui.screens.armorstand.data.ArmorStandStyleOption;
 import fuzs.armorstatues.world.inventory.ArmorStandHolder;
 import fuzs.armorstatues.world.inventory.ArmorStandPose;
@@ -14,7 +14,7 @@ import java.util.Optional;
 public interface DataSyncHandler extends ArmorStandHolder {
 
     default void sendName(String name) {
-//        setCustomArmorStandName(this.getArmorStand(), name);
+        setCustomArmorStandName(this.getArmorStand(), name);
     }
 
     default void sendPose(ArmorStandPose currentPose) {

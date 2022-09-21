@@ -3,11 +3,10 @@ package fuzs.armorstatues.client.renderer.entity.layers;
 import com.mojang.authlib.minecraft.MinecraftProfileTexture;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
-import com.mojang.datafixers.util.Either;
 import com.mojang.math.Vector3f;
-import fuzs.armorstatues.client.model.PlayerStatueModel;
-import fuzs.armorstatues.client.renderer.entity.PlayerStatueRenderer;
-import fuzs.armorstatues.world.entity.decoration.PlayerStatue;
+import fuzs.armorstatues.client.model.StrawStatueModel;
+import fuzs.armorstatues.client.renderer.entity.StrawStatueRenderer;
+import fuzs.armorstatues.world.entity.decoration.StrawStatue;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.entity.RenderLayerParent;
@@ -16,21 +15,23 @@ import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.EquipmentSlot;
-import net.minecraft.world.entity.decoration.ArmorStand;
 import net.minecraft.world.entity.player.PlayerModelPart;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 
-public class PlayerStatueCapeLayer extends RenderLayer<ArmorStand, PlayerStatueModel> {
+import java.util.Optional;
 
-    public PlayerStatueCapeLayer(RenderLayerParent<ArmorStand, PlayerStatueModel> pRenderer) {
+public class StrawStatueCapeLayer extends RenderLayer<StrawStatue, StrawStatueModel<StrawStatue>> {
+
+    public StrawStatueCapeLayer(RenderLayerParent<StrawStatue, StrawStatueModel<StrawStatue>> pRenderer) {
         super(pRenderer);
     }
 
-    public void render(PoseStack matrixStack, MultiBufferSource buffer, int packedLight, ArmorStand armorStand, float limbSwing, float pLimbSwingAmount, float pPartialTicks, float pAgeInTicks, float pNetHeadYaw, float pHeadPitch) {
-        Either<ResourceLocation, ResourceLocation> texture = PlayerStatueRenderer.getPlayerProfileTexture(armorStand, MinecraftProfileTexture.Type.CAPE);
-        if (texture.left().isPresent() && !armorStand.isInvisible() && armorStand instanceof PlayerStatue playerStatue && playerStatue.isModelPartShown(PlayerModelPart.CAPE)) {
-            ItemStack itemstack = armorStand.getItemBySlot(EquipmentSlot.CHEST);
+    @Override
+    public void render(PoseStack matrixStack, MultiBufferSource buffer, int packedLight, StrawStatue livingEntity, float limbSwing, float pLimbSwingAmount, float pPartialTicks, float pAgeInTicks, float pNetHeadYaw, float pHeadPitch) {
+        Optional<ResourceLocation> texture = StrawStatueRenderer.getPlayerProfileTexture(livingEntity, MinecraftProfileTexture.Type.CAPE);
+        if (texture.isPresent() && !livingEntity.isInvisible() && livingEntity.isModelPartShown(PlayerModelPart.CAPE)) {
+            ItemStack itemstack = livingEntity.getItemBySlot(EquipmentSlot.CHEST);
             if (!itemstack.is(Items.ELYTRA)) {
                 matrixStack.pushPose();
                 if (this.getParentModel().young) {
@@ -41,7 +42,7 @@ public class PlayerStatueCapeLayer extends RenderLayer<ArmorStand, PlayerStatueM
                 double d0 = 0.0;
                 double d1 = 0.0;
                 double d2 = 0.0;
-                float f = armorStand.yBodyRotO + (armorStand.yBodyRot - armorStand.yBodyRotO);
+                float f = livingEntity.yBodyRotO + (livingEntity.yBodyRot - livingEntity.yBodyRotO);
                 double d3 = Mth.sin(f * ((float)Math.PI / 180F));
                 double d4 = -Mth.cos(f * ((float)Math.PI / 180F));
                 float f1 = (float)d1 * 10.0F;
@@ -55,15 +56,15 @@ public class PlayerStatueCapeLayer extends RenderLayer<ArmorStand, PlayerStatueM
                 }
 
                 float f4 = 0.0F;
-                f1 += Mth.sin(Mth.lerp(pPartialTicks, armorStand.walkDistO, armorStand.walkDist) * 6.0F) * 32.0F * f4;
-                if (armorStand.isCrouching()) {
+                f1 += Mth.sin(Mth.lerp(pPartialTicks, livingEntity.walkDistO, livingEntity.walkDist) * 6.0F) * 32.0F * f4;
+                if (livingEntity.isCrouching()) {
                     f1 += 25.0F;
                 }
 
                 matrixStack.mulPose(Vector3f.XP.rotationDegrees(6.0F + f2 / 2.0F + f1));
                 matrixStack.mulPose(Vector3f.ZP.rotationDegrees(f3 / 2.0F));
                 matrixStack.mulPose(Vector3f.YP.rotationDegrees(180.0F - f3 / 2.0F));
-                VertexConsumer vertexconsumer = buffer.getBuffer(RenderType.entitySolid(texture.left().get()));
+                VertexConsumer vertexconsumer = buffer.getBuffer(RenderType.entitySolid(texture.get()));
                 this.getParentModel().renderCloak(matrixStack, vertexconsumer, packedLight, OverlayTexture.NO_OVERLAY);
                 matrixStack.popPose();
             }

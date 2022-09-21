@@ -5,6 +5,9 @@ import net.minecraft.core.Rotations;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.phys.Vec3;
 
+/**
+ * values copied from <a href="https://vanillatweaks.net/">Vanilla Tweaks</a> data pack
+ */
 public enum ArmorStandAlignment {
     BLOCK("block", new Rotations(-15.0f, 135.0f, 0.0f), new Vec3(0.5725, -0.655, 0.352), new Vec3(0.28625, -0.3275, 0.176)),
     FLOATING_ITEM("itemFloating", new Rotations(-90.0f, 0.0f, 0.0f), new Vec3(0.36, -1.41, -0.5625), new Vec3(0.18, -0.705, -0.28125)),

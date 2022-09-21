@@ -2,7 +2,7 @@ package fuzs.armorstatues.client.gui.screens.armorstand;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import fuzs.armorstatues.client.gui.components.TickButton;
-import fuzs.armorstatues.client.gui.screens.armorstand.data.ArmorStandScreenType;
+import fuzs.armorstatues.world.inventory.ArmorStandScreenType;
 import fuzs.armorstatues.network.client.data.DataSyncHandler;
 import fuzs.armorstatues.world.inventory.ArmorStandHolder;
 import fuzs.armorstatues.world.inventory.ArmorStandPose;

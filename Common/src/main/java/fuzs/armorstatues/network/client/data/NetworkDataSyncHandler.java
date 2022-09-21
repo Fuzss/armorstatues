@@ -1,14 +1,16 @@
 package fuzs.armorstatues.network.client.data;
 
 import fuzs.armorstatues.ArmorStatues;
-import fuzs.armorstatues.client.gui.screens.armorstand.data.ArmorStandScreenType;
 import fuzs.armorstatues.client.gui.screens.armorstand.data.ArmorStandStyleOption;
 import fuzs.armorstatues.network.client.*;
 import fuzs.armorstatues.world.inventory.ArmorStandPose;
+import fuzs.armorstatues.world.inventory.ArmorStandScreenType;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.entity.decoration.ArmorStand;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.Arrays;
+import java.util.List;
 import java.util.Optional;
 
 public class NetworkDataSyncHandler implements DataSyncHandler {
@@ -60,12 +62,13 @@ public class NetworkDataSyncHandler implements DataSyncHandler {
 
     @Override
     public ArmorStandScreenType[] tabs() {
-        return ArmorStandScreenType.values();
+        return this.getDataProvider().getScreenTypes();
     }
 
     @Override
     public Optional<ArmorStandScreenType> getLastType() {
-        return Optional.ofNullable(lastType);
+        List<ArmorStandScreenType> screenTypes = Arrays.asList(this.getDataProvider().getScreenTypes());
+        return Optional.ofNullable(lastType).filter(screenTypes::contains);
     }
 
     @Override

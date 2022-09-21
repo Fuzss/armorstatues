@@ -3,7 +3,7 @@ package fuzs.armorstatues.client.gui.screens.armorstand;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import fuzs.armorstatues.ArmorStatues;
-import fuzs.armorstatues.client.gui.screens.armorstand.data.ArmorStandScreenType;
+import fuzs.armorstatues.world.inventory.ArmorStandScreenType;
 import fuzs.armorstatues.network.client.data.DataSyncHandler;
 import fuzs.armorstatues.world.inventory.ArmorStandHolder;
 import fuzs.armorstatues.world.inventory.ArmorStandMenu;
@@ -34,7 +34,20 @@ public class ArmorStandEquipmentScreen extends AbstractContainerScreen<ArmorStan
 
     @Override
     public <T extends Screen & MenuAccess<ArmorStandMenu> & ArmorStandScreen> T createScreenType(ArmorStandScreenType screenType) {
-        return (T) screenType.createScreenType(this.menu, this.inventory, this.title, this.dataSyncHandler);
+        T screen = ArmorStandScreenFactory.createScreenType(screenType, this.menu, this.inventory, this.title, this.dataSyncHandler);
+        screen.setMouseX(this.mouseX);
+        screen.setMouseY(this.mouseY);
+        return screen;
+    }
+
+    @Override
+    public void setMouseX(int mouseX) {
+        this.mouseX = mouseX;
+    }
+
+    @Override
+    public void setMouseY(int mouseY) {
+        this.mouseY = mouseY;
     }
 
     @Override
