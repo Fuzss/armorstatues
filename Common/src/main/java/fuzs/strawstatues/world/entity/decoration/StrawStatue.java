@@ -1,7 +1,7 @@
 package fuzs.strawstatues.world.entity.decoration;
 
 import com.mojang.authlib.GameProfile;
-import fuzs.armorstatues.client.gui.screens.armorstand.data.ArmorStandStyleOption;
+import fuzs.armorstatues.api.client.gui.screens.armorstand.data.ArmorStandStyleOption;
 import fuzs.armorstatues.handler.ArmorStandInteractHandler;
 import fuzs.armorstatues.init.ModRegistry;
 import fuzs.armorstatues.mixin.accessor.ArmorStandAccessor;
@@ -273,5 +273,10 @@ public class StrawStatue extends ArmorStand implements ArmorStandDataProvider {
     @Override
     public ArmorStandScreenType[] getScreenTypes() {
         return new ArmorStandScreenType[]{ArmorStandScreenType.ROTATIONS, ArmorStandScreenType.POSES, STRAW_STATUE_STYLE, MODEL_PARTS, ArmorStandScreenType.POSITION, ArmorStandScreenType.EQUIPMENT};
+    }
+
+    @Override
+    public Component getBodyComponent() {
+        return Component.translatable("armorstatues.screen.rotations.pose.cape");
     }
 }

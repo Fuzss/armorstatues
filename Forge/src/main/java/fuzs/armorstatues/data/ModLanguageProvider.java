@@ -69,13 +69,16 @@ public class ModLanguageProvider extends LanguageProvider {
         this.add("armorstatues.screen.pose.randomized", "Applied!");
         this.add("armorstatues.screen.rotations.pose.head", "Head");
         this.add("armorstatues.screen.rotations.pose.body", "Body");
+        this.add("armorstatues.screen.rotations.pose.cape", "Cape");
         this.add("armorstatues.screen.rotations.pose.leftArm", "Left Arm");
         this.add("armorstatues.screen.rotations.pose.rightArm", "Right Arm");
         this.add("armorstatues.screen.rotations.pose.leftLeg", "Left Leg");
         this.add("armorstatues.screen.rotations.pose.rightLeg", "Right Leg");
+        this.add("armorstatues.screen.rotations.tip", "Hold the Shift or Alt key to lock 2d-sliders to a single axis!");
         this.add("armorstatues.screen.rotations.reset", "Reset");
-        this.add("armorstatues.screen.rotations.clamp", "Clamp");
-        this.add("armorstatues.screen.rotations.unclamp", "Unclamp");
+        this.add("armorstatues.screen.rotations.randomize", "Randomize");
+        this.add("armorstatues.screen.rotations.lock", "Lock Rotations");
+        this.add("armorstatues.screen.rotations.unlock", "Unlock Rotations");
         this.add("armorstatues.screen.rotations.copy", "Copy");
         this.add("armorstatues.screen.rotations.paste", "Paste");
         this.add("armorstatues.screen.rotations.x", "X: %s");

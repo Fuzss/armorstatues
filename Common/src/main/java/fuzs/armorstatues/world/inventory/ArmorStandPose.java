@@ -1,8 +1,7 @@
 package fuzs.armorstatues.world.inventory;
 
-import fuzs.armorstatues.client.gui.components.NewTextureSliderButton;
-import fuzs.armorstatues.client.gui.screens.armorstand.ArmorStandPositionScreen;
 import fuzs.armorstatues.mixin.accessor.ArmorStandAccessor;
+import net.minecraft.Util;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Rotations;
 import net.minecraft.nbt.CompoundTag;
@@ -11,10 +10,14 @@ import net.minecraft.util.Mth;
 import net.minecraft.world.entity.decoration.ArmorStand;
 import org.jetbrains.annotations.Nullable;
 
+import java.text.DecimalFormat;
+import java.text.DecimalFormatSymbols;
+import java.util.Locale;
 import java.util.Objects;
 import java.util.Random;
 import java.util.function.BiFunction;
 import java.util.function.Function;
+import java.util.function.Predicate;
 
 public class ArmorStandPose {
     public static final ArmorStandPose ATHENA = new ArmorStandPose("athena", new Builder().bodyPose(new Rotations(0.0F, 0.0F, 2.0F)).headPose(new Rotations(-5.0F, 0.0F, 0.0F)).leftArmPose(new Rotations(10.0F, 0.0F, -5.0F)).leftLegPose(new Rotations(-3.0F, -3.0F, -3.0F)).rightArmPose(new Rotations(-60.0F, 20.0F, -10.0F)).rightLegPose(new Rotations(3.0F, 3.0F, 3.0F)));
@@ -30,6 +33,10 @@ public class ArmorStandPose {
     public static final ArmorStandPose SALUTE = new ArmorStandPose("salute", new Builder().leftArmPose(new Rotations(10.0F, 0.0F, -5.0F)).leftLegPose(new Rotations(-1.0F, 0.0F, -1.0F)).rightArmPose(new Rotations(-70.0F, -40.0F, 0.0F)).rightLegPose(new Rotations(1.0F, 0.0F, 1.0F)));
     public static final ArmorStandPose SOLEMN = new ArmorStandPose("solemn", new Builder().bodyPose(new Rotations(0.0F, 0.0F, 2.0F)).headPose(new Rotations(15.0F, 0.0F, 0.0F)).leftArmPose(new Rotations(-30.0F, 15.0F, 15.0F)).leftLegPose(new Rotations(-1.0F, 0.0F, -1.0F)).rightArmPose(new Rotations(-60.0F, -20.0F, -10.0F)).rightLegPose(new Rotations(1.0F, 0.0F, 1.0F)));
     public static final ArmorStandPose ZOMBIE = new ArmorStandPose("zombie", new Builder().headPose(new Rotations(-10.0F, 0.0F, -5.0F)).leftArmPose(new Rotations(-105.0F, 0.0F, 0.0F)).leftLegPose(new Rotations(7.0F, 0.0F, 0.0F)).rightArmPose(new Rotations(-100.0F, 0.0F, 0.0F)).rightLegPose(new Rotations(-46.0F, 0.0F, 0.0F)));
+    public static final double DEGREES_SNAP_INTERVAL = 0.125;
+    public static final DecimalFormat ROTATION_FORMAT = Util.make(new DecimalFormat("#.##"), (decimalFormat) -> {
+        decimalFormat.setDecimalFormatSymbols(DecimalFormatSymbols.getInstance(Locale.ROOT));
+    });
 
     @Nullable
     private final String name;
@@ -181,6 +188,20 @@ public class ArmorStandPose {
         return new ArmorStandPose[]{DEFAULT, SOLEMN, ATHENA, BRANDISH, HONOR, ENTERTAIN, SALUTE, HERO, RIPOSTE, ZOMBIE, CANCAN_A, CANCAN_B};
     }
 
+    public static double snapValue(double value, double snapInterval) {
+        if (snapInterval > 0.0 && snapInterval < 1.0) {
+            double currentSnap = 0.0;
+            while (currentSnap < 1.0) {
+                double snapRegion = snapInterval * 0.1;
+                if (value >= currentSnap - snapRegion && value < currentSnap + snapRegion) {
+                    return currentSnap;
+                }
+                currentSnap += snapInterval;
+            }
+        }
+        return value;
+    }
+
     private static class Builder {
         Rotations headPose;
         Rotations bodyPose;
@@ -241,12 +262,13 @@ public class ArmorStandPose {
     public enum PosePartMutator {
         HEAD("head", ArmorStandPose::getHeadPose, ArmorStandPose::setHeadPose, range(-60.0F, 60.0F), range(-60.0F, 60.0F), range(-120.0, 120.0)),
         BODY("body", ArmorStandPose::getBodyPose, ArmorStandPose::setBodyPose, range(0.0F, 120.0F), range(-60.0F, 60.0F), range(-120.0, 120.0)),
-        LEFT_ARM("leftArm", ArmorStandPose::getRightArmPose, ArmorStandPose::setRightArmPose, range(-180.0, 0.0), range(-90.0, 45.0), range(-120.0, 120.0)),
-        RIGHT_ARM("rightArm", ArmorStandPose::getLeftArmPose, ArmorStandPose::setLeftArmPose, range(-180.0, 0.0), range(-45.0, 90.0), range(-120.0, 120.0)),
+        LEFT_ARM("leftArm", ArmorStand::isShowArms, ArmorStandPose::getRightArmPose, ArmorStandPose::setRightArmPose, range(-180.0, 0.0), range(-90.0, 45.0), range(-120.0, 120.0), new Direction.Axis[]{Direction.Axis.X, Direction.Axis.Y, Direction.Axis.Z}, Direction.Axis.Y),
+        RIGHT_ARM("rightArm", ArmorStand::isShowArms, ArmorStandPose::getLeftArmPose, ArmorStandPose::setLeftArmPose, range(-180.0, 0.0), range(-45.0, 90.0), range(-120.0, 120.0), new Direction.Axis[]{Direction.Axis.X, Direction.Axis.Y, Direction.Axis.Z}, Direction.Axis.Y),
         LEFT_LEG("leftLeg", ArmorStandPose::getRightLegPose, ArmorStandPose::setRightLegPose, range(-120.0, 120.0), range(-90.0, 0.0), range(-120.0, 120.0)),
         RIGHT_LEG("rightLeg", ArmorStandPose::getLeftLegPose, ArmorStandPose::setLeftLegPose, range(-120.0, 120.0), range(0.0, 90.0), range(-120.0, 120.0));
 
         private final String translationId;
+        private final Predicate<ArmorStand> filter;
         private final Function<ArmorStandPose, Rotations> getRotations;
         private final BiFunction<ArmorStandPose, Rotations, ArmorStandPose> setRotations;
         private final PosePartAxisRange[] axisRanges;
@@ -254,11 +276,12 @@ public class ArmorStandPose {
         private final byte invertedIndices;
 
         PosePartMutator(String translationId, Function<ArmorStandPose, Rotations> getRotations, BiFunction<ArmorStandPose, Rotations, ArmorStandPose> setRotations, PosePartAxisRange rangeX, PosePartAxisRange rangeY, PosePartAxisRange rangeZ) {
-            this(translationId, getRotations, setRotations, rangeX, rangeY, rangeZ, new Direction.Axis[]{Direction.Axis.X, Direction.Axis.Y, Direction.Axis.Z}, Direction.Axis.Y);
+            this(translationId, armorStand -> true, getRotations, setRotations, rangeX, rangeY, rangeZ, new Direction.Axis[]{Direction.Axis.X, Direction.Axis.Y, Direction.Axis.Z}, Direction.Axis.Y);
         }
 
-        PosePartMutator(String translationId, Function<ArmorStandPose, Rotations> getRotations, BiFunction<ArmorStandPose, Rotations, ArmorStandPose> setRotations, PosePartAxisRange rangeX, PosePartAxisRange rangeY, PosePartAxisRange rangeZ, Direction.Axis[] axisOrder, Direction.Axis... invertedAxes) {
+        PosePartMutator(String translationId, Predicate<ArmorStand> filter, Function<ArmorStandPose, Rotations> getRotations, BiFunction<ArmorStandPose, Rotations, ArmorStandPose> setRotations, PosePartAxisRange rangeX, PosePartAxisRange rangeY, PosePartAxisRange rangeZ, Direction.Axis[] axisOrder, Direction.Axis... invertedAxes) {
             this.translationId = translationId;
+            this.filter = filter;
             this.getRotations = getRotations;
             this.setRotations = setRotations;
             this.axisRanges = new PosePartAxisRange[]{rangeX, rangeY, rangeZ};
@@ -274,13 +297,17 @@ public class ArmorStandPose {
             return invertedIndices;
         }
 
+        public boolean test(ArmorStand armorStand) {
+            return this.filter.test(armorStand);
+        }
+
         public Component getComponent() {
             return Component.translatable("armorstatues.screen.rotations.pose." + this.translationId);
         }
 
         public Component getAxisComponent(ArmorStandPose pose, int index) {
-            double value = NewTextureSliderButton.snapValue(this.getRotationsAtAxis(index, pose), ArmorStandPositionScreen.DEGREES_SNAP_INTERVAL);
-            return Component.translatable("armorstatues.screen.rotations." + this.getAxisAt(index), ArmorStandPositionScreen.ROTATION_FORMAT.format(value));
+            double value = ArmorStandPose.snapValue(this.getRotationsAtAxis(index, pose), DEGREES_SNAP_INTERVAL);
+            return Component.translatable("armorstatues.screen.rotations." + this.getAxisAt(index), ROTATION_FORMAT.format(value));
         }
 
         public double getRotationsAtAxis(int index, ArmorStandPose pose) {
