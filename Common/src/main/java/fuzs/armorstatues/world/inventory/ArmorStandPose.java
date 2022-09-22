@@ -1,18 +1,22 @@
 package fuzs.armorstatues.world.inventory;
 
+import fuzs.armorstatues.client.gui.components.NewTextureSliderButton;
+import fuzs.armorstatues.client.gui.screens.armorstand.ArmorStandPositionScreen;
 import fuzs.armorstatues.mixin.accessor.ArmorStandAccessor;
+import net.minecraft.core.Direction;
 import net.minecraft.core.Rotations;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
+import net.minecraft.util.Mth;
 import net.minecraft.world.entity.decoration.ArmorStand;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Objects;
 import java.util.Random;
 import java.util.function.BiFunction;
+import java.util.function.Function;
 
 public class ArmorStandPose {
-    private static final Random RANDOM = new Random();
     public static final ArmorStandPose ATHENA = new ArmorStandPose("athena", new Builder().bodyPose(new Rotations(0.0F, 0.0F, 2.0F)).headPose(new Rotations(-5.0F, 0.0F, 0.0F)).leftArmPose(new Rotations(10.0F, 0.0F, -5.0F)).leftLegPose(new Rotations(-3.0F, -3.0F, -3.0F)).rightArmPose(new Rotations(-60.0F, 20.0F, -10.0F)).rightLegPose(new Rotations(3.0F, 3.0F, 3.0F)));
     public static final ArmorStandPose BRANDISH = new ArmorStandPose("brandish", new Builder().bodyPose(new Rotations(0.0F, 0.0F, -2.0F)).headPose(new Rotations(-15.0F, 0.0F, 0.0F)).leftArmPose(new Rotations(20.0F, 0.0F, -10.0F)).leftLegPose(new Rotations(5.0F, -3.0F, -3.0F)).rightArmPose(new Rotations(-110.0F, 50.0F, 0.0F)).rightLegPose(new Rotations(-5.0F, 3.0F, 3.0F)));
     public static final ArmorStandPose CANCAN_A = new ArmorStandPose("cancanA", new Builder().bodyPose(new Rotations(0.0F, 22.0F, 0.0F)).headPose(new Rotations(-5.0F, 18.0F, 0.0F)).leftArmPose(new Rotations(8.0F, 0.0F, -114.0F)).leftLegPose(new Rotations(-111.0F, 55.0F, 0.0F)).rightArmPose(new Rotations(0.0F, 84.0F, 111.0F)).rightLegPose(new Rotations(0.0F, 23.0F, -13.0F)));
@@ -127,7 +131,7 @@ public class ArmorStandPose {
         armorStand.setLeftLegPose(this.leftLegPose);
         armorStand.setRightLegPose(this.rightLegPose);
     }
-    
+
     public void serializeAllPoses(CompoundTag tag) {
         this.serializeBodyPoses(tag, null);
         this.serializeArmPoses(tag, null);
@@ -160,7 +164,7 @@ public class ArmorStandPose {
         }
         return false;
     }
-    
+
     public static ArmorStandPose fromEntity(ArmorStand armorStand) {
         return new ArmorStandPose(armorStand.getHeadPose(), armorStand.getBodyPose(), armorStand.getLeftArmPose(), armorStand.getRightArmPose(), armorStand.getLeftLegPose(), armorStand.getRightLegPose());
     }
@@ -169,16 +173,12 @@ public class ArmorStandPose {
         ((ArmorStandAccessor) armorStand).callReadPose(tag);
     }
 
-    public static ArmorStandPose random() {
-        return new ArmorStandPose(new Rotations(0.0F, 0.0F, 0.0F), new Rotations(0.0F, 0.0F, 0.0F), randomRotations(), randomRotations(), randomRotations(), randomRotations());
-    }
-
-    private static Rotations randomRotations() {
-        return new Rotations(RANDOM.nextFloat(360.0F), RANDOM.nextFloat(360.0F), RANDOM.nextFloat(360.0F));
+    public static ArmorStandPose random(boolean clampRotations) {
+        return new ArmorStandPose(PosePartMutator.HEAD.randomRotations(clampRotations), PosePartMutator.BODY.randomRotations(clampRotations), PosePartMutator.LEFT_ARM.randomRotations(clampRotations), PosePartMutator.RIGHT_ARM.randomRotations(clampRotations), PosePartMutator.LEFT_LEG.randomRotations(clampRotations), PosePartMutator.RIGHT_LEG.randomRotations(clampRotations));
     }
 
     public static ArmorStandPose[] values() {
-        return new ArmorStandPose[]{DEFAULT, NONE, SOLEMN, ATHENA, BRANDISH, HONOR, ENTERTAIN, SALUTE, HERO, RIPOSTE, ZOMBIE, CANCAN_A, CANCAN_B};
+        return new ArmorStandPose[]{DEFAULT, SOLEMN, ATHENA, BRANDISH, HONOR, ENTERTAIN, SALUTE, HERO, RIPOSTE, ZOMBIE, CANCAN_A, CANCAN_B};
     }
 
     private static class Builder {
@@ -235,6 +235,155 @@ public class ArmorStandPose {
         public Builder rightLegPose(Rotations rightLegPose) {
             this.rightLegPose = rightLegPose;
             return this;
+        }
+    }
+
+    public enum PosePartMutator {
+        HEAD("head", ArmorStandPose::getHeadPose, ArmorStandPose::setHeadPose, range(-60.0F, 60.0F), range(-60.0F, 60.0F), range(-120.0, 120.0)),
+        BODY("body", ArmorStandPose::getBodyPose, ArmorStandPose::setBodyPose, range(0.0F, 120.0F), range(-60.0F, 60.0F), range(-120.0, 120.0)),
+        LEFT_ARM("leftArm", ArmorStandPose::getRightArmPose, ArmorStandPose::setRightArmPose, range(-180.0, 0.0), range(-90.0, 45.0), range(-120.0, 120.0)),
+        RIGHT_ARM("rightArm", ArmorStandPose::getLeftArmPose, ArmorStandPose::setLeftArmPose, range(-180.0, 0.0), range(-45.0, 90.0), range(-120.0, 120.0)),
+        LEFT_LEG("leftLeg", ArmorStandPose::getRightLegPose, ArmorStandPose::setRightLegPose, range(-120.0, 120.0), range(-90.0, 0.0), range(-120.0, 120.0)),
+        RIGHT_LEG("rightLeg", ArmorStandPose::getLeftLegPose, ArmorStandPose::setLeftLegPose, range(-120.0, 120.0), range(0.0, 90.0), range(-120.0, 120.0));
+
+        private final String translationId;
+        private final Function<ArmorStandPose, Rotations> getRotations;
+        private final BiFunction<ArmorStandPose, Rotations, ArmorStandPose> setRotations;
+        private final PosePartAxisRange[] axisRanges;
+        private final Direction.Axis[] axisOrder;
+        private final byte invertedIndices;
+
+        PosePartMutator(String translationId, Function<ArmorStandPose, Rotations> getRotations, BiFunction<ArmorStandPose, Rotations, ArmorStandPose> setRotations, PosePartAxisRange rangeX, PosePartAxisRange rangeY, PosePartAxisRange rangeZ) {
+            this(translationId, getRotations, setRotations, rangeX, rangeY, rangeZ, new Direction.Axis[]{Direction.Axis.X, Direction.Axis.Y, Direction.Axis.Z}, Direction.Axis.Y);
+        }
+
+        PosePartMutator(String translationId, Function<ArmorStandPose, Rotations> getRotations, BiFunction<ArmorStandPose, Rotations, ArmorStandPose> setRotations, PosePartAxisRange rangeX, PosePartAxisRange rangeY, PosePartAxisRange rangeZ, Direction.Axis[] axisOrder, Direction.Axis... invertedAxes) {
+            this.translationId = translationId;
+            this.getRotations = getRotations;
+            this.setRotations = setRotations;
+            this.axisRanges = new PosePartAxisRange[]{rangeX, rangeY, rangeZ};
+            this.axisOrder = axisOrder;
+            this.invertedIndices = computeInvertedIndices(invertedAxes);
+        }
+
+        private static byte computeInvertedIndices(Direction.Axis[] invertedAxes) {
+            byte invertedIndices = 0;
+            for (Direction.Axis axis : invertedAxes) {
+                invertedIndices |= 1 << axis.ordinal();
+            }
+            return invertedIndices;
+        }
+
+        public Component getComponent() {
+            return Component.translatable("armorstatues.screen.rotations.pose." + this.translationId);
+        }
+
+        public Component getAxisComponent(ArmorStandPose pose, int index) {
+            double value = NewTextureSliderButton.snapValue(this.getRotationsAtAxis(index, pose), ArmorStandPositionScreen.DEGREES_SNAP_INTERVAL);
+            return Component.translatable("armorstatues.screen.rotations." + this.getAxisAt(index), ArmorStandPositionScreen.ROTATION_FORMAT.format(value));
+        }
+
+        public double getRotationsAtAxis(int index, ArmorStandPose pose) {
+            return this.getRotationsAtAxis(index, this.getRotations.apply(pose));
+        }
+
+        private double getRotationsAtAxis(int index, Rotations rotations) {
+            return switch (this.getAxisAt(index)) {
+                case X -> this.invertAtAxis(Direction.Axis.X, rotations.getWrappedX());
+                case Y -> this.invertAtAxis(Direction.Axis.Y, rotations.getWrappedY());
+                case Z -> this.invertAtAxis(Direction.Axis.Z, rotations.getWrappedZ());
+            };
+        }
+
+        public double getNormalizedRotationsAtAxis(int index, ArmorStandPose pose, boolean clampRotations) {
+            return this.getNormalizedRotationsAtAxis(index, this.getRotations.apply(pose), clampRotations);
+        }
+
+        private double getNormalizedRotationsAtAxis(int index, Rotations rotations, boolean clampRotations) {
+            return switch (this.getAxisAt(index)) {
+                case X -> (float) this.getAxisRangeAtAxis(Direction.Axis.X, clampRotations).normalize(this.invertAtAxis(Direction.Axis.X, rotations.getWrappedX()));
+                case Y -> (float) this.getAxisRangeAtAxis(Direction.Axis.Y, clampRotations).normalize(this.invertAtAxis(Direction.Axis.Y, rotations.getWrappedY()));
+                case Z -> (float) this.getAxisRangeAtAxis(Direction.Axis.Z, clampRotations).normalize(this.invertAtAxis(Direction.Axis.Z, rotations.getWrappedZ()));
+            };
+        }
+
+        private float invertAtAxis(Direction.Axis axis, float value) {
+            return (this.invertedIndices >> axis.ordinal() & 1) == 1 ? value * -1.0F : value;
+        }
+
+        public ArmorStandPose setRotationsAtAxis(int index, ArmorStandPose pose, double newValue, boolean clampRotations) {
+            return this.setRotations.apply(pose, this.setRotationsAtAxis(index, this.getRotations.apply(pose), (float) this.getAxisRangeAtAxis(index, clampRotations).expand(newValue)));
+        }
+
+        private PosePartAxisRange getAxisRangeAtAxis(int index, boolean clampRotations) {
+            return this.getAxisRangeAtAxis(this.getAxisAt(index), clampRotations);
+        }
+
+        private PosePartAxisRange getAxisRangeAtAxis(Direction.Axis axis, boolean clampRotations) {
+            return clampRotations ? this.axisRanges[axis.ordinal()] : fullRange();
+        }
+
+        private Rotations setRotationsAtAxis(int index, Rotations rotations, float newValue) {
+            return switch (this.getAxisAt(index)) {
+                case X -> new Rotations(this.invertAtAxis(Direction.Axis.X, newValue), rotations.getY(), rotations.getZ());
+                case Y -> new Rotations(rotations.getX(), this.invertAtAxis(Direction.Axis.Y, newValue), rotations.getZ());
+                case Z -> new Rotations(rotations.getX(), rotations.getY(), this.invertAtAxis(Direction.Axis.Z, newValue));
+            };
+        }
+
+        private Direction.Axis getAxisAt(int index) {
+            return this.axisOrder[index];
+        }
+
+        Rotations randomRotations(boolean clampRotations) {
+            Rotations rotations = new Rotations((float) this.getAxisRangeAtAxis(Direction.Axis.X, clampRotations).random(), (float) this.getAxisRangeAtAxis(Direction.Axis.Y, clampRotations).random(), (float) this.getAxisRangeAtAxis(Direction.Axis.Z, clampRotations).random());
+            return clampRotations ? this.setRotationsAtAxis(2, rotations, 0.0F) : rotations;
+        }
+
+        private static PosePartAxisRange fullRange() {
+            return range(PosePartAxisRange.MIN_VALUE, PosePartAxisRange.MAX_VALUE);
+        }
+
+        private static PosePartAxisRange range(double min, double max) {
+            return new PosePartAxisRange(min, max);
+        }
+
+        public record PosePartAxisRange(double min, double max) {
+            public static final double MIN_VALUE = -180.0;
+            public static final double MAX_VALUE = 180.0;
+            private static final Random RANDOM = new Random();
+
+            public PosePartAxisRange {
+                if (min >= max) {
+                    throw new IllegalArgumentException("Min must be smaller than max: %s >= %s".formatted(min, max));
+                }
+                if (Mth.clamp(min, MIN_VALUE, MAX_VALUE) != min) {
+                    throw new IllegalArgumentException("Min out of bounds, must be between -180 and 180, was %s".formatted(min));
+                }
+                if (Mth.clamp(max, MIN_VALUE, MAX_VALUE) != max) {
+                    throw new IllegalArgumentException("Max out of bounds, must be between -180 and 180, was %s".formatted(max));
+                }
+            }
+
+            public double normalize(double expandedValue) {
+                return (this.clamp(expandedValue) - this.min) / this.range();
+            }
+
+            public double expand(double normalizedValue) {
+                return normalizedValue * this.range() + this.min;
+            }
+
+            public double clamp(double value) {
+                return Mth.clamp(value, this.min, this.max);
+            }
+
+            public double random() {
+                return RANDOM.nextDouble(this.range()) + this.min;
+            }
+
+            private double range() {
+                return this.max - this.min;
+            }
         }
     }
 }

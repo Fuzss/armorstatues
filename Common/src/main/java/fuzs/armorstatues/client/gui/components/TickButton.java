@@ -8,8 +8,8 @@ import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.network.chat.Component;
 
 public class TickButton extends NewTextureButton {
-    private final Component title;
-    private final Component clickedTitle;
+    private Component title;
+    private Component clickedTitle;
     private int lastClickedTicks;
     private int lastClickedTicksDelay = 30;
 
@@ -37,6 +37,14 @@ public class TickButton extends NewTextureButton {
         if (this.lastClickedTicks == 0) {
             this.setMessage(this.title);
         }
+    }
+
+    public void setTitle(Component title) {
+        this.title = title;
+    }
+
+    public void setClickedTitle(Component clickedTitle) {
+        this.clickedTitle = clickedTitle;
     }
 
     @Override

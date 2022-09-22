@@ -3,10 +3,12 @@ package fuzs.armorstatues.client.gui.components;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import fuzs.armorstatues.client.gui.screens.armorstand.AbstractArmorStandScreen;
+import fuzs.armorstatues.client.gui.screens.armorstand.ArmorStandPositionScreen;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.narration.NarratedElementType;
 import net.minecraft.client.gui.narration.NarrationElementOutput;
+import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.client.sounds.SoundManager;
 import net.minecraft.network.chat.CommonComponents;
@@ -64,10 +66,23 @@ public abstract class BoxedSliderButton extends AbstractWidget implements Unboun
         RenderSystem.enableBlend();
         RenderSystem.defaultBlendFunc();
         RenderSystem.enableDepthTest();
-        this.blit(poseStack, this.x, this.y, 0, 120, this.width, this.height);
-        int i = this.getYImage(this.isHoveredOrFocused());
-        this.blit(poseStack, this.x + 1 + (int) (this.horizontalValue * (double) (this.width - this.sliderSize - 2)), this.y + 1 + (int) (this.verticalValue * (double) (this.height - this.sliderSize - 2)), 151, i * this.sliderSize, this.sliderSize, this.sliderSize);
-        if (this.isHoveredOrFocused()) {
+        final int sliderX = (int) (this.horizontalValue * (double) (this.width - this.sliderSize - 2));
+        final int sliderY = (int) (this.verticalValue * (double) (this.height - this.sliderSize - 2));
+        boolean hoveredOrFocused = this.isHoveredOrFocused();
+        boolean horizontalValueLocked = this.horizontalValueLocked();
+        boolean verticalValueLocked = this.verticalValueLocked();
+        if (!hoveredOrFocused || !horizontalValueLocked && !verticalValueLocked) {
+            this.blit(poseStack, this.x, this.y, 0, 120, this.width, this.height);
+        } else if (horizontalValueLocked && verticalValueLocked) {
+            this.blit(poseStack, this.x + sliderX, this.y + sliderY, 164, 0, this.sliderSize + 2, this.sliderSize + 2);
+        } else if (horizontalValueLocked) {
+            this.blit(poseStack, this.x + sliderX, this.y, 54, 120, this.sliderSize + 2, this.height);
+        } else {
+            this.blit(poseStack, this.x, this.y + sliderY, 136, 45, this.width, this.sliderSize + 2);
+        }
+        int i = this.getYImage(hoveredOrFocused);
+        this.blit(poseStack, this.x + 1 + sliderX, this.y + 1 + sliderY, 151, i * this.sliderSize, this.sliderSize, this.sliderSize);
+        if (hoveredOrFocused) {
             this.renderToolTip(poseStack, mouseX, mouseY);
         }
     }
@@ -93,12 +108,26 @@ public abstract class BoxedSliderButton extends AbstractWidget implements Unboun
 
     private void setValue(double horizontalValue, double verticalValue) {
         double oldHorizontalValue = this.horizontalValue;
-        this.horizontalValue = Mth.clamp(horizontalValue, 0.0, 1.0);
+        if (!this.horizontalValueLocked()) {
+            this.horizontalValue = Mth.clamp(horizontalValue, 0.0, 1.0);
+            this.horizontalValue = NewTextureSliderButton.snapValue(this.horizontalValue, ArmorStandPositionScreen.DEGREES_SNAP_INTERVAL);
+        }
         double oldVerticalValue = this.verticalValue;
-        this.verticalValue = Mth.clamp(verticalValue, 0.0, 1.0);
+        if (!this.verticalValueLocked()) {
+            this.verticalValue = Mth.clamp(verticalValue, 0.0, 1.0);
+            this.verticalValue = NewTextureSliderButton.snapValue(this.verticalValue, ArmorStandPositionScreen.DEGREES_SNAP_INTERVAL);
+        }
         if (oldHorizontalValue != this.horizontalValue || oldVerticalValue != this.verticalValue) {
             this.applyValue();
         }
+    }
+
+    protected boolean verticalValueLocked() {
+        return Screen.hasShiftDown();
+    }
+
+    protected boolean horizontalValueLocked() {
+        return Screen.hasAltDown();
     }
 
     @Override

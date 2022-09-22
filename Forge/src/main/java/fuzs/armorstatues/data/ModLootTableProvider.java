@@ -54,5 +54,10 @@ public class ModLootTableProvider extends LootTableProvider {
                     .map(Map.Entry::getValue)
                     .collect(Collectors.toSet());
         }
+
+        @Override
+        protected boolean isNonLiving(EntityType<?> entitytype) {
+            return entitytype != ModRegistry.STRAW_STATUE_ENTITY_TYPE.get() && super.isNonLiving(entitytype);
+        }
     }
 }

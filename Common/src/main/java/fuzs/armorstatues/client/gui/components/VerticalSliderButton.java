@@ -3,6 +3,7 @@ package fuzs.armorstatues.client.gui.components;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import fuzs.armorstatues.client.gui.screens.armorstand.AbstractArmorStandScreen;
+import fuzs.armorstatues.client.gui.screens.armorstand.ArmorStandPositionScreen;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.narration.NarratedElementType;
@@ -90,6 +91,7 @@ public abstract class VerticalSliderButton extends AbstractWidget implements Unb
     private void setValue(double value) {
         double oldValue = this.value;
         this.value = Mth.clamp(value, 0.0, 1.0);
+        this.value = NewTextureSliderButton.snapValue(this.value, ArmorStandPositionScreen.DEGREES_SNAP_INTERVAL);
         if (oldValue != this.value) {
             this.applyValue();
         }

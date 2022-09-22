@@ -35,7 +35,7 @@ public class ArmorStandPosesScreen extends AbstractArmorStandScreen {
     protected void init() {
         super.init();
         this.addRenderableWidget(new TickButton(this.leftPos + 5, this.topPos + 128, 76, 20, Component.translatable("armorstatues.screen.pose.randomize"), Component.translatable("armorstatues.screen.pose.randomized"), button -> {
-            this.dataSyncHandler.sendPose(ArmorStandPose.random());
+            this.dataSyncHandler.sendPose(ArmorStandPose.random(true));
         })).setLastClickedTicksDelay(20);
         this.cycleButtons[0] = this.addRenderableWidget(new ImageButton(this.leftPos + 17, this.topPos + 153, 20, 20, 156, 64, ARMOR_STAND_WIDGETS_LOCATION, button -> {
             firstPoseIndex -= POSES_PER_PAGE;

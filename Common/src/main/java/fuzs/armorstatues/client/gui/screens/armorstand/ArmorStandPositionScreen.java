@@ -32,6 +32,7 @@ import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
 public class ArmorStandPositionScreen extends ArmorStandWidgetsScreen {
+    public static final double DEGREES_SNAP_INTERVAL = 0.125;
     private static final DecimalFormat BLOCK_INCREMENT_FORMAT = Util.make(new DecimalFormat("#.####"), (decimalFormat) -> {
         decimalFormat.setDecimalFormatSymbols(DecimalFormatSymbols.getInstance(Locale.ROOT));
     });
@@ -103,7 +104,7 @@ public class ArmorStandPositionScreen extends ArmorStandWidgetsScreen {
         public void init(int posX, int posY) {
             super.init(posX, posY);
             NewTextureSliderButton sliderButton = ArmorStandPositionScreen.this.addRenderableWidget(new NewTextureSliderButton(posX + 76, posY + 1, 90, 20, 0, 174, ARMOR_STAND_WIDGETS_LOCATION, CommonComponents.EMPTY, fromWrappedDegrees(this.currentRotation.get()), (button, poseStack, mouseX, mouseY) -> {
-                double mouseValue = NewTextureSliderButton.snapValue((mouseX - button.x) / (double) button.getWidth(), 0.125);
+                double mouseValue = NewTextureSliderButton.snapValue((mouseX - button.x) / (double) button.getWidth(), DEGREES_SNAP_INTERVAL);
                 ArmorStandPositionScreen.this.renderTooltip(poseStack, Component.translatable("armorstatues.screen.position.degrees", ROTATION_FORMAT.format(toWrappedDegrees(mouseValue))), mouseX, mouseY);
             }) {
                 private boolean dirty;
@@ -133,7 +134,7 @@ public class ArmorStandPositionScreen extends ArmorStandWidgetsScreen {
                     return this.dirty;
                 }
             });
-            sliderButton.snapInterval = 0.125;
+            sliderButton.snapInterval = DEGREES_SNAP_INTERVAL;
             this.children.add(sliderButton);
             this.children.add(ArmorStandPositionScreen.this.addRenderableWidget(new ImageButton(posX + 174, posY + 1, 20, 20, 236, 64, ARMOR_STAND_WIDGETS_LOCATION, button -> {
                 ArmorStandPositionScreen.this.setActiveWidget(this);
