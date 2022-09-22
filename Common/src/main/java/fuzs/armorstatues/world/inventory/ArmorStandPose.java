@@ -36,11 +36,7 @@ public class ArmorStandPose {
     private final Rotations leftLegPose;
     private final Rotations rightLegPose;
 
-    private ArmorStandPose(Builder builder) {
-        this(null, builder);
-    }
-
-    private ArmorStandPose(String name, Builder builder) {
+    private ArmorStandPose(@Nullable String name, Builder builder) {
         this(name, builder.headPose, builder.bodyPose, builder.leftArmPose, builder.rightArmPose, builder.leftLegPose, builder.rightLegPose);
     }
 
@@ -120,7 +116,7 @@ public class ArmorStandPose {
     }
 
     private ArmorStandPose setPose(Rotations rotation, BiFunction<Builder, Rotations, Builder> function) {
-        return new ArmorStandPose(function.apply(new Builder(this), rotation));
+        return new ArmorStandPose(this.name, function.apply(new Builder(this), rotation));
     }
 
     public void applyToEntity(ArmorStand armorStand) {

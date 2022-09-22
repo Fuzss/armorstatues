@@ -1,13 +1,16 @@
 package fuzs.armorstatues.client;
 
 import fuzs.armorstatues.client.gui.screens.armorstand.*;
-import fuzs.armorstatues.client.init.ModClientRegistry;
-import fuzs.armorstatues.client.renderer.entity.StrawStatueRenderer;
 import fuzs.armorstatues.init.ModRegistry;
 import fuzs.armorstatues.network.client.data.NetworkDataSyncHandler;
+import fuzs.strawstatues.world.entity.decoration.StrawStatue;
 import fuzs.armorstatues.world.inventory.ArmorStandMenu;
 import fuzs.armorstatues.world.inventory.ArmorStandScreenType;
 import fuzs.puzzleslib.client.core.ClientModConstructor;
+import fuzs.strawstatues.client.gui.screens.strawstatue.StrawStatueModelPartsScreen;
+import fuzs.strawstatues.client.gui.screens.strawstatue.StrawStatueStyleScreen;
+import fuzs.strawstatues.client.init.ModClientRegistry;
+import fuzs.strawstatues.client.renderer.entity.StrawStatueRenderer;
 import net.minecraft.client.model.ArmorStandArmorModel;
 import net.minecraft.client.model.PlayerModel;
 import net.minecraft.client.model.geom.builders.CubeDeformation;
@@ -27,8 +30,8 @@ public class ArmorStatuesClient implements ClientModConstructor {
         ArmorStandScreenFactory.register(ArmorStandScreenType.POSES, ArmorStandPosesScreen::new);
         ArmorStandScreenFactory.register(ArmorStandScreenType.POSITION, ArmorStandPositionScreen::new);
         ArmorStandScreenFactory.register(ArmorStandScreenType.ALIGNMENTS, ArmorStandAlignmentsScreen::new);
-        ArmorStandScreenFactory.register(ArmorStandScreenType.MODEL_PARTS, StrawStatueModelPartsScreen::new);
-        ArmorStandScreenFactory.register(ArmorStandScreenType.STRAW_STATUE_STYLE, StrawStatueStyleScreen::new);
+        ArmorStandScreenFactory.register(StrawStatue.MODEL_PARTS, StrawStatueModelPartsScreen::new);
+        ArmorStandScreenFactory.register(StrawStatue.STRAW_STATUE_STYLE, StrawStatueStyleScreen::new);
     }
 
     @Override

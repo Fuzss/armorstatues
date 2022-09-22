@@ -5,12 +5,13 @@ import fuzs.armorstatues.network.client.*;
 import fuzs.armorstatues.proxy.ClientProxy;
 import fuzs.armorstatues.proxy.Proxy;
 import fuzs.armorstatues.proxy.ServerProxy;
-import fuzs.armorstatues.world.entity.decoration.StrawStatue;
+import fuzs.strawstatues.world.entity.decoration.StrawStatue;
 import fuzs.puzzleslib.core.CoreServices;
 import fuzs.puzzleslib.core.DistTypeExecutor;
 import fuzs.puzzleslib.core.ModConstructor;
 import fuzs.puzzleslib.network.MessageDirection;
 import fuzs.puzzleslib.network.NetworkHandler;
+import fuzs.strawstatues.network.client.C2SStrawStatueModelPartMessage;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.BlockSource;
 import net.minecraft.core.Direction;
@@ -40,32 +41,32 @@ public class ArmorStatues implements ModConstructor {
         registerMessages();
     }
 
-    @Override
-    public void onCommonSetup() {
-        DispenserBlock.registerBehavior(ModRegistry.STRAW_STATUE_ITEM.get(), new DefaultDispenseItemBehavior() {
-
-            @Override
-            public ItemStack execute(BlockSource p_123461_, ItemStack p_123462_) {
-                Direction direction = p_123461_.getBlockState().getValue(DispenserBlock.FACING);
-                BlockPos blockpos = p_123461_.getPos().relative(direction);
-                Level level = p_123461_.getLevel();
-                ArmorStand armorstand = new StrawStatue(level, (double)blockpos.getX() + 0.5D, (double)blockpos.getY(), (double)blockpos.getZ() + 0.5D);
-                EntityType.updateCustomEntityTag(level, (Player)null, armorstand, p_123462_.getTag());
-                armorstand.setYRot(direction.toYRot());
-                level.addFreshEntity(armorstand);
-                p_123462_.shrink(1);
-                return p_123462_;
-            }
-        });
-    }
-
     private static void registerMessages() {
         NETWORK.register(C2SArmorStandNameMessage.class, C2SArmorStandNameMessage::new, MessageDirection.TO_SERVER);
         NETWORK.register(C2SArmorStandStyleMessage.class, C2SArmorStandStyleMessage::new, MessageDirection.TO_SERVER);
         NETWORK.register(C2SArmorStandPositionMessage.class, C2SArmorStandPositionMessage::new, MessageDirection.TO_SERVER);
         NETWORK.register(C2SArmorStandPoseMessage.class, C2SArmorStandPoseMessage::new, MessageDirection.TO_SERVER);
         NETWORK.register(C2SArmorStandRotationMessage.class, C2SArmorStandRotationMessage::new, MessageDirection.TO_SERVER);
-        NETWORK.register(C2SPlayerStateModelPartMessage.class, C2SPlayerStateModelPartMessage::new, MessageDirection.TO_SERVER);
+        NETWORK.register(C2SStrawStatueModelPartMessage.class, C2SStrawStatueModelPartMessage::new, MessageDirection.TO_SERVER);
+    }
+
+    @Override
+    public void onCommonSetup() {
+        DispenserBlock.registerBehavior(ModRegistry.STRAW_STATUE_ITEM.get(), new DefaultDispenseItemBehavior() {
+
+            @Override
+            public ItemStack execute(BlockSource blockSource, ItemStack stack) {
+                Direction direction = blockSource.getBlockState().getValue(DispenserBlock.FACING);
+                BlockPos blockpos = blockSource.getPos().relative(direction);
+                Level level = blockSource.getLevel();
+                ArmorStand armorstand = new StrawStatue(level, blockpos.getX() + 0.5, blockpos.getY(), blockpos.getZ() + 0.5);
+                EntityType.updateCustomEntityTag(level, (Player) null, armorstand, stack.getTag());
+                armorstand.setYRot(direction.toYRot());
+                level.addFreshEntity(armorstand);
+                stack.shrink(1);
+                return stack;
+            }
+        });
     }
 
     @Override

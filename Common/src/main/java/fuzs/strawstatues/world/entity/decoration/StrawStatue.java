@@ -1,8 +1,11 @@
-package fuzs.armorstatues.world.entity.decoration;
+package fuzs.strawstatues.world.entity.decoration;
 
 import com.mojang.authlib.GameProfile;
+import fuzs.armorstatues.client.gui.screens.armorstand.data.ArmorStandStyleOption;
+import fuzs.armorstatues.handler.ArmorStandInteractHandler;
 import fuzs.armorstatues.init.ModRegistry;
 import fuzs.armorstatues.mixin.accessor.ArmorStandAccessor;
+import fuzs.armorstatues.world.entity.decoration.ArmorStandDataProvider;
 import fuzs.armorstatues.world.inventory.ArmorStandScreenType;
 import net.minecraft.core.particles.BlockParticleOption;
 import net.minecraft.core.particles.ParticleTypes;
@@ -16,7 +19,10 @@ import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResult;
 import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.entity.EntityEvent;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.decoration.ArmorStand;
@@ -24,11 +30,13 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.player.PlayerModelPart;
 import net.minecraft.world.entity.projectile.AbstractArrow;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.entity.SkullBlockEntity;
 import net.minecraft.world.level.gameevent.GameEvent;
+import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Optional;
@@ -40,9 +48,14 @@ public class StrawStatue extends ArmorStand implements ArmorStandDataProvider {
     public static final EntityDataAccessor<Optional<GameProfile>> DATA_OWNER = SynchedEntityData.defineId(StrawStatue.class, ModRegistry.GAME_PROFILE_ENTITY_DATA_SERIALIZER);
     public static final EntityDataAccessor<Boolean> DATA_SLIM_ARMS = SynchedEntityData.defineId(StrawStatue.class, EntityDataSerializers.BOOLEAN);
     public static final EntityDataAccessor<Byte> DATA_PLAYER_MODE_CUSTOMISATION = SynchedEntityData.defineId(StrawStatue.class, EntityDataSerializers.BYTE);
+    public static final ArmorStandScreenType MODEL_PARTS = new ArmorStandScreenType("modelParts", new ItemStack(Items.YELLOW_WOOL));
+    public static final ArmorStandScreenType STRAW_STATUE_STYLE = new ArmorStandScreenType("style", new ItemStack(Blocks.HAY_BLOCK));
 
     public StrawStatue(EntityType<? extends StrawStatue> entityType, Level level) {
         super(entityType, level);
+        // important to enable arms beyond rendering in the model to allow for in world interactions (putting items into the hands by clicking on the statue)
+        ArmorStandStyleOption.setArmorStandData(this, true, ArmorStand.CLIENT_FLAG_SHOW_ARMS);
+        ArmorStandStyleOption.setArmorStandData(this, true, ArmorStand.CLIENT_FLAG_NO_BASEPLATE);
     }
 
     public StrawStatue(Level level, double x, double y, double z) {
@@ -93,6 +106,11 @@ public class StrawStatue extends ArmorStand implements ArmorStandDataProvider {
     }
 
     @Override
+    public InteractionResult interactAt(Player player, Vec3 vec, InteractionHand hand) {
+        return ArmorStandInteractHandler.tryOpenArmorStatueMenu(player, this.level, this).orElseGet(() -> super.interactAt(player, vec, hand));
+    }
+
+    @Override
     public void setCustomName(@Nullable Component name) {
         super.setCustomName(name);
         if (name == null) {
@@ -101,6 +119,16 @@ public class StrawStatue extends ArmorStand implements ArmorStandDataProvider {
             GameProfile gameprofile = new GameProfile(null, name.getString());
             SkullBlockEntity.updateGameprofile(gameprofile, this::setOwner);
         }
+    }
+
+    @Override
+    public boolean isShowArms() {
+        return true;
+    }
+
+    @Override
+    public boolean isNoBasePlate() {
+        return true;
     }
 
     @Nullable
@@ -154,14 +182,13 @@ public class StrawStatue extends ArmorStand implements ArmorStandDataProvider {
                     } else {
                         this.setSecondsOnFire(5);
                     }
-
                     return false;
                 } else if (DamageSource.ON_FIRE.equals(source) && this.getHealth() > 0.5F) {
                     ((ArmorStandAccessor) this).callCauseDamage(source, 4.0F);
                     return false;
                 } else {
                     boolean bl = source.getDirectEntity() instanceof AbstractArrow;
-                    boolean bl2 = bl && ((AbstractArrow)source.getDirectEntity()).getPierceLevel() > 0;
+                    boolean bl2 = bl && ((AbstractArrow) source.getDirectEntity()).getPierceLevel() > 0;
                     boolean bl3 = "player".equals(source.getMsgId());
                     if (!bl3 && !bl) {
                         return false;
@@ -173,17 +200,19 @@ public class StrawStatue extends ArmorStand implements ArmorStandDataProvider {
                         this.kill();
                         return bl2;
                     } else {
-                        long l = this.level.getGameTime();
-                        if (l - this.lastHit > 5L && !bl) {
-                            this.level.broadcastEntityEvent(this, (byte)32);
+                        long gameTime = this.level.getGameTime();
+                        if (gameTime - this.lastHit > 5L && !bl) {
+                            this.level.broadcastEntityEvent(this, EntityEvent.HURT);
                             this.gameEvent(GameEvent.ENTITY_DAMAGE, source.getEntity());
-                            this.lastHit = l;
+                            this.lastHit = gameTime;
+                            this.invulnerableTime = 20;
+                            this.hurtDuration = 10;
+                            this.hurtTime = this.hurtDuration;
                         } else {
                             this.brokenByPlayer(source);
                             this.showBreakingParticles();
                             this.kill();
                         }
-
                         return true;
                     }
                 }
@@ -212,15 +241,10 @@ public class StrawStatue extends ArmorStand implements ArmorStandDataProvider {
 
     @Override
     public void handleEntityEvent(byte id) {
-        if (id == 32) {
-            if (this.level.isClientSide) {
-                this.level.playLocalSound(this.getX(), this.getY(), this.getZ(), SoundEvents.GRASS_HIT, this.getSoundSource(), 0.3F, 1.0F, false);
-                this.lastHit = this.level.getGameTime();
-            }
-        } else {
-            super.handleEntityEvent(id);
+        if (id == EntityEvent.HURT) {
+            this.lastHit = this.level.getGameTime();
         }
-
+        super.handleEntityEvent(id);
     }
 
     @Override
@@ -248,6 +272,6 @@ public class StrawStatue extends ArmorStand implements ArmorStandDataProvider {
 
     @Override
     public ArmorStandScreenType[] getScreenTypes() {
-        return new ArmorStandScreenType[]{ArmorStandScreenType.POSES, ArmorStandScreenType.ROTATIONS, ArmorStandScreenType.STRAW_STATUE_STYLE, ArmorStandScreenType.MODEL_PARTS, ArmorStandScreenType.POSITION, ArmorStandScreenType.EQUIPMENT};
+        return new ArmorStandScreenType[]{ArmorStandScreenType.ROTATIONS, ArmorStandScreenType.POSES, STRAW_STATUE_STYLE, MODEL_PARTS, ArmorStandScreenType.POSITION, ArmorStandScreenType.EQUIPMENT};
     }
 }

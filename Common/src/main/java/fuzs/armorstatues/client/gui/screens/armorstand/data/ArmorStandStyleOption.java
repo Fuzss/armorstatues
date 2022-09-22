@@ -1,6 +1,7 @@
 package fuzs.armorstatues.client.gui.screens.armorstand.data;
 
 import fuzs.armorstatues.mixin.accessor.ArmorStandAccessor;
+import fuzs.armorstatues.network.client.data.CommandDataSyncHandler;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.decoration.ArmorStand;
@@ -17,7 +18,7 @@ public enum ArmorStandStyleOption {
     NO_GRAVITY("noGravity", Entity::setNoGravity, Entity::isNoGravity),
     SEALED("sealed", (armorStand, setting) -> {
         armorStand.setInvulnerable(setting);
-        ((ArmorStandAccessor) armorStand).setDisabledSlots(setting ? 4144959 : 0);
+        ((ArmorStandAccessor) armorStand).setDisabledSlots(setting ? CommandDataSyncHandler.ARMOR_STAND_ALL_SLOTS_DISABLED : 0);
     }, Entity::isInvulnerable);
 
     private final String name;

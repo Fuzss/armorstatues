@@ -1,4 +1,4 @@
-package fuzs.armorstatues.client.model;
+package fuzs.strawstatues.client.model;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Iterables;

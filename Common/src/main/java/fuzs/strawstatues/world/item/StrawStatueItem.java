@@ -1,5 +1,6 @@
-package fuzs.armorstatues.world.item;
+package fuzs.strawstatues.world.item;
 
+import fuzs.armorstatues.handler.ArmorStandInteractHandler;
 import fuzs.armorstatues.init.ModRegistry;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
@@ -14,6 +15,7 @@ import net.minecraft.util.RandomSource;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.MobSpawnType;
 import net.minecraft.world.entity.decoration.ArmorStand;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
@@ -48,19 +50,21 @@ public class StrawStatueItem extends Item {
             AABB aABB = ModRegistry.STRAW_STATUE_ENTITY_TYPE.get().getDimensions().makeBoundingBox(vec3.x(), vec3.y(), vec3.z());
             if (level.noCollision(null, aABB) && level.getEntities(null, aABB).isEmpty()) {
                 if (level instanceof ServerLevel serverLevel) {
-                    ArmorStand armorStand = ModRegistry.STRAW_STATUE_ENTITY_TYPE.get().create(serverLevel, itemStack.getTag(), null, context.getPlayer(), blockPos, MobSpawnType.SPAWN_EGG, true, true);
+                    Player player = context.getPlayer();
+                    ArmorStand armorStand = ModRegistry.STRAW_STATUE_ENTITY_TYPE.get().create(serverLevel, itemStack.getTag(), null, player, blockPos, MobSpawnType.SPAWN_EGG, true, true);
                     if (armorStand == null) {
                         return InteractionResult.FAIL;
                     }
-
                     float f = (float) Mth.floor((Mth.wrapDegrees(context.getRotation() - 180.0F) + 22.5F) / 45.0F) * 45.0F;
                     armorStand.moveTo(armorStand.getX(), armorStand.getY(), armorStand.getZ(), f, 0.0F);
                     this.randomizePose(armorStand, level.random);
                     serverLevel.addFreshEntityWithPassengers(armorStand);
                     level.playSound(null, armorStand.getX(), armorStand.getY(), armorStand.getZ(), SoundEvents.GRASS_PLACE, SoundSource.BLOCKS, 0.75F, 0.8F);
-                    armorStand.gameEvent(GameEvent.ENTITY_PLACE, context.getPlayer());
+                    armorStand.gameEvent(GameEvent.ENTITY_PLACE, player);
+                    if (player != null && !player.isShiftKeyDown()) {
+                        ArmorStandInteractHandler.openArmorStatueMenu(player, armorStand);
+                    }
                 }
-
                 itemStack.shrink(1);
                 return InteractionResult.sidedSuccess(level.isClientSide);
             } else {

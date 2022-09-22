@@ -1,21 +1,21 @@
-package fuzs.armorstatues.network.client;
+package fuzs.strawstatues.network.client;
 
-import fuzs.armorstatues.world.entity.decoration.StrawStatue;
+import fuzs.strawstatues.world.entity.decoration.StrawStatue;
 import fuzs.armorstatues.world.inventory.ArmorStandMenu;
 import fuzs.puzzleslib.network.Message;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.player.PlayerModelPart;
 
-public class C2SPlayerStateModelPartMessage implements Message<C2SPlayerStateModelPartMessage> {
+public class C2SStrawStatueModelPartMessage implements Message<C2SStrawStatueModelPartMessage> {
     private PlayerModelPart modelPart;
     private boolean value;
 
-    public C2SPlayerStateModelPartMessage() {
+    public C2SStrawStatueModelPartMessage() {
 
     }
 
-    public C2SPlayerStateModelPartMessage(PlayerModelPart modelPart, boolean value) {
+    public C2SStrawStatueModelPartMessage(PlayerModelPart modelPart, boolean value) {
         this.modelPart = modelPart;
         this.value = value;
     }
@@ -33,11 +33,11 @@ public class C2SPlayerStateModelPartMessage implements Message<C2SPlayerStateMod
     }
 
     @Override
-    public MessageHandler<C2SPlayerStateModelPartMessage> makeHandler() {
+    public MessageHandler<C2SStrawStatueModelPartMessage> makeHandler() {
         return new MessageHandler<>() {
 
             @Override
-            public void handle(C2SPlayerStateModelPartMessage message, Player player, Object gameInstance) {
+            public void handle(C2SStrawStatueModelPartMessage message, Player player, Object gameInstance) {
                 if (player.containerMenu instanceof ArmorStandMenu menu && menu.stillValid(player)) {
                     ((StrawStatue) menu.getArmorStand()).setModelPart(message.modelPart, message.value);
                 }

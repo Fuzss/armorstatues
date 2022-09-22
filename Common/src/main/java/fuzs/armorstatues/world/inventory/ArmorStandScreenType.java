@@ -12,8 +12,6 @@ public class ArmorStandScreenType {
     public static final ArmorStandScreenType POSES = new ArmorStandScreenType("poses", new ItemStack(Items.SPYGLASS));
     public static final ArmorStandScreenType POSITION = new ArmorStandScreenType("position", new ItemStack(Items.GRASS_BLOCK));
     public static final ArmorStandScreenType ALIGNMENTS = new ArmorStandScreenType("alignments", new ItemStack(Items.DIAMOND_PICKAXE));
-    public static final ArmorStandScreenType MODEL_PARTS = new ArmorStandScreenType("modelParts", new ItemStack(Items.YELLOW_WOOL));
-    public static final ArmorStandScreenType STRAW_STATUE_STYLE = new ArmorStandScreenType("style", new ItemStack(Blocks.HAY_BLOCK));
 
     private final String name;
     private final ItemStack icon;

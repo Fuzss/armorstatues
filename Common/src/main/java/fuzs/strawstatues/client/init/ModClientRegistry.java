@@ -1,4 +1,4 @@
-package fuzs.armorstatues.client.init;
+package fuzs.strawstatues.client.init;
 
 import fuzs.armorstatues.ArmorStatues;
 import fuzs.puzzleslib.client.core.ClientCoreServices;

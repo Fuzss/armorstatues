@@ -1,4 +1,4 @@
-package fuzs.armorstatues.client.model;
+package fuzs.strawstatues.client.model;
 
 import net.minecraft.client.model.HumanoidModel;
 import net.minecraft.client.model.geom.ModelPart;

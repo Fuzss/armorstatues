@@ -1,16 +1,16 @@
-package fuzs.armorstatues.client.renderer.entity;
+package fuzs.strawstatues.client.renderer.entity;
 
 import com.mojang.authlib.GameProfile;
 import com.mojang.authlib.minecraft.MinecraftProfileTexture;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Vector3f;
 import fuzs.armorstatues.ArmorStatues;
-import fuzs.armorstatues.client.init.ModClientRegistry;
-import fuzs.armorstatues.client.model.StrawStatueArmorModel;
-import fuzs.armorstatues.client.model.StrawStatueModel;
-import fuzs.armorstatues.client.renderer.entity.layers.StrawStatueCapeLayer;
-import fuzs.armorstatues.client.renderer.entity.layers.StrawStatueDeadmau5EarsLayer;
-import fuzs.armorstatues.world.entity.decoration.StrawStatue;
+import fuzs.strawstatues.client.init.ModClientRegistry;
+import fuzs.strawstatues.client.model.StrawStatueArmorModel;
+import fuzs.strawstatues.client.model.StrawStatueModel;
+import fuzs.strawstatues.client.renderer.entity.layers.StrawStatueCapeLayer;
+import fuzs.strawstatues.client.renderer.entity.layers.StrawStatueDeadmau5EarsLayer;
+import fuzs.strawstatues.world.entity.decoration.StrawStatue;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;

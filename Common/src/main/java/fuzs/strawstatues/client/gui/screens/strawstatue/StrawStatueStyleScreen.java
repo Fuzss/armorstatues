@@ -1,9 +1,11 @@
-package fuzs.armorstatues.client.gui.screens.armorstand;
+package fuzs.strawstatues.client.gui.screens.strawstatue;
 
+import fuzs.armorstatues.client.gui.screens.armorstand.ArmorStandStyleScreen;
 import fuzs.armorstatues.client.gui.screens.armorstand.data.ArmorStandStyleOption;
 import fuzs.armorstatues.network.client.data.DataSyncHandler;
 import fuzs.armorstatues.world.inventory.ArmorStandHolder;
 import fuzs.armorstatues.world.inventory.ArmorStandScreenType;
+import fuzs.strawstatues.world.entity.decoration.StrawStatue;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
 
@@ -24,6 +26,6 @@ public class StrawStatueStyleScreen extends ArmorStandStyleScreen {
 
     @Override
     public ArmorStandScreenType getScreenType() {
-        return ArmorStandScreenType.STRAW_STATUE_STYLE;
+        return StrawStatue.STRAW_STATUE_STYLE;
     }
 }

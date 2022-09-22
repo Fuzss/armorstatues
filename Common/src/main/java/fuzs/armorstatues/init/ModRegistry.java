@@ -2,9 +2,9 @@ package fuzs.armorstatues.init;
 
 import com.mojang.authlib.GameProfile;
 import fuzs.armorstatues.ArmorStatues;
-import fuzs.armorstatues.world.entity.decoration.StrawStatue;
+import fuzs.strawstatues.world.entity.decoration.StrawStatue;
 import fuzs.armorstatues.world.inventory.ArmorStandMenu;
-import fuzs.armorstatues.world.item.StrawStatueItem;
+import fuzs.strawstatues.world.item.StrawStatueItem;
 import fuzs.puzzleslib.core.CoreServices;
 import fuzs.puzzleslib.init.RegistryManager;
 import fuzs.puzzleslib.init.RegistryReference;

@@ -22,6 +22,8 @@ import java.util.function.Predicate;
 import java.util.stream.Stream;
 
 public class CommandDataSyncHandler implements DataSyncHandler {
+    public static final int ARMOR_STAND_ALL_SLOTS_DISABLED = 4144959;
+
     @Nullable
     static ArmorStandScreenType lastType;
 
@@ -108,7 +110,7 @@ public class CommandDataSyncHandler implements DataSyncHandler {
         CompoundTag tag = new CompoundTag();
         tag.putBoolean(dataKey, value);
         if (styleOption == ArmorStandStyleOption.SEALED) {
-            tag.putInt("DisabledSlots", value ? 4144959 : 0);
+            tag.putInt("DisabledSlots", value ? ARMOR_STAND_ALL_SLOTS_DISABLED : 0);
         }
         this.sendCommand(tag);
     }
