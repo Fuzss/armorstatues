@@ -2,7 +2,7 @@ package fuzs.armorstatues.world.inventory;
 
 import com.mojang.datafixers.util.Pair;
 import fuzs.armorstatues.ArmorStatues;
-import fuzs.armorstatues.client.gui.screens.armorstand.data.ArmorStandStyleOption;
+import fuzs.armorstatues.api.client.gui.screens.armorstand.data.ArmorStandStyleOption;
 import fuzs.armorstatues.core.ModServices;
 import fuzs.armorstatues.init.ModRegistry;
 import fuzs.armorstatues.mixin.accessor.ArmorStandAccessor;

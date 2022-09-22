@@ -1,8 +1,8 @@
 package fuzs.strawstatues.client.gui.screens.strawstatue;
 
-import fuzs.armorstatues.client.gui.screens.armorstand.ArmorStandStyleScreen;
-import fuzs.armorstatues.client.gui.screens.armorstand.data.ArmorStandStyleOption;
-import fuzs.armorstatues.network.client.data.DataSyncHandler;
+import fuzs.armorstatues.api.client.gui.screens.armorstand.ArmorStandStyleScreen;
+import fuzs.armorstatues.api.client.gui.screens.armorstand.data.ArmorStandStyleOption;
+import fuzs.armorstatues.api.network.client.data.DataSyncHandler;
 import fuzs.armorstatues.world.inventory.ArmorStandHolder;
 import fuzs.armorstatues.world.inventory.ArmorStandScreenType;
 import fuzs.strawstatues.world.entity.decoration.StrawStatue;

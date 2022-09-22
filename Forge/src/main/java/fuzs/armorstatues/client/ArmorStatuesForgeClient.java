@@ -1,6 +1,7 @@
 package fuzs.armorstatues.client;
 
 import fuzs.armorstatues.ArmorStatues;
+import fuzs.armorstatues.api.client.ArmorStatuesApiClient;
 import fuzs.armorstatues.client.handler.ArmorStandTooltipHandler;
 import fuzs.puzzleslib.client.core.ClientCoreServices;
 import net.minecraftforge.api.distmarker.Dist;
@@ -15,7 +16,7 @@ public class ArmorStatuesForgeClient {
 
     @SubscribeEvent
     public static void onConstructMod(final FMLConstructModEvent evt) {
-        ClientCoreServices.FACTORIES.clientModConstructor(ArmorStatues.MOD_ID).accept(new ArmorStatuesClient());
+        ClientCoreServices.FACTORIES.clientModConstructor(ArmorStatues.MOD_ID).accept(new ArmorStatuesApiClient());
         registerHandlers();
     }
 

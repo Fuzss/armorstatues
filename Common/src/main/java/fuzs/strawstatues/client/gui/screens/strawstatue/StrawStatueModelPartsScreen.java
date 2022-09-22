@@ -1,10 +1,10 @@
 package fuzs.strawstatues.client.gui.screens.strawstatue;
 
 import fuzs.armorstatues.ArmorStatues;
-import fuzs.armorstatues.client.gui.components.TickBoxButton;
-import fuzs.armorstatues.client.gui.screens.armorstand.ArmorStandTickBoxScreen;
+import fuzs.armorstatues.api.client.gui.components.TickBoxButton;
+import fuzs.armorstatues.api.client.gui.screens.armorstand.ArmorStandTickBoxScreen;
 import fuzs.strawstatues.network.client.C2SStrawStatueModelPartMessage;
-import fuzs.armorstatues.network.client.data.DataSyncHandler;
+import fuzs.armorstatues.api.network.client.data.DataSyncHandler;
 import fuzs.strawstatues.world.entity.decoration.StrawStatue;
 import fuzs.armorstatues.world.inventory.ArmorStandHolder;
 import fuzs.armorstatues.world.inventory.ArmorStandScreenType;

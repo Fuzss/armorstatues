@@ -1,7 +1,7 @@
 package fuzs.armorstatues;
 
+import fuzs.armorstatues.api.network.client.*;
 import fuzs.armorstatues.init.ModRegistry;
-import fuzs.armorstatues.network.client.*;
 import fuzs.armorstatues.proxy.ClientProxy;
 import fuzs.armorstatues.proxy.Proxy;
 import fuzs.armorstatues.proxy.ServerProxy;
