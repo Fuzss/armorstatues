@@ -5,7 +5,7 @@ import com.google.common.collect.Lists;
 import com.mojang.blaze3d.vertex.PoseStack;
 import fuzs.armorstatues.api.client.gui.components.NewTextureButton;
 import fuzs.armorstatues.api.network.client.data.DataSyncHandler;
-import fuzs.armorstatues.world.inventory.ArmorStandHolder;
+import fuzs.armorstatues.api.world.inventory.ArmorStandHolder;
 import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.decoration.ArmorStand;

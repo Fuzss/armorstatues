@@ -1,9 +1,9 @@
 package fuzs.armorstatues.api.network.client.data;
 
-import fuzs.armorstatues.world.inventory.ArmorStandScreenType;
-import fuzs.armorstatues.api.client.gui.screens.armorstand.data.ArmorStandStyleOption;
-import fuzs.armorstatues.world.inventory.ArmorStandHolder;
-import fuzs.armorstatues.world.inventory.ArmorStandPose;
+import fuzs.armorstatues.api.world.inventory.data.ArmorStandScreenType;
+import fuzs.armorstatues.api.world.inventory.data.ArmorStandStyleOption;
+import fuzs.armorstatues.api.world.inventory.ArmorStandHolder;
+import fuzs.armorstatues.api.world.inventory.data.ArmorStandPose;
 import net.minecraft.SharedConstants;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.EntityType;

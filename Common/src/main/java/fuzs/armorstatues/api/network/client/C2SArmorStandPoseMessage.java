@@ -1,7 +1,7 @@
 package fuzs.armorstatues.api.network.client;
 
-import fuzs.armorstatues.world.inventory.ArmorStandMenu;
-import fuzs.armorstatues.world.inventory.ArmorStandPose;
+import fuzs.armorstatues.api.world.inventory.ArmorStandMenu;
+import fuzs.armorstatues.api.world.inventory.data.ArmorStandPose;
 import fuzs.puzzleslib.network.Message;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;

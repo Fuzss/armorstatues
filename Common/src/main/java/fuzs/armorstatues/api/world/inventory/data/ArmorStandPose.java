@@ -1,4 +1,4 @@
-package fuzs.armorstatues.world.inventory;
+package fuzs.armorstatues.api.world.inventory.data;
 
 import fuzs.armorstatues.mixin.accessor.ArmorStandAccessor;
 import net.minecraft.Util;

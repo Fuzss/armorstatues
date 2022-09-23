@@ -2,7 +2,7 @@ package fuzs.armorstatues.data;
 
 import com.google.common.collect.ImmutableList;
 import com.mojang.datafixers.util.Pair;
-import fuzs.armorstatues.init.ModRegistry;
+import fuzs.strawstatues.init.ModRegistry;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.data.loot.EntityLoot;
 import net.minecraft.data.loot.LootTableProvider;

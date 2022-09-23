@@ -2,9 +2,9 @@ package fuzs.armorstatues.api.client.gui.screens.armorstand;
 
 import com.google.common.collect.Maps;
 import fuzs.armorstatues.api.network.client.data.DataSyncHandler;
-import fuzs.armorstatues.world.inventory.ArmorStandHolder;
-import fuzs.armorstatues.world.inventory.ArmorStandMenu;
-import fuzs.armorstatues.world.inventory.ArmorStandScreenType;
+import fuzs.armorstatues.api.world.inventory.ArmorStandHolder;
+import fuzs.armorstatues.api.world.inventory.ArmorStandMenu;
+import fuzs.armorstatues.api.world.inventory.data.ArmorStandScreenType;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.gui.screens.inventory.MenuAccess;
 import net.minecraft.network.chat.Component;

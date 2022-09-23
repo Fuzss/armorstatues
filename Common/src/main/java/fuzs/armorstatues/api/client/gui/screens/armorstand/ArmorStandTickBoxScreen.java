@@ -3,7 +3,7 @@ package fuzs.armorstatues.api.client.gui.screens.armorstand;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import fuzs.armorstatues.api.network.client.data.DataSyncHandler;
-import fuzs.armorstatues.world.inventory.ArmorStandHolder;
+import fuzs.armorstatues.api.world.inventory.ArmorStandHolder;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.components.EditBox;

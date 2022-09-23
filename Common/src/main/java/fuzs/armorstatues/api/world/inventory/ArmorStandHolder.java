@@ -1,6 +1,6 @@
-package fuzs.armorstatues.world.inventory;
+package fuzs.armorstatues.api.world.inventory;
 
-import fuzs.armorstatues.world.entity.decoration.ArmorStandDataProvider;
+import fuzs.armorstatues.api.world.entity.decoration.ArmorStandDataProvider;
 import net.minecraft.world.entity.decoration.ArmorStand;
 
 public interface ArmorStandHolder {

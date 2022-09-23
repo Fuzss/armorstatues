@@ -1,10 +1,9 @@
-package fuzs.armorstatues.world.inventory;
+package fuzs.armorstatues.api.world.inventory;
 
 import com.mojang.datafixers.util.Pair;
-import fuzs.armorstatues.ArmorStatues;
-import fuzs.armorstatues.api.client.gui.screens.armorstand.data.ArmorStandStyleOption;
+import fuzs.armorstatues.api.ArmorStatuesApi;
+import fuzs.armorstatues.api.world.inventory.data.ArmorStandStyleOption;
 import fuzs.armorstatues.core.ModServices;
-import fuzs.armorstatues.init.ModRegistry;
 import fuzs.armorstatues.mixin.accessor.ArmorStandAccessor;
 import fuzs.armorstatues.mixin.accessor.SimpleContainerAccessor;
 import net.minecraft.core.NonNullList;
@@ -20,30 +19,31 @@ import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.InventoryMenu;
+import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 
 public class ArmorStandMenu extends AbstractContainerMenu implements ArmorStandHolder {
-    public static final ResourceLocation EMPTY_ARMOR_SLOT_SWORD = new ResourceLocation(ArmorStatues.MOD_ID, "item/empty_armor_slot_sword");
+    public static final ResourceLocation EMPTY_ARMOR_SLOT_SWORD = new ResourceLocation(ArmorStatuesApi.MOD_ID, "item/empty_armor_slot_sword");
     static final ResourceLocation[] TEXTURE_EMPTY_SLOTS = new ResourceLocation[]{InventoryMenu.EMPTY_ARMOR_SLOT_BOOTS, InventoryMenu.EMPTY_ARMOR_SLOT_LEGGINGS, InventoryMenu.EMPTY_ARMOR_SLOT_CHESTPLATE, InventoryMenu.EMPTY_ARMOR_SLOT_HELMET, InventoryMenu.EMPTY_ARMOR_SLOT_SHIELD, EMPTY_ARMOR_SLOT_SWORD};
     private static final EquipmentSlot[] SLOT_IDS = new EquipmentSlot[]{EquipmentSlot.HEAD, EquipmentSlot.CHEST, EquipmentSlot.LEGS, EquipmentSlot.FEET};
 
     private final Container armorStandInventory;
     private final ArmorStand armorStand;
 
-    public static ArmorStandMenu create(int containerId, Inventory inventory, FriendlyByteBuf buf) {
+    public static ArmorStandMenu create(MenuType<?> menuType, int containerId, Inventory inventory, FriendlyByteBuf buf) {
         // not sure how likely it is for this to fail, in that case the menu should just close immediately
         ArmorStand entity = (ArmorStand) inventory.player.level.getEntity(buf.readInt());
         if (entity != null) {
             // vanilla doesn't sync this automatically, we need it for one of our tick boxes
             entity.setInvulnerable(buf.readBoolean());
             // also create the armor stand container client side, so that visual update instantly instead of having to wait for the server to resync data
-            return create(containerId, inventory, entity);
+            return create(menuType, containerId, inventory, entity);
         }
-        return new ArmorStandMenu(containerId, inventory, new SimpleContainer(6), null);
+        return new ArmorStandMenu(menuType, containerId, inventory, new SimpleContainer(6), null);
     }
 
-    public static ArmorStandMenu create(int containerId, Inventory inventory, ArmorStand armorStand) {
+    public static ArmorStandMenu create(MenuType<?> menuType, int containerId, Inventory inventory, ArmorStand armorStand) {
         // we could also copy all items from the armor stand to a SimpleContainer, then update the armor stand using a listener using LivingEntity::setItemSlot
         // problem is that way we miss out on anything changing with the armor stand entity itself, therefore this approach
         NonNullList<ItemStack> armorItems = ((ArmorStandAccessor) armorStand).getArmorItems();
@@ -55,7 +55,7 @@ public class ArmorStandMenu extends AbstractContainerMenu implements ArmorStandH
             }
         });
         CompoundContainer container = new CompoundContainer(simpleContainer(armorItems), handItemsContainer);
-        return new ArmorStandMenu(containerId, inventory, container, armorStand);
+        return new ArmorStandMenu(menuType, containerId, inventory, container, armorStand);
     }
 
     private static SimpleContainer simpleContainer(NonNullList<ItemStack> items) {
@@ -64,8 +64,8 @@ public class ArmorStandMenu extends AbstractContainerMenu implements ArmorStandH
         return container;
     }
 
-    private ArmorStandMenu(int containerId, Inventory inventory, Container container, ArmorStand armorStand) {
-        super(ModRegistry.ARMOR_STAND_MENU_TYPE.get(), containerId);
+    private ArmorStandMenu(MenuType<?> menuType, int containerId, Inventory inventory, Container container, ArmorStand armorStand) {
+        super(menuType, containerId);
         this.armorStandInventory = container;
         this.armorStand = armorStand;
         for (int k = 0; k < 4; ++k) {

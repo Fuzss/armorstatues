@@ -1,6 +1,6 @@
 package fuzs.armorstatues.data;
 
-import fuzs.armorstatues.init.ModRegistry;
+import fuzs.strawstatues.init.ModRegistry;
 import net.minecraft.data.DataGenerator;
 import net.minecraftforge.client.model.generators.ItemModelProvider;
 import net.minecraftforge.common.data.ExistingFileHelper;

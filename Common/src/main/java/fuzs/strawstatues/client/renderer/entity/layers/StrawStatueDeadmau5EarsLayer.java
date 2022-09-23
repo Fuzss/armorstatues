@@ -17,9 +17,9 @@ import net.minecraft.util.Mth;
 
 import java.util.Optional;
 
-public class StrawStatueDeadmau5EarsLayer extends RenderLayer<StrawStatue, StrawStatueModel<StrawStatue>> {
+public class StrawStatueDeadmau5EarsLayer extends RenderLayer<StrawStatue, StrawStatueModel> {
 
-    public StrawStatueDeadmau5EarsLayer(RenderLayerParent<StrawStatue, StrawStatueModel<StrawStatue>> renderLayerParent) {
+    public StrawStatueDeadmau5EarsLayer(RenderLayerParent<StrawStatue, StrawStatueModel> renderLayerParent) {
         super(renderLayerParent);
     }
 

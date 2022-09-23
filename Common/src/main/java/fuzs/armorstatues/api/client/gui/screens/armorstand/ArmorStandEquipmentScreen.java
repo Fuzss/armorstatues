@@ -2,11 +2,11 @@ package fuzs.armorstatues.api.client.gui.screens.armorstand;
 
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
-import fuzs.armorstatues.ArmorStatues;
-import fuzs.armorstatues.world.inventory.ArmorStandScreenType;
+import fuzs.armorstatues.api.ArmorStatuesApi;
+import fuzs.armorstatues.api.world.inventory.data.ArmorStandScreenType;
 import fuzs.armorstatues.api.network.client.data.DataSyncHandler;
-import fuzs.armorstatues.world.inventory.ArmorStandHolder;
-import fuzs.armorstatues.world.inventory.ArmorStandMenu;
+import fuzs.armorstatues.api.world.inventory.ArmorStandHolder;
+import fuzs.armorstatues.api.world.inventory.ArmorStandMenu;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.client.gui.screens.inventory.InventoryScreen;
@@ -17,7 +17,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Inventory;
 
 public class ArmorStandEquipmentScreen extends AbstractContainerScreen<ArmorStandMenu> implements ArmorStandScreen {
-    private static final ResourceLocation ARMOR_STAND_EQUIPMENT_LOCATION = new ResourceLocation(ArmorStatues.MOD_ID, "textures/gui/container/armor_stand/equipment.png");
+    private static final ResourceLocation ARMOR_STAND_EQUIPMENT_LOCATION = new ResourceLocation(ArmorStatuesApi.MOD_ID, "textures/gui/container/armor_stand/equipment.png");
 
     private final Inventory inventory;
     private final DataSyncHandler dataSyncHandler;

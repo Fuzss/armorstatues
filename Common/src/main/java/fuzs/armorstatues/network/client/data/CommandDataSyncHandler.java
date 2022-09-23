@@ -1,8 +1,9 @@
-package fuzs.armorstatues.api.network.client.data;
+package fuzs.armorstatues.network.client.data;
 
-import fuzs.armorstatues.world.inventory.ArmorStandScreenType;
-import fuzs.armorstatues.api.client.gui.screens.armorstand.data.ArmorStandStyleOption;
-import fuzs.armorstatues.world.inventory.ArmorStandPose;
+import fuzs.armorstatues.api.network.client.data.DataSyncHandler;
+import fuzs.armorstatues.api.world.inventory.data.ArmorStandPose;
+import fuzs.armorstatues.api.world.inventory.data.ArmorStandScreenType;
+import fuzs.armorstatues.api.world.inventory.data.ArmorStandStyleOption;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.nbt.CompoundTag;
@@ -25,7 +26,7 @@ public class CommandDataSyncHandler implements DataSyncHandler {
     public static final int ARMOR_STAND_ALL_SLOTS_DISABLED = 4144959;
 
     @Nullable
-    static ArmorStandScreenType lastType;
+    public static ArmorStandScreenType lastType;
 
     private final ArmorStand armorStand;
     private ArmorStandPose lastSyncedPose;
@@ -98,20 +99,8 @@ public class CommandDataSyncHandler implements DataSyncHandler {
     public void sendStyleOption(ArmorStandStyleOption styleOption, boolean value) {
         if (!this.testPermissionLevel()) return;
         DataSyncHandler.super.sendStyleOption(styleOption, value);
-        String dataKey = switch (styleOption) {
-            case SHOW_NAME -> "CustomNameVisible";
-            case SHOW_ARMS -> "ShowArms";
-            case SMALL -> "Small";
-            case INVISIBLE -> "Invisible";
-            case NO_BASE_PLATE -> "NoBasePlate";
-            case NO_GRAVITY -> "NoGravity";
-            case SEALED -> "Invulnerable";
-        };
         CompoundTag tag = new CompoundTag();
-        tag.putBoolean(dataKey, value);
-        if (styleOption == ArmorStandStyleOption.SEALED) {
-            tag.putInt("DisabledSlots", value ? ARMOR_STAND_ALL_SLOTS_DISABLED : 0);
-        }
+        styleOption.toTag(tag, value);
         this.sendCommand(tag);
     }
 

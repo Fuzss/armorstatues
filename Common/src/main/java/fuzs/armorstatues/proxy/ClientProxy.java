@@ -1,8 +1,8 @@
 package fuzs.armorstatues.proxy;
 
 import fuzs.armorstatues.api.client.gui.screens.armorstand.ArmorStandScreenFactory;
-import fuzs.armorstatues.api.network.client.data.CommandDataSyncHandler;
-import fuzs.armorstatues.world.inventory.ArmorStandHolder;
+import fuzs.armorstatues.network.client.data.CommandDataSyncHandler;
+import fuzs.armorstatues.api.world.inventory.ArmorStandHolder;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.world.entity.decoration.ArmorStand;

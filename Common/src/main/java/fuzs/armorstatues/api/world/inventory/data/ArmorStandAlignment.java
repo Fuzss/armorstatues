@@ -1,6 +1,5 @@
-package fuzs.armorstatues.api.client.gui.screens.armorstand.data;
+package fuzs.armorstatues.api.world.inventory.data;
 
-import fuzs.armorstatues.world.inventory.ArmorStandPose;
 import net.minecraft.core.Rotations;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.phys.Vec3;

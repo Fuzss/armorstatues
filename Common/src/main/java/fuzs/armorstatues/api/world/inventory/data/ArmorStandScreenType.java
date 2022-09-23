@@ -1,9 +1,8 @@
-package fuzs.armorstatues.world.inventory;
+package fuzs.armorstatues.api.world.inventory.data;
 
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
-import net.minecraft.world.level.block.Blocks;
 
 public class ArmorStandScreenType {
     public static final ArmorStandScreenType EQUIPMENT = new ArmorStandScreenType("equipment", new ItemStack(Items.IRON_CHESTPLATE), true);

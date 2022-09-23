@@ -66,6 +66,8 @@
   "armorstatues.screen.style.showArms.description": "Shows the armor stand's arms, so it may hold items in both hands.",
   "armorstatues.screen.style.showName": "Show Name",
   "armorstatues.screen.style.showName.description": "Render the armor stand's name tag above it's head.",
+  "armorstatues.screen.style.slimArms": "Slim Arms",
+  "armorstatues.screen.style.slimArms.description": "Makes the armor stand's arms a few pixels less wide, like the Alex skin.",
   "armorstatues.screen.style.small": "Small",
   "armorstatues.screen.style.small.description": "Makes the armor stand half it's size like a baby mob.",
   "armorstatues.screen.type.alignments": "Alignments",

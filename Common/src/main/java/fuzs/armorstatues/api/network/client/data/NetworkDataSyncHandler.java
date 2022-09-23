@@ -1,11 +1,11 @@
 package fuzs.armorstatues.api.network.client.data;
 
-import fuzs.armorstatues.ArmorStatues;
-import fuzs.armorstatues.api.client.gui.screens.armorstand.data.ArmorStandStyleOption;
+import fuzs.armorstatues.api.ArmorStatuesApi;
 import fuzs.armorstatues.api.network.client.*;
-import fuzs.armorstatues.network.client.*;
-import fuzs.armorstatues.world.inventory.ArmorStandPose;
-import fuzs.armorstatues.world.inventory.ArmorStandScreenType;
+import fuzs.armorstatues.api.world.inventory.data.ArmorStandPose;
+import fuzs.armorstatues.api.world.inventory.data.ArmorStandScreenType;
+import fuzs.armorstatues.api.world.inventory.data.ArmorStandStyleOption;
+import fuzs.armorstatues.network.client.data.CommandDataSyncHandler;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.entity.decoration.ArmorStand;
 import org.jetbrains.annotations.Nullable;
@@ -32,7 +32,7 @@ public class NetworkDataSyncHandler implements DataSyncHandler {
     @Override
     public void sendName(String name) {
         DataSyncHandler.super.sendName(name);
-        ArmorStatues.NETWORK.sendToServer(new C2SArmorStandNameMessage(name));
+        ArmorStatuesApi.NETWORK.sendToServer(new C2SArmorStandNameMessage(name));
     }
 
     @Override
@@ -40,25 +40,25 @@ public class NetworkDataSyncHandler implements DataSyncHandler {
         DataSyncHandler.super.sendPose(currentPose);
         CompoundTag tag = new CompoundTag();
         currentPose.serializeAllPoses(tag);
-        ArmorStatues.NETWORK.sendToServer(new C2SArmorStandPoseMessage(tag));
+        ArmorStatuesApi.NETWORK.sendToServer(new C2SArmorStandPoseMessage(tag));
     }
 
     @Override
     public void sendPosition(double posX, double posY, double posZ) {
         DataSyncHandler.super.sendPosition(posX, posY, posZ);
-        ArmorStatues.NETWORK.sendToServer(new C2SArmorStandPositionMessage(posX, posY, posZ));
+        ArmorStatuesApi.NETWORK.sendToServer(new C2SArmorStandPositionMessage(posX, posY, posZ));
     }
 
     @Override
     public void sendRotation(float rotation) {
         DataSyncHandler.super.sendRotation(rotation);
-        ArmorStatues.NETWORK.sendToServer(new C2SArmorStandRotationMessage(rotation));
+        ArmorStatuesApi.NETWORK.sendToServer(new C2SArmorStandRotationMessage(rotation));
     }
 
     @Override
     public void sendStyleOption(ArmorStandStyleOption styleOption, boolean value) {
         DataSyncHandler.super.sendStyleOption(styleOption, value);
-        ArmorStatues.NETWORK.sendToServer(new C2SArmorStandStyleMessage(styleOption, value));
+        ArmorStatuesApi.NETWORK.sendToServer(new C2SArmorStandStyleMessage(styleOption, value));
     }
 
     @Override

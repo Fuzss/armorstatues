@@ -1,6 +1,6 @@
-package fuzs.armorstatues.world.entity.decoration;
+package fuzs.armorstatues.api.world.entity.decoration;
 
-import fuzs.armorstatues.world.inventory.ArmorStandScreenType;
+import fuzs.armorstatues.api.world.inventory.data.ArmorStandScreenType;
 import net.minecraft.network.chat.Component;
 
 public interface ArmorStandDataProvider {

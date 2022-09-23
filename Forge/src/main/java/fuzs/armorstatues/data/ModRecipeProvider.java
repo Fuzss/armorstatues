@@ -1,6 +1,6 @@
 package fuzs.armorstatues.data;
 
-import fuzs.armorstatues.init.ModRegistry;
+import fuzs.strawstatues.init.ModRegistry;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.data.recipes.FinishedRecipe;
 import net.minecraft.data.recipes.RecipeProvider;

@@ -1,6 +1,6 @@
 package fuzs.armorstatues.data;
 
-import fuzs.armorstatues.init.ModRegistry;
+import fuzs.strawstatues.init.ModRegistry;
 import net.minecraft.data.DataGenerator;
 import net.minecraftforge.common.data.LanguageProvider;
 
@@ -14,7 +14,10 @@ public class ModLanguageProvider extends LanguageProvider {
     protected void addTranslations() {
         this.add(ModRegistry.STRAW_STATUE_ITEM.get(), "Straw Statue");
         this.add(ModRegistry.STRAW_STATUE_ENTITY_TYPE.get(), "Straw Statue");
-        this.add("armorstatues.item.straw_statue.description", "Shift + right-click to open configuration screen when placed.");
+        this.add("strawstatues.item.straw_statue.description", "Shift + right-click to open configuration screen when placed.");
+        this.add("armorstatues.screen.type.modelParts", "Model Parts");
+        this.add("armorstatues.screen.style.slimArms", "Slim Arms");
+        this.add("armorstatues.screen.style.slimArms.description", "Makes the statue's arms a few pixels less wide, like Minecraft's Alex skin.");
         this.add("armorstatues.item.armor_stand.description", "Shift + right-click to open configuration screen when placed.");
         this.add("armorstatues.entity.armor_stand.pose.athena", "Athena");
         this.add("armorstatues.entity.armor_stand.pose.brandish", "Brandish");
@@ -35,7 +38,6 @@ public class ModLanguageProvider extends LanguageProvider {
         this.add("armorstatues.screen.type.poses", "Poses");
         this.add("armorstatues.screen.type.position", "Position");
         this.add("armorstatues.screen.type.alignments", "Alignments");
-        this.add("armorstatues.screen.type.modelParts", "Model Parts");
         this.add("armorstatues.screen.style.showArms", "Show Arms");
         this.add("armorstatues.screen.style.small", "Small");
         this.add("armorstatues.screen.style.invisible", "Invisible");
@@ -44,14 +46,14 @@ public class ModLanguageProvider extends LanguageProvider {
         this.add("armorstatues.screen.style.noGravity", "No Gravity");
         this.add("armorstatues.screen.style.glowing", "Glowing");
         this.add("armorstatues.screen.style.sealed", "Sealed");
-        this.add("armorstatues.screen.style.showArms.description", "Shows the armor stand's arms, so it may hold items in both hands.");
-        this.add("armorstatues.screen.style.small.description", "Makes the armor stand half it's size like a baby mob.");
-        this.add("armorstatues.screen.style.invisible.description", "Makes the armor stand itself invisible, but still shows all equipped items.");
-        this.add("armorstatues.screen.style.noBasePlate.description", "Hide the stone base plate at the armor stand's feet.");
-        this.add("armorstatues.screen.style.showName.description", "Render the armor stand's name tag above it's head.");
-        this.add("armorstatues.screen.style.noGravity.description", "Prevents the armor stand from falling down, so it may float freely.");
-        this.add("armorstatues.screen.style.glowing.description", "Adds a glowing outline to the armor stand, visible through blocks.");
-        this.add("armorstatues.screen.style.sealed.description", "The armor stand can no longer be broken, equipment cannot be changed. Disallows opening this menu in survival mode.");
+        this.add("armorstatues.screen.style.showArms.description", "Shows the statue's arms, so it may hold items in both hands.");
+        this.add("armorstatues.screen.style.small.description", "Makes the statue half it's size like a baby mob.");
+        this.add("armorstatues.screen.style.invisible.description", "Makes the statue itself invisible, but still shows all equipped items.");
+        this.add("armorstatues.screen.style.noBasePlate.description", "Hide the stone base plate at the statue's feet.");
+        this.add("armorstatues.screen.style.showName.description", "Render the statue's name tag above it's head.");
+        this.add("armorstatues.screen.style.noGravity.description", "Prevents the statue from falling down, so it may float freely.");
+        this.add("armorstatues.screen.style.glowing.description", "Adds a glowing outline to the statue, visible through blocks.");
+        this.add("armorstatues.screen.style.sealed.description", "The statue can no longer be broken, equipment cannot be changed. Disallows opening this menu in survival mode.");
         this.add("armorstatues.screen.position.rotation", "Rotation:");
         this.add("armorstatues.screen.position.degrees", "%s\u00B0");
         this.add("armorstatues.screen.position.moveBy", "Move By:");

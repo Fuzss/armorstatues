@@ -21,9 +21,9 @@ import net.minecraft.world.item.Items;
 
 import java.util.Optional;
 
-public class StrawStatueCapeLayer extends RenderLayer<StrawStatue, StrawStatueModel<StrawStatue>> {
+public class StrawStatueCapeLayer extends RenderLayer<StrawStatue, StrawStatueModel> {
 
-    public StrawStatueCapeLayer(RenderLayerParent<StrawStatue, StrawStatueModel<StrawStatue>> pRenderer) {
+    public StrawStatueCapeLayer(RenderLayerParent<StrawStatue, StrawStatueModel> pRenderer) {
         super(pRenderer);
     }
 

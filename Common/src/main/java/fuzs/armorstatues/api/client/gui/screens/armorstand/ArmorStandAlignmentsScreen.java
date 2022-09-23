@@ -3,11 +3,11 @@ package fuzs.armorstatues.api.client.gui.screens.armorstand;
 import com.google.common.collect.Lists;
 import fuzs.armorstatues.api.client.gui.components.TickingButton;
 import fuzs.armorstatues.api.client.gui.components.TickButton;
-import fuzs.armorstatues.api.client.gui.screens.armorstand.data.ArmorStandAlignment;
-import fuzs.armorstatues.world.inventory.ArmorStandScreenType;
-import fuzs.armorstatues.api.client.gui.screens.armorstand.data.ArmorStandStyleOption;
+import fuzs.armorstatues.api.world.inventory.data.ArmorStandAlignment;
+import fuzs.armorstatues.api.world.inventory.data.ArmorStandScreenType;
+import fuzs.armorstatues.api.world.inventory.data.ArmorStandStyleOptions;
 import fuzs.armorstatues.api.network.client.data.DataSyncHandler;
-import fuzs.armorstatues.world.inventory.ArmorStandHolder;
+import fuzs.armorstatues.api.world.inventory.ArmorStandHolder;
 import net.minecraft.Util;
 import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.components.ImageButton;
@@ -107,10 +107,10 @@ public class ArmorStandAlignmentsScreen extends ArmorStandWidgetsScreen {
                 ArmorStand armorStand = ArmorStandAlignmentsScreen.this.holder.getArmorStand();
                 this.setNewPosition(this.getCurrentPosition().align(EnumSet.allOf(Direction.Axis.class)).add(0.5, 0.0, 0.5).add(this.alignment.getPosition(armorStand.isSmall())));
                 if (!armorStand.isInvisible()) {
-                    ArmorStandAlignmentsScreen.this.dataSyncHandler.sendStyleOption(ArmorStandStyleOption.INVISIBLE, true);
+                    ArmorStandAlignmentsScreen.this.dataSyncHandler.sendStyleOption(ArmorStandStyleOptions.INVISIBLE, true);
                 }
                 if (!armorStand.isNoGravity()) {
-                    ArmorStandAlignmentsScreen.this.dataSyncHandler.sendStyleOption(ArmorStandStyleOption.NO_GRAVITY, true);
+                    ArmorStandAlignmentsScreen.this.dataSyncHandler.sendStyleOption(ArmorStandStyleOptions.NO_GRAVITY, true);
                 }
             })));
         }

@@ -1,7 +1,7 @@
 package fuzs.armorstatues.api.client.gui.screens.armorstand;
 
-import fuzs.armorstatues.world.inventory.ArmorStandScreenType;
-import fuzs.armorstatues.world.inventory.ArmorStandMenu;
+import fuzs.armorstatues.api.world.inventory.data.ArmorStandScreenType;
+import fuzs.armorstatues.api.world.inventory.ArmorStandMenu;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.gui.screens.inventory.MenuAccess;
 

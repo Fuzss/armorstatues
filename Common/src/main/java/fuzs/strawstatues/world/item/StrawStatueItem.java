@@ -1,7 +1,7 @@
 package fuzs.strawstatues.world.item;
 
-import fuzs.armorstatues.handler.ArmorStandInteractHandler;
-import fuzs.armorstatues.init.ModRegistry;
+import fuzs.armorstatues.api.helper.ArmorStandInteractHelper;
+import fuzs.strawstatues.init.ModRegistry;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -30,7 +30,7 @@ import org.jetbrains.annotations.Nullable;
 import java.util.List;
 
 public class StrawStatueItem extends Item {
-    private static final Component TOOLTIP_DESCRIPTION = Component.translatable("armorstatues.item.straw_statue.description").withStyle(ChatFormatting.GRAY);
+    private static final Component TOOLTIP_DESCRIPTION = Component.translatable("strawstatues.item.straw_statue.description").withStyle(ChatFormatting.GRAY);
 
     public StrawStatueItem(Properties properties) {
         super(properties);
@@ -62,7 +62,7 @@ public class StrawStatueItem extends Item {
                     level.playSound(null, armorStand.getX(), armorStand.getY(), armorStand.getZ(), SoundEvents.GRASS_PLACE, SoundSource.BLOCKS, 0.75F, 0.8F);
                     armorStand.gameEvent(GameEvent.ENTITY_PLACE, player);
                     if (player != null && !player.isShiftKeyDown()) {
-                        ArmorStandInteractHandler.openArmorStatueMenu(player, armorStand);
+                        ArmorStandInteractHelper.openArmorStatueMenu(player, armorStand, ModRegistry.STRAW_STATUE_MENU_TYPE.get());
                     }
                 }
                 itemStack.shrink(1);

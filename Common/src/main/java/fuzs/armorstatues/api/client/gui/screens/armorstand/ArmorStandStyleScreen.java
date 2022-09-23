@@ -2,10 +2,11 @@ package fuzs.armorstatues.api.client.gui.screens.armorstand;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import fuzs.armorstatues.api.client.gui.components.TickBoxButton;
-import fuzs.armorstatues.api.client.gui.screens.armorstand.data.ArmorStandStyleOption;
+import fuzs.armorstatues.api.world.inventory.data.ArmorStandStyleOption;
+import fuzs.armorstatues.api.world.inventory.data.ArmorStandStyleOptions;
 import fuzs.armorstatues.api.network.client.data.DataSyncHandler;
-import fuzs.armorstatues.world.inventory.ArmorStandHolder;
-import fuzs.armorstatues.world.inventory.ArmorStandScreenType;
+import fuzs.armorstatues.api.world.inventory.ArmorStandHolder;
+import fuzs.armorstatues.api.world.inventory.data.ArmorStandScreenType;
 import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.network.chat.Component;
@@ -22,8 +23,8 @@ public class ArmorStandStyleScreen extends ArmorStandTickBoxScreen<ArmorStandSty
 
     @Override
     protected ArmorStandStyleOption[] getAllTickBoxValues() {
-        return Stream.of(ArmorStandStyleOption.values())
-                .filter(option -> this.minecraft.player.getAbilities().instabuild || !option.onlyCreative())
+        return Stream.of(ArmorStandStyleOptions.values())
+                .filter(option -> option.allowChanges(this.minecraft.player))
                 .toArray(ArmorStandStyleOption[]::new);
     }
 

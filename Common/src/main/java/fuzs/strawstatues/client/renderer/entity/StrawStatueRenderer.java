@@ -4,7 +4,7 @@ import com.mojang.authlib.GameProfile;
 import com.mojang.authlib.minecraft.MinecraftProfileTexture;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Vector3f;
-import fuzs.armorstatues.ArmorStatues;
+import fuzs.armorstatues.api.ArmorStatuesApi;
 import fuzs.strawstatues.client.init.ModClientRegistry;
 import fuzs.strawstatues.client.model.StrawStatueArmorModel;
 import fuzs.strawstatues.client.model.StrawStatueModel;
@@ -28,12 +28,12 @@ import org.jetbrains.annotations.Nullable;
 import java.util.Map;
 import java.util.Optional;
 
-public class StrawStatueRenderer extends LivingEntityRenderer<StrawStatue, StrawStatueModel<StrawStatue>> {
-    public static final ResourceLocation STRAW_STATUE_LOCATION = new ResourceLocation(ArmorStatues.MOD_ID, "textures/entity/straw_statue.png");
+public class StrawStatueRenderer extends LivingEntityRenderer<StrawStatue, StrawStatueModel> {
+    public static final ResourceLocation STRAW_STATUE_LOCATION = new ResourceLocation(ArmorStatuesApi.MOD_ID, "textures/entity/straw_statue.png");
 
-    public StrawStatueRenderer(EntityRendererProvider.Context context, boolean slimModel) {
-        super(context, new StrawStatueModel<>(context.bakeLayer(slimModel ? ModClientRegistry.STRAW_STATUE_SLIM : ModClientRegistry.STRAW_STATUE), slimModel), 0.0F);
-        this.addLayer(new HumanoidArmorLayer<>(this, new StrawStatueArmorModel<>(context.bakeLayer(slimModel ? ModClientRegistry.STRAW_STATUE_SLIM_INNER_ARMOR : ModClientRegistry.STRAW_STATUE_INNER_ARMOR)), new StrawStatueArmorModel<>(context.bakeLayer(slimModel ? ModClientRegistry.STRAW_STATUE_SLIM_OUTER_ARMOR : ModClientRegistry.STRAW_STATUE_OUTER_ARMOR))));
+    public StrawStatueRenderer(EntityRendererProvider.Context context) {
+        super(context, new StrawStatueModel(context.bakeLayer(ModClientRegistry.STRAW_STATUE), false), 0.0F);
+        this.addLayer(new HumanoidArmorLayer<>(this, new StrawStatueArmorModel<>(context.bakeLayer(ModClientRegistry.STRAW_STATUE_INNER_ARMOR)), new StrawStatueArmorModel<>(context.bakeLayer(ModClientRegistry.STRAW_STATUE_OUTER_ARMOR))));
         this.addLayer(new ItemInHandLayer<>(this, context.getItemInHandRenderer()));
         this.addLayer(new ElytraLayer<>(this, context.getModelSet()));
         this.addLayer(new StrawStatueDeadmau5EarsLayer(this));
@@ -48,14 +48,14 @@ public class StrawStatueRenderer extends LivingEntityRenderer<StrawStatue, Straw
     }
 
     private void setModelProperties(StrawStatue entity) {
-        StrawStatueModel<StrawStatue> model = this.getModel();
+        StrawStatueModel model = this.getModel();
         model.setAllVisible(true);
         model.hat.visible = entity.isModelPartShown(PlayerModelPart.HAT);
         model.jacket.visible = entity.isModelPartShown(PlayerModelPart.JACKET);
         model.leftPants.visible = entity.isModelPartShown(PlayerModelPart.LEFT_PANTS_LEG);
         model.rightPants.visible = entity.isModelPartShown(PlayerModelPart.RIGHT_PANTS_LEG);
-        model.leftSleeve.visible = entity.isModelPartShown(PlayerModelPart.LEFT_SLEEVE);
-        model.rightSleeve.visible = entity.isModelPartShown(PlayerModelPart.RIGHT_SLEEVE);
+        model.leftSleeve.visible = model.slimLeftSleeve.visible = entity.isModelPartShown(PlayerModelPart.LEFT_SLEEVE);
+        model.rightSleeve.visible = model.slimRightSleeve.visible = entity.isModelPartShown(PlayerModelPart.RIGHT_SLEEVE);
     }
 
     @Override

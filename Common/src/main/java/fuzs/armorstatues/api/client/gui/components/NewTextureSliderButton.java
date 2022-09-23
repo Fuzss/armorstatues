@@ -2,7 +2,7 @@ package fuzs.armorstatues.api.client.gui.components;
 
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
-import fuzs.armorstatues.world.inventory.ArmorStandPose;
+import fuzs.armorstatues.api.world.inventory.data.ArmorStandPose;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.components.AbstractSliderButton;

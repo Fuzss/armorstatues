@@ -1,12 +1,12 @@
 package fuzs.strawstatues.world.entity.decoration;
 
 import com.mojang.authlib.GameProfile;
-import fuzs.armorstatues.api.client.gui.screens.armorstand.data.ArmorStandStyleOption;
-import fuzs.armorstatues.handler.ArmorStandInteractHandler;
-import fuzs.armorstatues.init.ModRegistry;
+import fuzs.armorstatues.api.helper.ArmorStandInteractHelper;
 import fuzs.armorstatues.mixin.accessor.ArmorStandAccessor;
-import fuzs.armorstatues.world.entity.decoration.ArmorStandDataProvider;
-import fuzs.armorstatues.world.inventory.ArmorStandScreenType;
+import fuzs.armorstatues.api.world.entity.decoration.ArmorStandDataProvider;
+import fuzs.armorstatues.api.world.inventory.data.ArmorStandScreenType;
+import fuzs.armorstatues.api.world.inventory.data.ArmorStandStyleOption;
+import fuzs.strawstatues.init.ModRegistry;
 import net.minecraft.core.particles.BlockParticleOption;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
@@ -48,8 +48,30 @@ public class StrawStatue extends ArmorStand implements ArmorStandDataProvider {
     public static final EntityDataAccessor<Optional<GameProfile>> DATA_OWNER = SynchedEntityData.defineId(StrawStatue.class, ModRegistry.GAME_PROFILE_ENTITY_DATA_SERIALIZER);
     public static final EntityDataAccessor<Boolean> DATA_SLIM_ARMS = SynchedEntityData.defineId(StrawStatue.class, EntityDataSerializers.BOOLEAN);
     public static final EntityDataAccessor<Byte> DATA_PLAYER_MODE_CUSTOMISATION = SynchedEntityData.defineId(StrawStatue.class, EntityDataSerializers.BYTE);
-    public static final ArmorStandScreenType MODEL_PARTS = new ArmorStandScreenType("modelParts", new ItemStack(Items.YELLOW_WOOL));
-    public static final ArmorStandScreenType STRAW_STATUE_STYLE = new ArmorStandScreenType("style", new ItemStack(Blocks.HAY_BLOCK));
+    public static final ArmorStandScreenType MODEL_PARTS_SCREEN_TYPE = new ArmorStandScreenType("modelParts", new ItemStack(Items.YELLOW_WOOL));
+    public static final ArmorStandScreenType STRAW_STATUE_STYLE_SCREEN_TYPE = new ArmorStandScreenType("style", new ItemStack(Blocks.HAY_BLOCK));
+    public static final ArmorStandStyleOption SLIM_ARMS_STYLE_OPTION = new ArmorStandStyleOption() {
+
+        @Override
+        public String getName() {
+            return "slimArms";
+        }
+
+        @Override
+        public void setOption(ArmorStand armorStand, boolean setting) {
+            ((StrawStatue) armorStand).setSlimArms(setting);
+        }
+
+        @Override
+        public boolean getOption(ArmorStand armorStand) {
+            return ((StrawStatue) armorStand).slimArms();
+        }
+
+        @Override
+        public void toTag(CompoundTag tag, boolean currentValue) {
+            tag.putBoolean(SLIM_ARMS_KEY, currentValue);
+        }
+    };
 
     public StrawStatue(EntityType<? extends StrawStatue> entityType, Level level) {
         super(entityType, level);
@@ -107,7 +129,7 @@ public class StrawStatue extends ArmorStand implements ArmorStandDataProvider {
 
     @Override
     public InteractionResult interactAt(Player player, Vec3 vec, InteractionHand hand) {
-        return ArmorStandInteractHandler.tryOpenArmorStatueMenu(player, this.level, this).orElseGet(() -> super.interactAt(player, vec, hand));
+        return ArmorStandInteractHelper.tryOpenArmorStatueMenu(player, this.level, this, ModRegistry.STRAW_STATUE_MENU_TYPE.get()).orElseGet(() -> super.interactAt(player, vec, hand));
     }
 
     @Override
@@ -272,7 +294,7 @@ public class StrawStatue extends ArmorStand implements ArmorStandDataProvider {
 
     @Override
     public ArmorStandScreenType[] getScreenTypes() {
-        return new ArmorStandScreenType[]{ArmorStandScreenType.ROTATIONS, ArmorStandScreenType.POSES, STRAW_STATUE_STYLE, MODEL_PARTS, ArmorStandScreenType.POSITION, ArmorStandScreenType.EQUIPMENT};
+        return new ArmorStandScreenType[]{ArmorStandScreenType.ROTATIONS, ArmorStandScreenType.POSES, STRAW_STATUE_STYLE_SCREEN_TYPE, MODEL_PARTS_SCREEN_TYPE, ArmorStandScreenType.POSITION, ArmorStandScreenType.EQUIPMENT};
     }
 
     @Override
