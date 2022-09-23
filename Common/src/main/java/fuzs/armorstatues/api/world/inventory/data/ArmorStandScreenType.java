@@ -4,6 +4,8 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 
+import java.util.Locale;
+
 public class ArmorStandScreenType {
     public static final ArmorStandScreenType EQUIPMENT = new ArmorStandScreenType("equipment", new ItemStack(Items.IRON_CHESTPLATE), true);
     public static final ArmorStandScreenType ROTATIONS = new ArmorStandScreenType("rotations", new ItemStack(Items.COMPASS));
@@ -12,27 +14,27 @@ public class ArmorStandScreenType {
     public static final ArmorStandScreenType POSITION = new ArmorStandScreenType("position", new ItemStack(Items.GRASS_BLOCK));
     public static final ArmorStandScreenType ALIGNMENTS = new ArmorStandScreenType("alignments", new ItemStack(Items.DIAMOND_PICKAXE));
 
-    private final String name;
+    private final String translationId;
     private final ItemStack icon;
     private final boolean requiresServer;
 
-    public ArmorStandScreenType(String name, ItemStack icon) {
-        this(name, icon, false);
+    public ArmorStandScreenType(String translationId, ItemStack icon) {
+        this(translationId, icon, false);
     }
 
-    public ArmorStandScreenType(String name, ItemStack icon, boolean requiresServer) {
-        this.name = name;
+    public ArmorStandScreenType(String translationId, ItemStack icon, boolean requiresServer) {
+        this.translationId = translationId;
         this.icon = icon;
         this.requiresServer = requiresServer;
     }
 
     @Override
     public String toString() {
-        return this.name;
+        return this.translationId.toUpperCase(Locale.ROOT);
     }
 
     public Component getComponent() {
-        return Component.translatable("armorstatues.screen.type." + this.name);
+        return Component.translatable("armorstatues.screen.type." + this.translationId);
     }
 
     public ItemStack getIcon() {

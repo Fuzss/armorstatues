@@ -14,14 +14,14 @@ public interface ArmorStandStyleOption {
     int ARMOR_STAND_ALL_SLOTS_DISABLED = 4144959;
     BiMap<ResourceLocation, ArmorStandStyleOption> OPTIONS_REGISTRY = HashBiMap.create();
 
-    String getName();
+    String getTranslationId();
 
     default Component getComponent() {
-        return Component.translatable("armorstatues.screen.style." + this.getName());
+        return Component.translatable("armorstatues.screen.style." + this.getTranslationId());
     }
 
     default Component getDescriptionComponent() {
-        return Component.translatable("armorstatues.screen.style." + this.getName() + ".description");
+        return Component.translatable("armorstatues.screen.style." + this.getTranslationId() + ".description");
     }
 
     void setOption(ArmorStand armorStand, boolean setting);
@@ -35,7 +35,7 @@ public interface ArmorStandStyleOption {
     }
 
     default ResourceLocation getId() {
-        return Objects.requireNonNull(OPTIONS_REGISTRY.inverse().get(this), "Armor stand style option %s has not been registered".formatted(this.getName()));
+        return Objects.requireNonNull(OPTIONS_REGISTRY.inverse().get(this), "Armor stand style option %s has not been registered".formatted(this.getTranslationId()));
     }
 
     static void register(ResourceLocation id, ArmorStandStyleOption styleOption) {

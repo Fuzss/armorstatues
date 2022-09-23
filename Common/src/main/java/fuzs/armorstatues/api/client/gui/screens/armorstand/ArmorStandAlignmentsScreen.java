@@ -1,13 +1,13 @@
 package fuzs.armorstatues.api.client.gui.screens.armorstand;
 
 import com.google.common.collect.Lists;
-import fuzs.armorstatues.api.client.gui.components.TickingButton;
 import fuzs.armorstatues.api.client.gui.components.TickButton;
+import fuzs.armorstatues.api.client.gui.components.TickingButton;
+import fuzs.armorstatues.api.network.client.data.DataSyncHandler;
+import fuzs.armorstatues.api.world.inventory.ArmorStandHolder;
 import fuzs.armorstatues.api.world.inventory.data.ArmorStandAlignment;
 import fuzs.armorstatues.api.world.inventory.data.ArmorStandScreenType;
 import fuzs.armorstatues.api.world.inventory.data.ArmorStandStyleOptions;
-import fuzs.armorstatues.api.network.client.data.DataSyncHandler;
-import fuzs.armorstatues.api.world.inventory.ArmorStandHolder;
 import net.minecraft.Util;
 import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.components.ImageButton;

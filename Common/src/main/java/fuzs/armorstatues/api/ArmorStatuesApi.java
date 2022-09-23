@@ -37,7 +37,7 @@ public class ArmorStatuesApi implements ModConstructor {
     public void onCommonSetup() {
         // do this here instead of in enum constructor to avoid potential issues with the enum class not having been loaded yet on server-side, therefore nothing being registered
         for (ArmorStandStyleOptions styleOption : ArmorStandStyleOptions.values()) {
-            ArmorStandStyleOption.register(new ResourceLocation(MOD_ID, styleOption.getName().toLowerCase(Locale.ROOT)), styleOption);
+            ArmorStandStyleOption.register(new ResourceLocation(MOD_ID, styleOption.getTranslationId().toLowerCase(Locale.ROOT)), styleOption);
         }
     }
 }

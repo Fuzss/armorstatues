@@ -45,7 +45,9 @@
   "armorstatues.screen.rotations.pose.rightLeg": "Right Leg",
   "armorstatues.screen.rotations.randomize": "Randomize",
   "armorstatues.screen.rotations.reset": "Reset",
-  "armorstatues.screen.rotations.tip": "Hold the Shift or Alt key to lock 2d-sliders to a single axis!",
+  "armorstatues.screen.rotations.tip1": "Hold the Shift or Alt key to lock sliders to a single axis!",
+  "armorstatues.screen.rotations.tip2": "Use the arrow keys to move sliders more precisely! Focus a slider first by clicking.",
+  "armorstatues.screen.rotations.tip3": "Press the %s key (or Shift + %s) to quickly switch between tabs!",
   "armorstatues.screen.rotations.unlimited": "Unlimited Rotations",
   "armorstatues.screen.rotations.x": "X: %s",
   "armorstatues.screen.rotations.y": "Y: %s",
@@ -71,5 +73,6 @@
   "armorstatues.screen.type.poses": "Poses",
   "armorstatues.screen.type.position": "Position",
   "armorstatues.screen.type.rotations": "Rotations",
-  "armorstatues.screen.type.style": "Style"
+  "armorstatues.screen.type.style": "Style",
+  "key.cycleStatueTabs": "Cycle Statue Tabs"
 }

@@ -60,7 +60,6 @@ public abstract class ArmorStandTickBoxScreen<T> extends AbstractArmorStandScree
         this.name.setValue(armorStand.getName().getString());
         this.name.setResponder(input -> this.inputUpdateTicks = 20);
         this.addWidget(this.name);
-        this.setInitialFocus(this.name);
         this.inputUpdateTicks = -1;
         T[] values = this.getAllTickBoxValues();
         final int buttonStartY = (this.imageHeight - values.length * 20 - (values.length - 1) * 2) / 2;
@@ -95,12 +94,12 @@ public abstract class ArmorStandTickBoxScreen<T> extends AbstractArmorStandScree
     }
 
     @Override
-    public boolean keyPressed(int keyCode, int pScanCode, int pModifiers) {
+    public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
         if (keyCode == 256 && this.shouldCloseOnEsc()) {
             this.onClose();
             return true;
         }
-        return this.name.keyPressed(keyCode, pScanCode, pModifiers) || this.name.canConsumeInput() || super.keyPressed(keyCode, pScanCode, pModifiers);
+        return this.name.keyPressed(keyCode, scanCode, modifiers) || this.name.canConsumeInput() || super.keyPressed(keyCode, scanCode, modifiers);
     }
 
     @Override

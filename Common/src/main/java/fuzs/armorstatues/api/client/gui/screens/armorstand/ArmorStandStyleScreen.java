@@ -2,11 +2,11 @@ package fuzs.armorstatues.api.client.gui.screens.armorstand;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import fuzs.armorstatues.api.client.gui.components.TickBoxButton;
-import fuzs.armorstatues.api.world.inventory.data.ArmorStandStyleOption;
-import fuzs.armorstatues.api.world.inventory.data.ArmorStandStyleOptions;
 import fuzs.armorstatues.api.network.client.data.DataSyncHandler;
 import fuzs.armorstatues.api.world.inventory.ArmorStandHolder;
 import fuzs.armorstatues.api.world.inventory.data.ArmorStandScreenType;
+import fuzs.armorstatues.api.world.inventory.data.ArmorStandStyleOption;
+import fuzs.armorstatues.api.world.inventory.data.ArmorStandStyleOptions;
 import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.network.chat.Component;

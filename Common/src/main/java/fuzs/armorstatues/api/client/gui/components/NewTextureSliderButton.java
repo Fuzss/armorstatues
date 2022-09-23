@@ -80,20 +80,22 @@ public abstract class NewTextureSliderButton extends AbstractSliderButton implem
         boolean bl = keyCode == 263;
         if (bl || keyCode == 262) {
             float f = bl ? -1.0F : 1.0F;
-            this.setValue(this.value + (double) (f / (float) (this.width - 8)));
+            this.setValue(this.value + (double) (f / (float) (this.width - 8)), true);
         }
 
         return false;
     }
 
     private void setValueFromMouse(double mouseX) {
-        this.setValue((mouseX - (double) (this.x + 4)) / (double) (this.width - 8));
+        this.setValue((mouseX - (double) (this.x + 4)) / (double) (this.width - 8), true);
     }
 
-    private void setValue(double value) {
+    private void setValue(double value, boolean snapValue) {
         double oldValue = this.value;
         this.value = Mth.clamp(value, 0.0, 1.0);
-        this.value = ArmorStandPose.snapValue(this.value, this.snapInterval);
+        if (snapValue) {
+            this.value = ArmorStandPose.snapValue(this.value, this.snapInterval);
+        }
         if (oldValue != this.value) {
             this.applyValue();
         }

@@ -5,6 +5,7 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import fuzs.armorstatues.api.ArmorStatuesApi;
 import fuzs.armorstatues.api.client.gui.components.TickingButton;
 import fuzs.armorstatues.api.client.gui.components.UnboundedSliderButton;
+import fuzs.armorstatues.api.client.init.ModClientRegistry;
 import fuzs.armorstatues.api.network.client.data.DataSyncHandler;
 import fuzs.armorstatues.api.world.inventory.ArmorStandHolder;
 import fuzs.armorstatues.api.world.inventory.ArmorStandMenu;
@@ -25,6 +26,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.AbstractContainerMenu;
+import org.apache.commons.lang3.ArrayUtils;
 
 import java.util.Optional;
 
@@ -51,6 +53,11 @@ public abstract class AbstractArmorStandScreen extends Screen implements MenuAcc
         this.holder = holder;
         this.inventory = inventory;
         this.dataSyncHandler = dataSyncHandler;
+    }
+
+    @Override
+    public ArmorStandHolder getHolder() {
+        return this.holder;
     }
 
     @Override
@@ -120,16 +127,6 @@ public abstract class AbstractArmorStandScreen extends Screen implements MenuAcc
         return super.mouseClicked(mouseX, mouseY, button);
     }
 
-    public static  <T extends Screen & ArmorStandScreen> boolean handleTabClicked(int mouseX, int mouseY, int leftPos, int topPos, int imageHeight, T screen, ArmorStandScreenType[] tabs) {
-        Optional<ArmorStandScreenType> hoveredTab = findHoveredTab(leftPos, topPos, imageHeight, mouseX, mouseY, tabs);
-        if (hoveredTab.isPresent() && hoveredTab.get() != screen.getScreenType()) {
-            ClientCoreServices.SCREENS.getMinecraft(screen).getSoundManager().play(SimpleSoundInstance.forUI(SoundEvents.UI_BUTTON_CLICK, 1.0F));
-            ClientCoreServices.SCREENS.getMinecraft(screen).setScreen(screen.createScreenType(hoveredTab.get()));
-            return true;
-        }
-        return false;
-    }
-
     @Override
     public void render(PoseStack poseStack, int mouseX, int mouseY, float partialTick) {
         if (!this.disableMenuRendering()) {
@@ -184,6 +181,49 @@ public abstract class AbstractArmorStandScreen extends Screen implements MenuAcc
             }
         }
         return mouseReleased || super.mouseReleased(mouseX, mouseY, button);
+    }
+
+    @Override
+    public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
+        // hook this in before super, as the default key tab is normally used for cycling focused widgets (which we don't really need...)
+        if (tryCycleTabs(this, keyCode, scanCode, modifiers)) {
+            return true;
+        } else if (super.keyPressed(keyCode, scanCode, modifiers)) {
+            return true;
+        } else if (this.minecraft.options.keyInventory.matches(keyCode, scanCode)) {
+            this.onClose();
+            return true;
+        }
+        return false;
+    }
+
+    public static  <T extends Screen & ArmorStandScreen> boolean handleTabClicked(int mouseX, int mouseY, int leftPos, int topPos, int imageHeight, T screen, ArmorStandScreenType[] tabs) {
+        Optional<ArmorStandScreenType> hoveredTab = findHoveredTab(leftPos, topPos, imageHeight, mouseX, mouseY, tabs);
+        return hoveredTab.filter(armorStandScreenType -> openTabScreen(screen, armorStandScreenType)).isPresent();
+    }
+
+    private static <T extends Screen & ArmorStandScreen> boolean openTabScreen(T screen, ArmorStandScreenType screenType) {
+        if (screenType != screen.getScreenType()) {
+            ClientCoreServices.SCREENS.getMinecraft(screen).getSoundManager().play(SimpleSoundInstance.forUI(SoundEvents.UI_BUTTON_CLICK, 1.0F));
+            ClientCoreServices.SCREENS.getMinecraft(screen).setScreen(screen.createScreenType(screenType));
+            return true;
+        }
+        return false;
+    }
+
+    public static <T extends Screen & ArmorStandScreen> boolean tryCycleTabs(T screen, int keyCode, int scanCode, int modifiers) {
+        // keep a way to let vanilla cycle widgets
+        if (!hasControlDown() && !hasAltDown() && ModClientRegistry.CYCLE_TABS_KEY_MAPPING.matches(keyCode, scanCode)) {
+            ArmorStandScreenType screenType = cycleTabs(screen.getScreenType(), screen.getHolder().getDataProvider().getScreenTypes(), hasShiftDown());
+            openTabScreen(screen, screenType);
+            return true;
+        }
+        return false;
+    }
+
+    private static ArmorStandScreenType cycleTabs(ArmorStandScreenType currentScreenType, ArmorStandScreenType[] screenTypes, boolean backwards) {
+        int index = ArrayUtils.indexOf(screenTypes, currentScreenType);
+        return screenTypes[((backwards ? --index : ++index) % screenTypes.length + screenTypes.length) % screenTypes.length];
     }
 
     public static <T extends Screen & ArmorStandScreen> void drawTabs(PoseStack poseStack, int leftPos, int topPos, int imageHeight, T screen, ArmorStandScreenType[] tabs) {

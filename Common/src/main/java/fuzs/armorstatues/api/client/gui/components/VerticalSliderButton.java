@@ -1,5 +1,6 @@
 package fuzs.armorstatues.api.client.gui.components;
 
+import com.mojang.blaze3d.platform.InputConstants;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import fuzs.armorstatues.api.client.gui.screens.armorstand.AbstractArmorStandScreen;
@@ -89,9 +90,15 @@ public abstract class VerticalSliderButton extends AbstractWidget implements Unb
     }
 
     private void setValue(double value) {
+        this.setValue(value, true);
+    }
+
+    private void setValue(double value, boolean snapValue) {
         double oldValue = this.value;
         this.value = Mth.clamp(value, 0.0, 1.0);
-        this.value = ArmorStandPose.snapValue(this.value, ArmorStandPose.DEGREES_SNAP_INTERVAL);
+        if (snapValue) {
+            this.value = ArmorStandPose.snapValue(this.value, ArmorStandPose.DEGREES_SNAP_INTERVAL);
+        }
         if (oldValue != this.value) {
             this.applyValue();
         }
@@ -105,6 +112,25 @@ public abstract class VerticalSliderButton extends AbstractWidget implements Unb
     @Override
     public void onRelease(double mouseX, double mouseY) {
         super.playDownSound(Minecraft.getInstance().getSoundManager());
+    }
+
+    @Override
+    public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
+        if (this.active && this.visible) {
+            switch (keyCode) {
+                case InputConstants.KEY_UP -> {
+                    this.setValue(this.value - BoxedSliderButton.VALUE_KEY_INTERVAL, false);
+                    return true;
+                }
+                case InputConstants.KEY_DOWN -> {
+                    this.setValue(this.value + BoxedSliderButton.VALUE_KEY_INTERVAL, false);
+                    return true;
+                }
+            }
+            return false;
+        } else {
+            return false;
+        }
     }
 
     protected abstract void applyValue();

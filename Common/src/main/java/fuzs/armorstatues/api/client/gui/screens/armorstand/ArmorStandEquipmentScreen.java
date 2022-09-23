@@ -3,10 +3,10 @@ package fuzs.armorstatues.api.client.gui.screens.armorstand;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import fuzs.armorstatues.api.ArmorStatuesApi;
-import fuzs.armorstatues.api.world.inventory.data.ArmorStandScreenType;
 import fuzs.armorstatues.api.network.client.data.DataSyncHandler;
 import fuzs.armorstatues.api.world.inventory.ArmorStandHolder;
 import fuzs.armorstatues.api.world.inventory.ArmorStandMenu;
+import fuzs.armorstatues.api.world.inventory.data.ArmorStandScreenType;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.client.gui.screens.inventory.InventoryScreen;
@@ -30,6 +30,11 @@ public class ArmorStandEquipmentScreen extends AbstractContainerScreen<ArmorStan
         this.dataSyncHandler = dataSyncHandler;
         this.imageWidth = 210;
         this.imageHeight = 188;
+    }
+
+    @Override
+    public ArmorStandHolder getHolder() {
+        return this.menu;
     }
 
     @Override
@@ -64,6 +69,15 @@ public class ArmorStandEquipmentScreen extends AbstractContainerScreen<ArmorStan
             }
         }
         return super.mouseClicked(mouseX, mouseY, button);
+    }
+
+    @Override
+    public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
+        // hook this in before super, as the default key tab is normally used for cycling focused widgets (which we don't really need...)
+        if (AbstractArmorStandScreen.tryCycleTabs(this, keyCode, scanCode, modifiers)) {
+            return true;
+        }
+        return super.keyPressed(keyCode, scanCode, modifiers);
     }
 
     @Override

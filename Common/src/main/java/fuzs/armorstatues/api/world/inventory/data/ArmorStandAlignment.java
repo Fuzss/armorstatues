@@ -20,7 +20,7 @@ public enum ArmorStandAlignment {
 
     ArmorStandAlignment(String name, Rotations rightArmRotations, Vec3 position, Vec3 smallPosition) {
         this.name = name;
-        this.pose = ArmorStandPose.NONE.setRightArmPose(rightArmRotations);
+        this.pose = ArmorStandPose.empty().withRightArmPose(rightArmRotations);
         this.position = position;
         this.smallPosition = smallPosition;
     }

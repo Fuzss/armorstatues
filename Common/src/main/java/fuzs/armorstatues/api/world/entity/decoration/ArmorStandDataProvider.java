@@ -2,8 +2,8 @@ package fuzs.armorstatues.api.world.entity.decoration;
 
 import fuzs.armorstatues.api.world.inventory.data.ArmorStandPose;
 import fuzs.armorstatues.api.world.inventory.data.ArmorStandScreenType;
+import fuzs.armorstatues.api.world.inventory.data.PosePartMutator;
 import net.minecraft.core.Rotations;
-import net.minecraft.network.chat.Component;
 
 public interface ArmorStandDataProvider {
     ArmorStandDataProvider INSTANCE = new ArmorStandDataProvider() {};
@@ -16,11 +16,11 @@ public interface ArmorStandDataProvider {
         return ArmorStandScreenType.ROTATIONS;
     }
 
-    default Component getBodyComponent() {
-        return Component.translatable("armorstatues.screen.rotations.pose.body");
+    default PosePartMutator[] getPosePartMutators() {
+        return new PosePartMutator[]{PosePartMutator.HEAD, PosePartMutator.BODY, PosePartMutator.LEFT_ARM, PosePartMutator.RIGHT_ARM, PosePartMutator.LEFT_LEG, PosePartMutator.RIGHT_LEG};
     }
 
     default ArmorStandPose getRandomPose(boolean clampRotations) {
-        return ArmorStandPose.random(clampRotations).setBodyPose(new Rotations(0.0F, 0.0F, 0.0F));
+        return ArmorStandPose.random(this.getPosePartMutators(), clampRotations).withBodyPose(new Rotations(0.0F, 0.0F, 0.0F));
     }
 }
