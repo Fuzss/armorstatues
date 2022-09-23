@@ -11,6 +11,7 @@ import net.minecraft.world.entity.player.Player;
 import java.util.Objects;
 
 public interface ArmorStandStyleOption {
+    int ARMOR_STAND_ALL_SLOTS_DISABLED = 4144959;
     BiMap<ResourceLocation, ArmorStandStyleOption> OPTIONS_REGISTRY = HashBiMap.create();
 
     String getName();

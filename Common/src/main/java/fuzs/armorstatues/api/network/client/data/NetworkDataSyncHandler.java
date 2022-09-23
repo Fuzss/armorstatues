@@ -5,7 +5,6 @@ import fuzs.armorstatues.api.network.client.*;
 import fuzs.armorstatues.api.world.inventory.data.ArmorStandPose;
 import fuzs.armorstatues.api.world.inventory.data.ArmorStandScreenType;
 import fuzs.armorstatues.api.world.inventory.data.ArmorStandStyleOption;
-import fuzs.armorstatues.network.client.data.CommandDataSyncHandler;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.entity.decoration.ArmorStand;
 import org.jetbrains.annotations.Nullable;

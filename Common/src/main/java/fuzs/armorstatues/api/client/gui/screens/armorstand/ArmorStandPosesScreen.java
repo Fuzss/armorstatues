@@ -44,7 +44,7 @@ public class ArmorStandPosesScreen extends AbstractArmorStandScreen {
         for (int i = 0; i < this.poseButtons.length; i++) {
             final int ii = i;
             this.poseButtons[i] = this.addRenderableWidget(new ImageButton(this.leftPos + 83 + i % 2 * 62, this.topPos + 9 + i / 2 * 88, 60, 82, 76, 0, 82, ARMOR_STAND_WIDGETS_LOCATION, 256, 256, button -> {
-                getPoseAt(ii).ifPresent(currentPose -> this.dataSyncHandler.sendPose(currentPose));
+                getPoseAt(ii).ifPresent(this.dataSyncHandler::sendPose);
             }, (Button button, PoseStack poseStack, int mouseX, int mouseY) -> {
                 getPoseAt(ii).ifPresent(pose -> this.renderTooltip(poseStack, pose.getComponent(), mouseX, mouseY));
             }, CommonComponents.EMPTY));

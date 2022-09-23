@@ -47,15 +47,15 @@ public class ArmorStandRotationsScreen extends AbstractArmorStandScreen {
             this.toggleLockButtons();
             this.refreshLiveButtons();
         }, (button, poseStack, mouseX, mouseY) -> {
-            this.renderTooltip(poseStack, Component.translatable("armorstatues.screen.rotations.lock"), mouseX, mouseY);
-        }, Component.translatable("armorstatues.screen.rotations.lock")));
+            this.renderTooltip(poseStack, Component.translatable("armorstatues.screen.rotations.unlimited"), mouseX, mouseY);
+        }, Component.translatable("armorstatues.screen.rotations.unlimited")));
         this.lockButtons[1] = this.addRenderableWidget(new ImageButton(this.leftPos + 83, this.topPos + 10, 20, 20, 136, 124, 20, ARMOR_STAND_WIDGETS_LOCATION, 256, 256, button -> {
             clampRotations = false;
             this.toggleLockButtons();
             this.refreshLiveButtons();
         }, (button, poseStack, mouseX, mouseY) -> {
-            this.renderTooltip(poseStack, Component.translatable("armorstatues.screen.rotations.unlock"), mouseX, mouseY);
-        }, Component.translatable("armorstatues.screen.rotations.unlock")));
+            this.renderTooltip(poseStack, Component.translatable("armorstatues.screen.rotations.limited"), mouseX, mouseY);
+        }, Component.translatable("armorstatues.screen.rotations.limited")));
         this.addRenderableWidget(new ImageButton(this.leftPos + 107, this.topPos + 10, 20, 20, 136, 64, 20, ARMOR_STAND_WIDGETS_LOCATION, 256, 256, button -> {}, (button, poseStack, mouseX, mouseY) -> {
             this.renderTooltip(poseStack, Component.translatable("armorstatues.screen.rotations.tip"), mouseX, mouseY);
         }, CommonComponents.EMPTY) {
@@ -71,7 +71,7 @@ public class ArmorStandRotationsScreen extends AbstractArmorStandScreen {
             this.renderTooltip(poseStack, Component.translatable("armorstatues.screen.rotations.reset"), mouseX, mouseY);
         }));
         this.addRenderableWidget(new NewTextureTickButton(this.leftPos + 107, this.topPos + 34, 20, 20, 192, 124, ARMOR_STAND_WIDGETS_LOCATION, button -> {
-            this.setCurrentPose(ArmorStandPose.random(clampRotations));
+            this.setCurrentPose(this.holder.getDataProvider().getRandomPose(clampRotations));
         }, (button, poseStack, mouseX, mouseY) -> {
             this.renderTooltip(poseStack, Component.translatable("armorstatues.screen.rotations.randomize"), mouseX, mouseY);
         }));

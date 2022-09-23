@@ -37,6 +37,7 @@ public class ArmorStandPose {
     public static final DecimalFormat ROTATION_FORMAT = Util.make(new DecimalFormat("#.##"), (decimalFormat) -> {
         decimalFormat.setDecimalFormatSymbols(DecimalFormatSymbols.getInstance(Locale.ROOT));
     });
+    private static final Random RANDOM = new Random();
 
     @Nullable
     private final String name;
@@ -186,6 +187,11 @@ public class ArmorStandPose {
 
     public static ArmorStandPose[] values() {
         return new ArmorStandPose[]{DEFAULT, SOLEMN, ATHENA, BRANDISH, HONOR, ENTERTAIN, SALUTE, HERO, RIPOSTE, ZOMBIE, CANCAN_A, CANCAN_B};
+    }
+
+    public static ArmorStandPose selectRandomPose() {
+        ArmorStandPose[] values = values();
+        return values[RANDOM.nextInt(values().length)];
     }
 
     public static double snapValue(double value, double snapInterval) {
@@ -378,7 +384,6 @@ public class ArmorStandPose {
         public record PosePartAxisRange(double min, double max) {
             public static final double MIN_VALUE = -180.0;
             public static final double MAX_VALUE = 180.0;
-            private static final Random RANDOM = new Random();
 
             public PosePartAxisRange {
                 if (min >= max) {

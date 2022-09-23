@@ -17,7 +17,8 @@ public class ArmorStatuesFabric implements ModInitializer {
 
     @Override
     public void onInitialize() {
-        CoreServices.FACTORIES.modConstructor(ArmorStatuesApi.MOD_ID).accept(new ArmorStatuesApi());
+        CoreServices.FACTORIES.modConstructor(ArmorStatues.MOD_ID).accept(new ArmorStatuesApi());
+        CoreServices.FACTORIES.modConstructor(ArmorStatues.MOD_ID).accept(new ArmorStatues());
         registerHandlers();
     }
 

@@ -1,6 +1,5 @@
-package fuzs.armorstatues.network.client.data;
+package fuzs.armorstatues.api.network.client.data;
 
-import fuzs.armorstatues.api.network.client.data.DataSyncHandler;
 import fuzs.armorstatues.api.world.inventory.data.ArmorStandPose;
 import fuzs.armorstatues.api.world.inventory.data.ArmorStandScreenType;
 import fuzs.armorstatues.api.world.inventory.data.ArmorStandStyleOption;
@@ -23,10 +22,8 @@ import java.util.function.Predicate;
 import java.util.stream.Stream;
 
 public class CommandDataSyncHandler implements DataSyncHandler {
-    public static final int ARMOR_STAND_ALL_SLOTS_DISABLED = 4144959;
-
     @Nullable
-    public static ArmorStandScreenType lastType;
+    static ArmorStandScreenType lastType;
 
     private final ArmorStand armorStand;
     private ArmorStandPose lastSyncedPose;

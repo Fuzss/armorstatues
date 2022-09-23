@@ -1,7 +1,6 @@
 package fuzs.armorstatues.api.world.inventory.data;
 
 import fuzs.armorstatues.mixin.accessor.ArmorStandAccessor;
-import fuzs.armorstatues.network.client.data.CommandDataSyncHandler;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.decoration.ArmorStand;
@@ -19,7 +18,7 @@ public enum ArmorStandStyleOptions implements ArmorStandStyleOption {
     NO_GRAVITY("noGravity", Entity::setNoGravity, Entity::isNoGravity),
     SEALED("sealed", (armorStand, setting) -> {
         armorStand.setInvulnerable(setting);
-        ((ArmorStandAccessor) armorStand).setDisabledSlots(setting ? CommandDataSyncHandler.ARMOR_STAND_ALL_SLOTS_DISABLED : 0);
+        ((ArmorStandAccessor) armorStand).setDisabledSlots(setting ? ArmorStandStyleOption.ARMOR_STAND_ALL_SLOTS_DISABLED : 0);
     }, Entity::isInvulnerable);
 
     private final String name;
@@ -60,7 +59,7 @@ public enum ArmorStandStyleOptions implements ArmorStandStyleOption {
         };
         tag.putBoolean(dataKey, currentValue);
         if (this == ArmorStandStyleOptions.SEALED) {
-            tag.putInt("DisabledSlots", currentValue ? CommandDataSyncHandler.ARMOR_STAND_ALL_SLOTS_DISABLED : 0);
+            tag.putInt("DisabledSlots", currentValue ? ArmorStandStyleOption.ARMOR_STAND_ALL_SLOTS_DISABLED : 0);
         }
     }
 

@@ -1,6 +1,5 @@
 package fuzs.armorstatues.data;
 
-import fuzs.strawstatues.init.ModRegistry;
 import net.minecraft.data.DataGenerator;
 import net.minecraftforge.common.data.LanguageProvider;
 
@@ -12,12 +11,6 @@ public class ModLanguageProvider extends LanguageProvider {
 
     @Override
     protected void addTranslations() {
-        this.add(ModRegistry.STRAW_STATUE_ITEM.get(), "Straw Statue");
-        this.add(ModRegistry.STRAW_STATUE_ENTITY_TYPE.get(), "Straw Statue");
-        this.add("strawstatues.item.straw_statue.description", "Shift + right-click to open configuration screen when placed.");
-        this.add("armorstatues.screen.type.modelParts", "Model Parts");
-        this.add("armorstatues.screen.style.slimArms", "Slim Arms");
-        this.add("armorstatues.screen.style.slimArms.description", "Makes the statue's arms a few pixels less wide, like Minecraft's Alex skin.");
         this.add("armorstatues.item.armor_stand.description", "Shift + right-click to open configuration screen when placed.");
         this.add("armorstatues.entity.armor_stand.pose.athena", "Athena");
         this.add("armorstatues.entity.armor_stand.pose.brandish", "Brandish");
@@ -71,7 +64,6 @@ public class ModLanguageProvider extends LanguageProvider {
         this.add("armorstatues.screen.pose.randomized", "Applied!");
         this.add("armorstatues.screen.rotations.pose.head", "Head");
         this.add("armorstatues.screen.rotations.pose.body", "Body");
-        this.add("armorstatues.screen.rotations.pose.cape", "Cape");
         this.add("armorstatues.screen.rotations.pose.leftArm", "Left Arm");
         this.add("armorstatues.screen.rotations.pose.rightArm", "Right Arm");
         this.add("armorstatues.screen.rotations.pose.leftLeg", "Left Leg");
@@ -79,8 +71,8 @@ public class ModLanguageProvider extends LanguageProvider {
         this.add("armorstatues.screen.rotations.tip", "Hold the Shift or Alt key to lock 2d-sliders to a single axis!");
         this.add("armorstatues.screen.rotations.reset", "Reset");
         this.add("armorstatues.screen.rotations.randomize", "Randomize");
-        this.add("armorstatues.screen.rotations.lock", "Lock Rotations");
-        this.add("armorstatues.screen.rotations.unlock", "Unlock Rotations");
+        this.add("armorstatues.screen.rotations.limited", "Limited Rotations");
+        this.add("armorstatues.screen.rotations.unlimited", "Unlimited Rotations");
         this.add("armorstatues.screen.rotations.copy", "Copy");
         this.add("armorstatues.screen.rotations.paste", "Paste");
         this.add("armorstatues.screen.rotations.x", "X: %s");

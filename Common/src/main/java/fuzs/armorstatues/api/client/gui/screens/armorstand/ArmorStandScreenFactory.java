@@ -2,6 +2,7 @@ package fuzs.armorstatues.api.client.gui.screens.armorstand;
 
 import com.google.common.collect.Maps;
 import fuzs.armorstatues.api.network.client.data.DataSyncHandler;
+import fuzs.armorstatues.api.network.client.data.NetworkDataSyncHandler;
 import fuzs.armorstatues.api.world.inventory.ArmorStandHolder;
 import fuzs.armorstatues.api.world.inventory.ArmorStandMenu;
 import fuzs.armorstatues.api.world.inventory.data.ArmorStandScreenType;
@@ -25,6 +26,10 @@ public interface ArmorStandScreenFactory<T extends Screen & MenuAccess<ArmorStan
         T screen = (T) factory.create(holder, inventory, component, dataSyncHandler);
         if (screen.getScreenType() != screenType) throw new IllegalStateException("Armor stand screen type mismatch: %s and %s".formatted(screen.getScreenType(), screenType));
         return screen;
+    }
+
+    static <T extends Screen & MenuAccess<ArmorStandMenu> & ArmorStandScreen> T createLastScreenType(ArmorStandMenu menu, Inventory inventory, Component component) {
+        return createLastScreenType(menu, inventory, component, new NetworkDataSyncHandler(menu.getArmorStand()));
     }
 
     static <T extends Screen & MenuAccess<ArmorStandMenu> & ArmorStandScreen> T createLastScreenType(ArmorStandHolder holder, Inventory inventory, Component component, DataSyncHandler dataSyncHandler) {

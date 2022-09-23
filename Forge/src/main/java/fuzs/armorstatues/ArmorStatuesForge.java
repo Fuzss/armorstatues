@@ -2,10 +2,7 @@ package fuzs.armorstatues;
 
 import fuzs.armorstatues.api.ArmorStatuesApi;
 import fuzs.armorstatues.api.event.entity.player.PlayerEntityInteractEvent;
-import fuzs.armorstatues.data.ModItemModelProvider;
 import fuzs.armorstatues.data.ModLanguageProvider;
-import fuzs.armorstatues.data.ModLootTableProvider;
-import fuzs.armorstatues.data.ModRecipeProvider;
 import fuzs.armorstatues.handler.ArmorStandInteractHandler;
 import fuzs.puzzleslib.core.CoreServices;
 import net.minecraft.data.DataGenerator;
@@ -17,13 +14,14 @@ import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLConstructModEvent;
 
-@Mod(ArmorStatuesApi.MOD_ID)
+@Mod(ArmorStatues.MOD_ID)
 @Mod.EventBusSubscriber(bus = Mod.EventBusSubscriber.Bus.MOD)
 public class ArmorStatuesForge {
 
     @SubscribeEvent
     public static void onConstructMod(final FMLConstructModEvent evt) {
-        CoreServices.FACTORIES.modConstructor(ArmorStatuesApi.MOD_ID).accept(new ArmorStatuesApi());
+        CoreServices.FACTORIES.modConstructor(ArmorStatues.MOD_ID).accept(new ArmorStatuesApi());
+        CoreServices.FACTORIES.modConstructor(ArmorStatues.MOD_ID).accept(new ArmorStatues());
         registerHandlers();
     }
 
@@ -48,9 +46,6 @@ public class ArmorStatuesForge {
     public static void onGatherData(final GatherDataEvent evt) {
         DataGenerator generator = evt.getGenerator();
         final ExistingFileHelper existingFileHelper = evt.getExistingFileHelper();
-        generator.addProvider(true, new ModRecipeProvider(generator));
         generator.addProvider(true, new ModLanguageProvider(generator, ArmorStatuesApi.MOD_ID));
-        generator.addProvider(true, new ModLootTableProvider(generator, ArmorStatuesApi.MOD_ID));
-        generator.addProvider(true, new ModItemModelProvider(generator, ArmorStatuesApi.MOD_ID, existingFileHelper));
     }
 }
