@@ -82,7 +82,7 @@ public class ArmorStandRotationsScreen extends AbstractArmorStandScreen {
             this.renderTooltip(poseStack, Component.translatable("armorstatues.screen.rotations.reset"), mouseX, mouseY);
         }));
         this.addRenderableWidget(new NewTextureTickButton(this.leftPos + 107, this.topPos + 34, 20, 20, 192, 124, ARMOR_STAND_WIDGETS_LOCATION, button -> {
-            this.setCurrentPose(this.holder.getDataProvider().getRandomPose(clampRotations));
+            this.setCurrentPose(this.holder.getDataProvider().getRandomPose(true));
         }, (button, poseStack, mouseX, mouseY) -> {
             this.renderTooltip(poseStack, Component.translatable("armorstatues.screen.rotations.randomize"), mouseX, mouseY);
         }));
