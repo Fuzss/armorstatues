@@ -19,6 +19,9 @@ public interface ArmorStandAccessor {
     NonNullList<ItemStack> getArmorItems();
 
     @Accessor
+    int getDisabledSlots();
+
+    @Accessor
     void setDisabledSlots(int disabledSlots);
 
     @Invoker

@@ -14,7 +14,10 @@ import net.minecraft.client.gui.screens.inventory.MenuAccess;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.entity.decoration.ArmorStand;
 import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.inventory.Slot;
 
 public class ArmorStandEquipmentScreen extends AbstractContainerScreen<ArmorStandMenu> implements ArmorStandScreen {
     private static final ResourceLocation ARMOR_STAND_EQUIPMENT_LOCATION = new ResourceLocation(ArmorStatuesApi.MOD_ID, "textures/gui/container/armor_stand/equipment.png");
@@ -100,11 +103,20 @@ public class ArmorStandEquipmentScreen extends AbstractContainerScreen<ArmorStan
         RenderSystem.setShader(GameRenderer::getPositionTexShader);
         RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
         RenderSystem.setShaderTexture(0, ARMOR_STAND_EQUIPMENT_LOCATION);
-        int i = (this.width - this.imageWidth) / 2;
-        int j = (this.height - this.imageHeight) / 2;
-        this.blit(poseStack, i, j, 0, 0, this.imageWidth, this.imageHeight);
+        this.blit(poseStack, this.leftPos, this.topPos, 0, 0, this.imageWidth, this.imageHeight);
+        for (int k = 0; k < ArmorStandMenu.SLOT_IDS.length; ++k) {
+            Slot slot = this.menu.slots.get(k);
+            if (slot.isActive() && this.isSlotRestricted(ArmorStandMenu.SLOT_IDS[k])) {
+                this.blit(poseStack, this.leftPos + slot.x - 1, this.topPos + slot.y - 1, 210, 0, 18, 18);
+            }
+        }
         AbstractArmorStandScreen.drawTabs(poseStack, this.leftPos, this.topPos, this.imageHeight, this, this.dataSyncHandler.tabs());
-        InventoryScreen.renderEntityInInventory(i + 104, j + 84, 30, (float) (i + 104 - 10) - this.mouseX, (float) (j + 84 - 44) - this.mouseY, this.menu.getArmorStand());
+        InventoryScreen.renderEntityInInventory(this.leftPos + 104, this.topPos + 84, 30, (float) (this.leftPos + 104 - 10) - this.mouseX, (float) (this.topPos + 84 - 44) - this.mouseY, this.menu.getArmorStand());
+    }
+
+    private boolean isSlotRestricted(EquipmentSlot equipmentSlot) {
+        ArmorStand armorStand = this.menu.getArmorStand();
+        return ArmorStandMenu.isSlotDisabled(armorStand, equipmentSlot, 0) || ArmorStandMenu.isSlotDisabled(armorStand, equipmentSlot, ArmorStand.DISABLE_TAKING_OFFSET) || ArmorStandMenu.isSlotDisabled(armorStand, equipmentSlot, ArmorStand.DISABLE_PUTTING_OFFSET);
     }
 
     @Override

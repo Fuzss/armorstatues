@@ -26,7 +26,7 @@ import net.minecraft.world.item.ItemStack;
 public class ArmorStandMenu extends AbstractContainerMenu implements ArmorStandHolder {
     public static final ResourceLocation EMPTY_ARMOR_SLOT_SWORD = new ResourceLocation(ArmorStatuesApi.MOD_ID, "item/empty_armor_slot_sword");
     static final ResourceLocation[] TEXTURE_EMPTY_SLOTS = new ResourceLocation[]{InventoryMenu.EMPTY_ARMOR_SLOT_BOOTS, InventoryMenu.EMPTY_ARMOR_SLOT_LEGGINGS, InventoryMenu.EMPTY_ARMOR_SLOT_CHESTPLATE, InventoryMenu.EMPTY_ARMOR_SLOT_HELMET, InventoryMenu.EMPTY_ARMOR_SLOT_SHIELD, EMPTY_ARMOR_SLOT_SWORD};
-    private static final EquipmentSlot[] SLOT_IDS = new EquipmentSlot[]{EquipmentSlot.HEAD, EquipmentSlot.CHEST, EquipmentSlot.LEGS, EquipmentSlot.FEET};
+    public static final EquipmentSlot[] SLOT_IDS = new EquipmentSlot[]{EquipmentSlot.HEAD, EquipmentSlot.CHEST, EquipmentSlot.LEGS, EquipmentSlot.FEET, EquipmentSlot.MAINHAND, EquipmentSlot.OFFHAND};
 
     private final Container armorStandInventory;
     private final ArmorStand armorStand;
@@ -35,8 +35,9 @@ public class ArmorStandMenu extends AbstractContainerMenu implements ArmorStandH
         // not sure how likely it is for this to fail, in that case the menu should just close immediately
         ArmorStand entity = (ArmorStand) inventory.player.level.getEntity(buf.readInt());
         if (entity != null) {
-            // vanilla doesn't sync this automatically, we need it for one of our tick boxes
+            // vanilla doesn't sync these automatically, we need them for the menu
             entity.setInvulnerable(buf.readBoolean());
+            ((ArmorStandAccessor) entity).setDisabledSlots(buf.readInt());
             // also create the armor stand container client side, so that visual update instantly instead of having to wait for the server to resync data
             return create(menuType, containerId, inventory, entity);
         }
@@ -73,13 +74,38 @@ public class ArmorStandMenu extends AbstractContainerMenu implements ArmorStandH
             this.addSlot(new Slot(this.armorStandInventory, 3 - k, 58, 20 + k * 18) {
 
                 @Override
+                public void set(ItemStack stack) {
+                    ItemStack oldStack = this.getItem();
+                    super.set(stack);
+                    armorStand.onEquipItem(equipmentslot, oldStack, stack);
+                }
+
+                @Override
                 public int getMaxStackSize() {
                     return 1;
                 }
 
                 @Override
                 public boolean mayPlace(ItemStack stack) {
+                    if (!inventory.player.isCreative()) {
+                        if (isSlotDisabled(armorStand, equipmentslot, 0)) {
+                            return false;
+                        }
+                        if (isSlotDisabled(armorStand, equipmentslot, ArmorStand.DISABLE_PUTTING_OFFSET) && !this.hasItem()) {
+                            return false;
+                        }
+                    }
                     return ModServices.ABSTRACTIONS.canEquip(stack, equipmentslot, inventory.player);
+                }
+
+                @Override
+                public boolean mayPickup(Player player) {
+                    if (!inventory.player.isCreative()) {
+                        if (isSlotDisabled(armorStand, equipmentslot, ArmorStand.DISABLE_TAKING_OFFSET)) {
+                            return false;
+                        }
+                    }
+                    return super.mayPickup(player);
                 }
 
                 @Override
@@ -90,12 +116,36 @@ public class ArmorStandMenu extends AbstractContainerMenu implements ArmorStandH
         }
 
         for (int i = 0; i < 2; i++) {
-            final int ii = i;
+            final EquipmentSlot equipmentslot = SLOT_IDS[4 + i];
+            final ResourceLocation slotTexture = TEXTURE_EMPTY_SLOTS[5 - i];
             this.addSlot(new Slot(this.armorStandInventory, 4 + i, 136, 56 + i * 18) {
 
                 @Override
+                public boolean mayPlace(ItemStack stack) {
+                    if (!inventory.player.isCreative()) {
+                        if (isSlotDisabled(armorStand, equipmentslot, 0)) {
+                            return false;
+                        }
+                        if (isSlotDisabled(armorStand, equipmentslot, ArmorStand.DISABLE_PUTTING_OFFSET) && !this.hasItem()) {
+                            return false;
+                        }
+                    }
+                    return super.mayPlace(stack);
+                }
+
+                @Override
+                public boolean mayPickup(Player player) {
+                    if (!inventory.player.isCreative()) {
+                        if (isSlotDisabled(armorStand, equipmentslot, ArmorStand.DISABLE_TAKING_OFFSET)) {
+                            return false;
+                        }
+                    }
+                    return super.mayPickup(player);
+                }
+
+                @Override
                 public Pair<ResourceLocation, ResourceLocation> getNoItemIcon() {
-                    return Pair.of(InventoryMenu.BLOCK_ATLAS, TEXTURE_EMPTY_SLOTS[5 - ii]);
+                    return Pair.of(InventoryMenu.BLOCK_ATLAS, slotTexture);
                 }
             });
         }
@@ -109,6 +159,10 @@ public class ArmorStandMenu extends AbstractContainerMenu implements ArmorStandH
         for (int i1 = 0; i1 < 9; ++i1) {
             this.addSlot(new Slot(inventory, i1, 25 + i1 * 18, 154));
         }
+    }
+
+    public static boolean isSlotDisabled(ArmorStand armorStand, EquipmentSlot slot, int offset) {
+        return (((ArmorStandAccessor) armorStand).getDisabledSlots() & 1 << slot.getFilterFlag() + offset) != 0;
     }
 
     @Override
