@@ -18,7 +18,7 @@ public class ArmorStatuesApi implements ModConstructor {
     public static final String MOD_NAME = "Armor Statues";
     public static final Logger LOGGER = LoggerFactory.getLogger(MOD_NAME);
 
-    public static final NetworkHandler NETWORK = CoreServices.FACTORIES.network(MOD_ID, true, false);
+    public static final NetworkHandler NETWORK = CoreServices.FACTORIES.network(MOD_ID, true, true);
 
     @Override
     public void onConstructMod() {

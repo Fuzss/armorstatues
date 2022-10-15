@@ -5,9 +5,9 @@
   "package": "fuzs.armorstatues.mixin",
   "refmap": "armorstatues.refmap.json",
   "mixins": [
-    "ServerGamePacketListenerImplMixin"
   ],
   "client": [
+    "client.MultiPlayerGameModeMixin"
   ],
   "injectors": {
     "defaultRequire": 1

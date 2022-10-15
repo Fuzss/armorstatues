@@ -5,6 +5,7 @@
   "package": "fuzs.armorstatues.mixin",
   "refmap": "armorstatues.refmap.json",
   "mixins": [
+    "PlayerListMixin"
   ],
   "client": [
   ],

@@ -1,14 +1,15 @@
 package fuzs.armorstatues;
 
 import fuzs.armorstatues.api.ArmorStatuesApi;
-import fuzs.armorstatues.api.event.entity.player.PlayerEntityInteractEvent;
 import fuzs.armorstatues.data.ModLanguageProvider;
 import fuzs.armorstatues.handler.ArmorStandInteractHandler;
 import fuzs.puzzleslib.core.CoreServices;
 import net.minecraft.data.DataGenerator;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.data.ExistingFileHelper;
 import net.minecraftforge.data.event.GatherDataEvent;
+import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
@@ -27,18 +28,15 @@ public class ArmorStatuesForge {
 
     private static void registerHandlers() {
         MinecraftForge.EVENT_BUS.addListener((final PlayerInteractEvent.EntityInteractSpecific evt) -> {
-            // event is broken server-side, we use our own implementation for that below
-            if (!evt.getSide().isClient()) return;
-            ArmorStandInteractHandler.onEntityInteract(evt.getEntity(), evt.getLevel(), evt.getHand(), evt.getTarget()).ifPresent(result -> {
+            ArmorStandInteractHandler.onEntityInteract(evt.getEntity(), evt.getLevel(), evt.getHand(), evt.getTarget(), evt.getLocalPos()).ifPresent(result -> {
+                // we use our custom event client-side, as it allows for cancelling the packet being sent to the server
+                if (!evt.getSide().isServer()) return;
                 evt.setCancellationResult(result);
                 evt.setCanceled(true);
             });
         });
-        MinecraftForge.EVENT_BUS.addListener((final PlayerEntityInteractEvent evt) -> {
-            ArmorStandInteractHandler.onEntityInteract(evt.getEntity(), evt.getLevel(), evt.getHand(), evt.getTarget()).ifPresent(result -> {
-                evt.setCancellationResult(result);
-                evt.setCanceled(true);
-            });
+        MinecraftForge.EVENT_BUS.addListener((final PlayerEvent.PlayerLoggedInEvent evt) -> {
+            ArmorStandInteractHandler.onPlayerLoggedIn((ServerPlayer) evt.getEntity());
         });
     }
 
