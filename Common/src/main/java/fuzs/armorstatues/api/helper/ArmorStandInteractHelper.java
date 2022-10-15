@@ -24,7 +24,7 @@ public class ArmorStandInteractHelper {
     }
 
     public static void openArmorStatueMenu(Player player, ArmorStand entity, MenuType<?> menuType) {
-        if (false && player instanceof ServerPlayer serverPlayer) {
+        if (player instanceof ServerPlayer serverPlayer) {
             CoreServices.ABSTRACTIONS.openMenu(serverPlayer, new SimpleMenuProvider((containerId, inventory, player1) -> {
                 return ArmorStandMenu.create(menuType, containerId, inventory, entity);
             }, entity.getDisplayName()), (serverPlayer1, friendlyByteBuf) -> {
