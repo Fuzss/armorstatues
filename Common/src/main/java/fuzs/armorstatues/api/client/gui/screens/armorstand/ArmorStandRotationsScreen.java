@@ -103,12 +103,14 @@ public class ArmorStandRotationsScreen extends AbstractArmorStandScreen {
         ArmorStandPose.checkMutatorsSize(values);
         for (int i = 0; i < values.length; i++) {
             PosePartMutator mutator = values[i];
+            boolean isLeft = i % 2 == 0;
             this.addRenderableWidget(new BoxedSliderButton(this.leftPos + 23 + i % 2 * 110, this.topPos + 7 + i / 2 * 60, () -> mutator.getNormalizedRotationsAtAxis(1, this.currentPose, clampRotations), () -> mutator.getNormalizedRotationsAtAxis(0, this.currentPose, clampRotations), (button, poseStack, mouseX, mouseY) -> {
                 List<Component> lines = Lists.newArrayList();
                 lines.add(mutator.getComponent());
                 lines.add(mutator.getAxisComponent(this.currentPose, 0));
                 lines.add(mutator.getAxisComponent(this.currentPose, 1));
-                this.renderTooltip(poseStack, lines.stream().map(Component::getVisualOrderText).collect(Collectors.toList()), mouseX, mouseY);
+                int offset = isLeft ? 24 + lines.stream().mapToInt(minecraft.font::width).max().orElse(0) : 0;
+                this.renderTooltip(poseStack, lines.stream().map(Component::getVisualOrderText).collect(Collectors.toList()), mouseX - offset, mouseY);
             }) {
                 private boolean dirty;
 
@@ -137,7 +139,8 @@ public class ArmorStandRotationsScreen extends AbstractArmorStandScreen {
                 List<Component> lines = Lists.newArrayList();
                 lines.add(mutator.getComponent());
                 lines.add(mutator.getAxisComponent(this.currentPose, 2));
-                this.renderTooltip(poseStack, lines.stream().map(Component::getVisualOrderText).collect(Collectors.toList()), mouseX, mouseY);
+                int offset = isLeft ? 24 + lines.stream().mapToInt(minecraft.font::width).max().orElse(0) : 0;
+                this.renderTooltip(poseStack, lines.stream().map(Component::getVisualOrderText).collect(Collectors.toList()), mouseX - offset, mouseY);
             }) {
                 private boolean dirty;
 

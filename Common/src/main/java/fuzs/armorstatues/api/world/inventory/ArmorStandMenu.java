@@ -95,6 +95,9 @@ public class ArmorStandMenu extends AbstractContainerMenu implements ArmorStandH
                             return false;
                         }
                     }
+                    if (equipmentslot == EquipmentSlot.HEAD) {
+                        return true;
+                    }
                     return ModServices.ABSTRACTIONS.canEquip(stack, equipmentslot, inventory.player);
                 }
 
