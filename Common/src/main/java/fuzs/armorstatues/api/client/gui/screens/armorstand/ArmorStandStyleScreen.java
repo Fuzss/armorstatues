@@ -33,7 +33,7 @@ public class ArmorStandStyleScreen extends ArmorStandTickBoxScreen<ArmorStandSty
         return new TickBoxButton(this.leftPos + 96, this.topPos + buttonStartY + index * 22, 6, 76, option.getComponent(), option.getOption(armorStand), (Button button) -> {
             this.dataSyncHandler.sendStyleOption(option, ((TickBoxButton) button).isSelected());
         }, (Button button, PoseStack poseStack, int mouseX, int mouseY) -> {
-            this.renderTooltip(poseStack, option.getDescriptionComponent(), mouseX, mouseY);
+            this.renderTooltip(poseStack, this.minecraft.font.split(option.getDescriptionComponent(), 175), mouseX, mouseY);
         });
     }
 
