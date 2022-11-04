@@ -3,6 +3,7 @@ package fuzs.armorstatues.api.world.inventory.data;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Rotations;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.util.Mth;
 
 import java.util.Locale;
@@ -52,12 +53,12 @@ public final class PosePartMutator {
     }
 
     public Component getComponent() {
-        return Component.translatable("armorstatues.screen.rotations.pose." + this.translationId);
+        return new TranslatableComponent("armorstatues.screen.rotations.pose." + this.translationId);
     }
 
     public Component getAxisComponent(ArmorStandPose pose, int index) {
         double value = ArmorStandPose.snapValue(this.getRotationsAtAxis(index, pose), ArmorStandPose.DEGREES_SNAP_INTERVAL);
-        return Component.translatable("armorstatues.screen.rotations." + this.getAxisAt(index), ArmorStandPose.ROTATION_FORMAT.format(value));
+        return new TranslatableComponent("armorstatues.screen.rotations." + this.getAxisAt(index), ArmorStandPose.ROTATION_FORMAT.format(value));
     }
 
     public double getRotationsAtAxis(int index, ArmorStandPose pose) {

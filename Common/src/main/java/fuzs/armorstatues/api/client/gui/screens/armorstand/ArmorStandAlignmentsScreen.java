@@ -13,8 +13,9 @@ import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.components.ImageButton;
 import net.minecraft.client.gui.screens.ConfirmLinkScreen;
 import net.minecraft.core.Direction;
-import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TextComponent;
+import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.world.entity.decoration.ArmorStand;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.phys.Vec3;
@@ -46,8 +47,8 @@ public class ArmorStandAlignmentsScreen extends ArmorStandWidgetsScreen {
                 this.minecraft.setScreen(this);
             }, "https://vanillatweaks.net/", true));
         }, (button, poseStack, mouseX, mouseY) -> {
-            this.renderTooltip(poseStack, Component.translatable("armorstatues.screen.alignments.credit"), mouseX, mouseY);
-        }, CommonComponents.EMPTY));
+            this.renderTooltip(poseStack, new TranslatableComponent("armorstatues.screen.alignments.credit"), mouseX, mouseY);
+        }, new TextComponent("")));
     }
 
     @Override
@@ -58,7 +59,7 @@ public class ArmorStandAlignmentsScreen extends ArmorStandWidgetsScreen {
     private abstract class BlockPositionWidget extends AbstractPositionScreenWidget {
 
         public BlockPositionWidget() {
-            super(Component.empty());
+            super(new TextComponent(""));
         }
 
         @Override
@@ -83,10 +84,10 @@ public class ArmorStandAlignmentsScreen extends ArmorStandWidgetsScreen {
         @Override
         public void init(int posX, int posY) {
             super.init(posX, posY);
-            this.children.add(ArmorStandAlignmentsScreen.this.addRenderableWidget(new TickButton(posX, posY + 1, 94, 20, Component.translatable("armorstatues.screen.position.centered"), Component.translatable("armorstatues.screen.position.aligned"), button -> {
+            this.children.add(ArmorStandAlignmentsScreen.this.addRenderableWidget(new TickButton(posX, posY + 1, 94, 20, new TranslatableComponent("armorstatues.screen.position.centered"), new TranslatableComponent("armorstatues.screen.position.aligned"), button -> {
                 this.setNewPosition(this.getCurrentPosition().align(EnumSet.allOf(Direction.Axis.class)).add(0.5, 0.0, 0.5));
             })));
-            this.children.add(ArmorStandAlignmentsScreen.this.addRenderableWidget(new TickButton(posX + 100, posY + 1, 94, 20, Component.translatable("armorstatues.screen.position.cornered"), Component.translatable("armorstatues.screen.position.aligned"), button -> {
+            this.children.add(ArmorStandAlignmentsScreen.this.addRenderableWidget(new TickButton(posX + 100, posY + 1, 94, 20, new TranslatableComponent("armorstatues.screen.position.cornered"), new TranslatableComponent("armorstatues.screen.position.aligned"), button -> {
                 this.setNewPosition(this.getCurrentPosition().align(EnumSet.allOf(Direction.Axis.class)));
             })));
         }
@@ -102,7 +103,7 @@ public class ArmorStandAlignmentsScreen extends ArmorStandWidgetsScreen {
         @Override
         public void init(int posX, int posY) {
             super.init(posX, posY);
-            this.children.add(ArmorStandAlignmentsScreen.this.addRenderableWidget(new TickButton(posX, posY + 1, 194, 20, this.alignment.getComponent(), Component.translatable("armorstatues.screen.position.aligned"), button -> {
+            this.children.add(ArmorStandAlignmentsScreen.this.addRenderableWidget(new TickButton(posX, posY + 1, 194, 20, this.alignment.getComponent(), new TranslatableComponent("armorstatues.screen.position.aligned"), button -> {
                 ArmorStandAlignmentsScreen.this.dataSyncHandler.sendPose(this.alignment.getPose());
                 ArmorStand armorStand = ArmorStandAlignmentsScreen.this.holder.getArmorStand();
                 this.setNewPosition(this.getCurrentPosition().align(EnumSet.allOf(Direction.Axis.class)).add(0.5, 0.0, 0.5).add(this.alignment.getPosition(armorStand.isSmall())));

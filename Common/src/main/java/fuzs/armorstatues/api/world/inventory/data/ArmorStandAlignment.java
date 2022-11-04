@@ -2,6 +2,7 @@ package fuzs.armorstatues.api.world.inventory.data;
 
 import net.minecraft.core.Rotations;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.world.phys.Vec3;
 
 /**
@@ -31,7 +32,7 @@ public enum ArmorStandAlignment {
     }
 
     public Component getComponent() {
-        return Component.translatable("armorstatues.screen.alignments." + this.name);
+        return new TranslatableComponent("armorstatues.screen.alignments." + this.name);
     }
 
     public ArmorStandPose getPose() {

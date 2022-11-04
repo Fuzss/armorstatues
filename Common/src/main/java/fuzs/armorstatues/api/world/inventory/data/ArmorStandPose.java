@@ -5,6 +5,7 @@ import net.minecraft.Util;
 import net.minecraft.core.Rotations;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.world.entity.decoration.ArmorStand;
 import org.jetbrains.annotations.Nullable;
 
@@ -69,7 +70,7 @@ public class ArmorStandPose {
     }
 
     public Component getComponent() {
-        return Component.translatable("armorstatues.entity.armor_stand.pose." + Objects.requireNonNull(this.translationId, "Trying to get component for transient armor stand pose"));
+        return new TranslatableComponent("armorstatues.entity.armor_stand.pose." + Objects.requireNonNull(this.translationId, "Trying to get component for transient armor stand pose"));
     }
 
     public Rotations getHeadPose() {

@@ -9,10 +9,12 @@ import fuzs.armorstatues.mixin.accessor.SimpleContainerAccessor;
 import net.minecraft.core.NonNullList;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.sounds.SoundEvent;
 import net.minecraft.world.CompoundContainer;
 import net.minecraft.world.Container;
 import net.minecraft.world.SimpleContainer;
 import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.decoration.ArmorStand;
 import net.minecraft.world.entity.player.Inventory;
@@ -22,6 +24,9 @@ import net.minecraft.world.inventory.InventoryMenu;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.gameevent.GameEvent;
+
+import java.util.function.Predicate;
 
 public class ArmorStandMenu extends AbstractContainerMenu implements ArmorStandHolder {
     public static final ResourceLocation EMPTY_ARMOR_SLOT_SWORD = new ResourceLocation(ArmorStatuesApi.MOD_ID, "item/empty_armor_slot_sword");
@@ -51,12 +56,22 @@ public class ArmorStandMenu extends AbstractContainerMenu implements ArmorStandH
         NonNullList<ItemStack> handItems = ((ArmorStandAccessor) armorStand).getHandItems();
         SimpleContainer handItemsContainer = simpleContainer(handItems);
         handItemsContainer.addListener(container -> {
-            if (container.hasAnyMatching(stack -> !stack.isEmpty())) {
+            if (hasAnyMatching(container, stack -> !stack.isEmpty())) {
                 ArmorStandStyleOption.setArmorStandData(armorStand, true, ArmorStand.CLIENT_FLAG_SHOW_ARMS);
             }
         });
         CompoundContainer container = new CompoundContainer(simpleContainer(armorItems), handItemsContainer);
         return new ArmorStandMenu(menuType, containerId, inventory, container, armorStand);
+    }
+
+    private static boolean hasAnyMatching(Container container, Predicate<ItemStack> predicate) {
+        for(int i = 0; i < container.getContainerSize(); ++i) {
+            ItemStack itemStack = container.getItem(i);
+            if (predicate.test(itemStack)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     private static SimpleContainer simpleContainer(NonNullList<ItemStack> items) {
@@ -75,9 +90,16 @@ public class ArmorStandMenu extends AbstractContainerMenu implements ArmorStandH
 
                 @Override
                 public void set(ItemStack stack) {
-                    ItemStack oldStack = this.getItem();
                     super.set(stack);
-                    armorStand.onEquipItem(equipmentslot, oldStack, stack);
+                    this.equipEventAndSound(armorStand, stack);
+                }
+
+                private void equipEventAndSound(LivingEntity entity, ItemStack equippedItem) {
+                    SoundEvent soundEvent = equippedItem.getEquipSound();
+                    if (!equippedItem.isEmpty() && soundEvent != null && !entity.isSpectator()) {
+                        entity.gameEvent(GameEvent.EQUIP);
+                        entity.playSound(soundEvent, 1.0F, 1.0F);
+                    }
                 }
 
                 @Override

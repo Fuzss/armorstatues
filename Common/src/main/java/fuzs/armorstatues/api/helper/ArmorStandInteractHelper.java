@@ -1,8 +1,8 @@
 package fuzs.armorstatues.api.helper;
 
+import fuzs.puzzleslib.core.CoreServices;
 import fuzs.armorstatues.api.world.inventory.ArmorStandMenu;
 import fuzs.armorstatues.mixin.accessor.ArmorStandAccessor;
-import fuzs.puzzleslib.core.CoreServices;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.SimpleMenuProvider;

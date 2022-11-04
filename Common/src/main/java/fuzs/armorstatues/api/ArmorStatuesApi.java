@@ -1,12 +1,12 @@
 package fuzs.armorstatues.api;
 
-import fuzs.armorstatues.api.network.client.*;
-import fuzs.armorstatues.api.world.inventory.data.ArmorStandStyleOption;
-import fuzs.armorstatues.api.world.inventory.data.ArmorStandStyleOptions;
 import fuzs.puzzleslib.core.CoreServices;
 import fuzs.puzzleslib.core.ModConstructor;
 import fuzs.puzzleslib.network.MessageDirection;
 import fuzs.puzzleslib.network.NetworkHandler;
+import fuzs.armorstatues.api.network.client.*;
+import fuzs.armorstatues.api.world.inventory.data.ArmorStandStyleOption;
+import fuzs.armorstatues.api.world.inventory.data.ArmorStandStyleOptions;
 import net.minecraft.resources.ResourceLocation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

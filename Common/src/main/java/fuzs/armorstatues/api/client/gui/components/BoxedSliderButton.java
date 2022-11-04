@@ -12,8 +12,9 @@ import net.minecraft.client.gui.narration.NarrationElementOutput;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.client.sounds.SoundManager;
-import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TextComponent;
+import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.util.Mth;
 
 import java.util.function.Consumer;
@@ -34,7 +35,7 @@ public abstract class BoxedSliderButton extends AbstractWidget implements Unboun
     }
 
     public BoxedSliderButton(int x, int y, DoubleSupplier currentHorizontalValue, DoubleSupplier currentVerticalValue, OnTooltip onTooltip) {
-        super(x, y, 54, 54, CommonComponents.EMPTY);
+        super(x, y, 54, 54, new TextComponent(""));
         this.onTooltip = onTooltip;
         this.currentHorizontalValue = currentHorizontalValue;
         this.currentVerticalValue = currentVerticalValue;
@@ -51,9 +52,9 @@ public abstract class BoxedSliderButton extends AbstractWidget implements Unboun
     public void updateNarration(NarrationElementOutput narrationElementOutput) {
         if (this.active) {
             if (this.isFocused()) {
-                narrationElementOutput.add(NarratedElementType.USAGE, Component.translatable("narration.slider.usage.focused"));
+                narrationElementOutput.add(NarratedElementType.USAGE, new TranslatableComponent("narration.slider.usage.focused"));
             } else {
-                narrationElementOutput.add(NarratedElementType.USAGE, Component.translatable("narration.slider.usage.hovered"));
+                narrationElementOutput.add(NarratedElementType.USAGE, new TranslatableComponent("narration.slider.usage.hovered"));
             }
             this.onTooltip.narrateTooltip((component) -> {
                 narrationElementOutput.add(NarratedElementType.HINT, component);

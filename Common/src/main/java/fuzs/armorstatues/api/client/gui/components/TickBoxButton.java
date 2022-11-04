@@ -8,8 +8,8 @@ import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.components.Button;
-import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TextComponent;
 import net.minecraft.util.Mth;
 
 public class TickBoxButton extends Button {
@@ -17,7 +17,7 @@ public class TickBoxButton extends Button {
     private boolean selected;
 
     public TickBoxButton(int posX, int posY, boolean selected, OnPress onPress, OnTooltip onTooltip) {
-        this(posX, posY, 0, 0, CommonComponents.EMPTY, selected, onPress, onTooltip);
+        this(posX, posY, 0, 0, new TextComponent(""), selected, onPress, onTooltip);
     }
 
     public TickBoxButton(int posX, int posY, int textMargin, int textWidth, Component component, boolean selected, OnPress onPress, OnTooltip onTooltip) {

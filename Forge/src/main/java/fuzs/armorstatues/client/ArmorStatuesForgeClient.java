@@ -1,7 +1,6 @@
 package fuzs.armorstatues.client;
 
 import fuzs.armorstatues.ArmorStatues;
-import fuzs.armorstatues.api.ArmorStatuesApi;
 import fuzs.armorstatues.api.client.ArmorStatuesApiClient;
 import fuzs.armorstatues.client.handler.ArmorStandTooltipHandler;
 import fuzs.armorstatues.handler.ArmorStandInteractHandler;
@@ -28,7 +27,7 @@ public class ArmorStatuesForgeClient {
         MinecraftForge.EVENT_BUS.addListener((final ItemTooltipEvent evt) -> {
             ArmorStandTooltipHandler.onItemTooltip(evt.getItemStack(), evt.getFlags(), evt.getToolTip());
         });
-        MinecraftForge.EVENT_BUS.addListener((final ClientPlayerNetworkEvent.LoggingIn evt) -> {
+        MinecraftForge.EVENT_BUS.addListener((final ClientPlayerNetworkEvent.LoggedInEvent evt) -> {
             ArmorStandInteractHandler.clearPresentServerside();
         });
     }

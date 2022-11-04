@@ -5,7 +5,7 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import fuzs.armorstatues.api.client.gui.screens.armorstand.AbstractArmorStandScreen;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.GameRenderer;
-import net.minecraft.network.chat.CommonComponents;
+import net.minecraft.network.chat.TextComponent;
 import net.minecraft.resources.ResourceLocation;
 
 public class NewTextureTickButton extends NewTextureButton implements TickingButton {
@@ -20,7 +20,7 @@ public class NewTextureTickButton extends NewTextureButton implements TickingBut
     }
 
     public NewTextureTickButton(int x, int y, int width, int height, int imageTextureX, int imageTextureY, ResourceLocation imageTextureLocation, OnPress onPress, OnTooltip onTooltip) {
-        super(x, y, width, height, 0, 184, AbstractArmorStandScreen.ARMOR_STAND_WIDGETS_LOCATION, CommonComponents.EMPTY, onPress, onTooltip);
+        super(x, y, width, height, 0, 184, AbstractArmorStandScreen.ARMOR_STAND_WIDGETS_LOCATION, new TextComponent(""), onPress, onTooltip);
         this.imageTextureX = imageTextureX;
         this.imageTextureY = imageTextureY;
         this.imageTextureLocation = imageTextureLocation;

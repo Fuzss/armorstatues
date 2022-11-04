@@ -4,6 +4,7 @@ import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBiMap;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.decoration.ArmorStand;
 import net.minecraft.world.entity.player.Player;
@@ -17,11 +18,11 @@ public interface ArmorStandStyleOption {
     String getTranslationId();
 
     default Component getComponent() {
-        return Component.translatable("armorstatues.screen.style." + this.getTranslationId());
+        return new TranslatableComponent("armorstatues.screen.style." + this.getTranslationId());
     }
 
     default Component getDescriptionComponent() {
-        return Component.translatable("armorstatues.screen.style." + this.getTranslationId() + ".description");
+        return new TranslatableComponent("armorstatues.screen.style." + this.getTranslationId() + ".description");
     }
 
     void setOption(ArmorStand armorStand, boolean setting);

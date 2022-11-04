@@ -10,6 +10,8 @@ import net.minecraft.nbt.DoubleTag;
 import net.minecraft.nbt.FloatTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TextComponent;
+import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.world.entity.decoration.ArmorStand;
 import net.minecraft.world.entity.player.Player;
 import org.jetbrains.annotations.Nullable;
@@ -43,7 +45,7 @@ public class CommandDataSyncHandler implements DataSyncHandler {
         if (!this.testPermissionLevel()) return;
         DataSyncHandler.super.sendName(name);
         CompoundTag tag = new CompoundTag();
-        tag.putString("CustomName", Component.Serializer.toJson(Component.literal(name)));
+        tag.putString("CustomName", Component.Serializer.toJson(new TextComponent(name)));
         this.sendCommand(tag);
     }
 
@@ -120,13 +122,13 @@ public class CommandDataSyncHandler implements DataSyncHandler {
     private boolean testPermissionLevel() {
         Player player = Minecraft.getInstance().player;
         if (!player.hasPermissions(2)) {
-            player.displayClientMessage(Component.translatable("armorstatues.screen.noPermission").withStyle(ChatFormatting.RED), false);
+            player.displayClientMessage(new TranslatableComponent("armorstatues.screen.noPermission").withStyle(ChatFormatting.RED), false);
             return false;
         }
         return true;
     }
 
     private void sendCommand(CompoundTag tag) {
-        Minecraft.getInstance().player.commandSigned("data merge entity %s %s".formatted(this.getArmorStand().getStringUUID(), tag.getAsString()), null);
+        Minecraft.getInstance().player.chat("data merge entity %s %s".formatted(this.getArmorStand().getStringUUID(), tag.getAsString()));
     }
 }

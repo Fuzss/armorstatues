@@ -1,6 +1,7 @@
 package fuzs.armorstatues.api.world.inventory.data;
 
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 
@@ -34,7 +35,7 @@ public class ArmorStandScreenType {
     }
 
     public Component getComponent() {
-        return Component.translatable("armorstatues.screen.type." + this.translationId);
+        return new TranslatableComponent("armorstatues.screen.type." + this.translationId);
     }
 
     public ItemStack getIcon() {
