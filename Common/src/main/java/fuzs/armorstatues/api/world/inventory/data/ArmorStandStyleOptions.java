@@ -19,7 +19,8 @@ public enum ArmorStandStyleOptions implements ArmorStandStyleOption {
     SEALED("sealed", (armorStand, setting) -> {
         armorStand.setInvulnerable(setting);
         ((ArmorStandAccessor) armorStand).setDisabledSlots(setting ? ArmorStandStyleOption.ARMOR_STAND_ALL_SLOTS_DISABLED : 0);
-    }, Entity::isInvulnerable);
+    }, Entity::isInvulnerable),
+    NO_HITBOX("noHitbox", (armorStand, setting) -> ArmorStandStyleOption.setArmorStandData(armorStand, setting, ArmorStand.CLIENT_FLAG_MARKER), armorStand -> ArmorStandStyleOption.getArmorStandData(armorStand, ArmorStand.CLIENT_FLAG_MARKER));
 
     private final String translationId;
     private final BiConsumer<ArmorStand, Boolean> newValue;
@@ -56,6 +57,7 @@ public enum ArmorStandStyleOptions implements ArmorStandStyleOption {
             case NO_BASE_PLATE -> "NoBasePlate";
             case NO_GRAVITY -> "NoGravity";
             case SEALED -> "Invulnerable";
+            case NO_HITBOX -> "Marker";
         };
         tag.putBoolean(dataKey, currentValue);
         if (this == ArmorStandStyleOptions.SEALED) {
