@@ -26,7 +26,8 @@ public class ArmorStatuesFabric implements ModInitializer {
 
     private static void registerHandlers() {
         UseEntityCallback.EVENT.register((Player player, Level level, InteractionHand interactionHand, Entity target, EntityHitResult entityHitResult) -> {
-            // entityHitResult is marked as nullable in Fabric Api, but can actually not be null
+            // this callback runs in two places, one runs only for armor stands and is hit location aware, that's the one we need
+            if (entityHitResult == null) return InteractionResult.PASS;
             Vec3 vec3 = entityHitResult.getLocation().subtract(target.getX(), target.getY(), target.getZ());
             return ArmorStandInteractHandler.onEntityInteract(player, level, interactionHand, target, vec3).orElse(InteractionResult.PASS);
         });

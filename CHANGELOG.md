@@ -3,6 +3,10 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog].
 
+## [v4.0.3-1.19.2] - 2023-01-06
+### Fixed
+- Fixed crash when trying to interact with entities using Fabric API 0.72.0+1.19.2
+
 ## [v4.0.2-1.19.2] - 2022-10-19
 ### Changed
 - Any item can now be placed into the head slot on the equipment screen (thanks to [Mephodio])
