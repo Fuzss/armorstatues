@@ -11,6 +11,7 @@ import net.minecraftforge.common.data.ExistingFileHelper;
 import net.minecraftforge.data.event.GatherDataEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
+import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLConstructModEvent;
@@ -27,10 +28,11 @@ public class ArmorStatuesForge {
     }
 
     private static void registerHandlers() {
-        MinecraftForge.EVENT_BUS.addListener((final PlayerInteractEvent.EntityInteractSpecific evt) -> {
+        // high priority so we run before the Quark mod
+        MinecraftForge.EVENT_BUS.addListener(EventPriority.HIGH, (final PlayerInteractEvent.EntityInteractSpecific evt) -> {
+            // we use our custom event client-side, as it allows for cancelling the packet being sent to the server
+            if (!evt.getSide().isServer()) return;
             ArmorStandInteractHandler.onEntityInteract(evt.getEntity(), evt.getLevel(), evt.getHand(), evt.getTarget(), evt.getLocalPos()).ifPresent(result -> {
-                // we use our custom event client-side, as it allows for cancelling the packet being sent to the server
-                if (!evt.getSide().isServer()) return;
                 evt.setCancellationResult(result);
                 evt.setCanceled(true);
             });

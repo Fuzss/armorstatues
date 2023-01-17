@@ -12,7 +12,7 @@
   "armorstatues.entity.armor_stand.pose.salute": "Salute",
   "armorstatues.entity.armor_stand.pose.solemn": "Solemn",
   "armorstatues.entity.armor_stand.pose.zombie": "Zombie",
-  "armorstatues.item.armor_stand.description": "Shift + right-click to open configuration screen when placed.",
+  "armorstatues.item.armor_stand.description": "Shift + right-click holding a stick to open configuration screen after placing.",
   "armorstatues.screen.alignments.block": "Align Block",
   "armorstatues.screen.alignments.credit": "Alignment values are taken from the Vanilla Tweaks \"Armor Statues\" data pack. Click this button to go to their website!",
   "armorstatues.screen.alignments.itemFlat": "Align Item As Flat",

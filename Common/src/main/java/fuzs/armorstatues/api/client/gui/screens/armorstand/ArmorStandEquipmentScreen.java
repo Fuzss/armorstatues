@@ -75,12 +75,11 @@ public class ArmorStandEquipmentScreen extends AbstractContainerScreen<ArmorStan
     }
 
     @Override
-    public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
-        // hook this in before super, as the default key tab is normally used for cycling focused widgets (which we don't really need...)
-        if (AbstractArmorStandScreen.tryCycleTabs(this, keyCode, scanCode, modifiers)) {
+    public boolean mouseScrolled(double mouseX, double mouseY, double delta) {
+        if (super.mouseScrolled(mouseX, mouseY, delta)) {
             return true;
         }
-        return super.keyPressed(keyCode, scanCode, modifiers);
+        return AbstractArmorStandScreen.handleMouseScrolled((int) mouseX, (int) mouseY, delta, this.leftPos, this.topPos, this.imageHeight, this, this.dataSyncHandler.tabs());
     }
 
     @Override

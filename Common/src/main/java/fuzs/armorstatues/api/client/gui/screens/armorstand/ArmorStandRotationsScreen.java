@@ -6,7 +6,6 @@ import fuzs.armorstatues.api.client.gui.components.BoxedSliderButton;
 import fuzs.armorstatues.api.client.gui.components.LiveSliderButton;
 import fuzs.armorstatues.api.client.gui.components.NewTextureTickButton;
 import fuzs.armorstatues.api.client.gui.components.VerticalSliderButton;
-import fuzs.armorstatues.api.client.init.ModClientRegistry;
 import fuzs.armorstatues.api.network.client.data.DataSyncHandler;
 import fuzs.armorstatues.api.world.inventory.ArmorStandHolder;
 import fuzs.armorstatues.api.world.inventory.data.ArmorStandPose;
@@ -171,8 +170,7 @@ public class ArmorStandRotationsScreen extends AbstractArmorStandScreen {
     private Component getTipComponent() {
         Component[] components = {
                 Component.translatable("armorstatues.screen.rotations.tip1"),
-                Component.translatable("armorstatues.screen.rotations.tip2"),
-                Component.translatable("armorstatues.screen.rotations.tip3", ModClientRegistry.CYCLE_TABS_KEY_MAPPING.getTranslatedKeyMessage(), ModClientRegistry.CYCLE_TABS_KEY_MAPPING.getTranslatedKeyMessage())
+                Component.translatable("armorstatues.screen.rotations.tip2")
         };
         return components[RANDOM.nextInt(components.length)];
     }

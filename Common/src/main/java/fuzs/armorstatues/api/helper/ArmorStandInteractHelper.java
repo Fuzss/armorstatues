@@ -9,14 +9,16 @@ import net.minecraft.world.SimpleMenuProvider;
 import net.minecraft.world.entity.decoration.ArmorStand;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.MenuType;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
 import net.minecraft.world.level.Level;
 
 import java.util.Optional;
 
 public class ArmorStandInteractHelper {
 
-    public static Optional<InteractionResult> tryOpenArmorStatueMenu(Player player, Level level, ArmorStand entity, MenuType<?> menuType) {
-        if (player.isShiftKeyDown() && (!entity.isInvulnerable() || player.getAbilities().instabuild)) {
+    public static Optional<InteractionResult> tryOpenArmorStatueMenu(Player player, Level level, ItemStack stack, ArmorStand entity, MenuType<?> menuType) {
+        if (player.isShiftKeyDown() && stack.is(Items.STICK) && (!entity.isInvulnerable() || player.getAbilities().instabuild)) {
             openArmorStatueMenu(player, entity, menuType);
             return Optional.of(InteractionResult.sidedSuccess(level.isClientSide));
         }

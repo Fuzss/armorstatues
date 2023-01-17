@@ -12,7 +12,7 @@ public class ModLanguageProvider extends LanguageProvider {
     @Override
     protected void addTranslations() {
         this.add("key.cycleStatueTabs", "Cycle Statue Tabs");
-        this.add("armorstatues.item.armor_stand.description", "Shift + right-click to open configuration screen when placed.");
+        this.add("armorstatues.item.armor_stand.description", "Shift + right-click holding a stick to open configuration screen after placing.");
         this.add("armorstatues.entity.armor_stand.pose.athena", "Athena");
         this.add("armorstatues.entity.armor_stand.pose.brandish", "Brandish");
         this.add("armorstatues.entity.armor_stand.pose.cancanA", "Cancan #1");

@@ -11,6 +11,7 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.decoration.ArmorStand;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
 
@@ -24,7 +25,8 @@ public class ArmorStandInteractHandler {
 
     public static Optional<InteractionResult> onEntityInteract(Player player, Level level, InteractionHand interactionHand, Entity target, Vec3 hitVector) {
         if (!player.isSpectator() && target.getType() == EntityType.ARMOR_STAND) {
-            Optional<InteractionResult> result = ArmorStandInteractHelper.tryOpenArmorStatueMenu(player, level, (ArmorStand) target, ModRegistry.ARMOR_STAND_MENU_TYPE.get());
+            ItemStack stack = player.getItemInHand(interactionHand);
+            Optional<InteractionResult> result = ArmorStandInteractHelper.tryOpenArmorStatueMenu(player, level, stack, (ArmorStand) target, ModRegistry.ARMOR_STAND_MENU_TYPE.get());
              if (result.isPresent() && level.isClientSide && !presentServerside) {
                 // better to check for client once more, we don't want to accidentally run on the server thread when showing the screen
                 ArmorStatues.PROXY.openArmorStandScreen((ArmorStand) target, player);
