@@ -40,6 +40,7 @@ public class ModLanguageProvider extends LanguageProvider {
         this.add("armorstatues.screen.style.noGravity", "No Gravity");
         this.add("armorstatues.screen.style.glowing", "Glowing");
         this.add("armorstatues.screen.style.sealed", "Sealed");
+        this.add("armorstatues.screen.style.noHitbox", "No Hitbox");
         this.add("armorstatues.screen.style.showArms.description", "Shows the statue's arms, so it may hold items in both hands.");
         this.add("armorstatues.screen.style.small.description", "Makes the statue half it's size like a baby mob.");
         this.add("armorstatues.screen.style.invisible.description", "Makes the statue itself invisible, but still shows all equipped items.");
@@ -48,6 +49,7 @@ public class ModLanguageProvider extends LanguageProvider {
         this.add("armorstatues.screen.style.noGravity.description", "Prevents the statue from falling down, so it may float freely.");
         this.add("armorstatues.screen.style.glowing.description", "Adds a glowing outline to the statue, visible through blocks.");
         this.add("armorstatues.screen.style.sealed.description", "The statue can no longer be broken, equipment cannot be changed. Disallows opening this menu in survival mode.");
+        this.add("armorstatues.screen.style.sealed.noHitbox", "Allows to place blocks inside the statue, the statue will not fall down and it is no longer possible to interact with it.");
         this.add("armorstatues.screen.position.rotation", "Rotation:");
         this.add("armorstatues.screen.position.degrees", "%s\u00B0");
         this.add("armorstatues.screen.position.moveBy", "Move By:");

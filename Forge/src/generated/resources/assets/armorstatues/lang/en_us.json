@@ -60,6 +60,8 @@
   "armorstatues.screen.style.noBasePlate.description": "Hide the stone base plate at the statue's feet.",
   "armorstatues.screen.style.noGravity": "No Gravity",
   "armorstatues.screen.style.noGravity.description": "Prevents the statue from falling down, so it may float freely.",
+  "armorstatues.screen.style.noHitbox": "No Hitbox",
+  "armorstatues.screen.style.noHitbox.description": "Allows to place blocks inside the statue, the statue will not fall down and it is no longer possible to interact with it.",
   "armorstatues.screen.style.sealed": "Sealed",
   "armorstatues.screen.style.sealed.description": "The statue can no longer be broken, equipment cannot be changed. Disallows opening this menu in survival mode.",
   "armorstatues.screen.style.showArms": "Show Arms",

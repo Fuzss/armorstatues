@@ -6,7 +6,8 @@
   "refmap": "armorstatues.refmap.json",
   "mixins": [
     "accessor.ArmorStandAccessor",
-    "accessor.SimpleContainerAccessor"
+    "accessor.SimpleContainerAccessor",
+    "redirect.MarkerArmorStandRaytracer"
   ],
   "client": [
   ],
