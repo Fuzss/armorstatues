@@ -10,17 +10,20 @@ import fuzs.armorstatues.api.world.inventory.ArmorStandHolder;
 import fuzs.armorstatues.api.world.inventory.ArmorStandMenu;
 import fuzs.armorstatues.api.world.inventory.data.ArmorStandScreenType;
 import fuzs.puzzleslib.client.core.ClientCoreServices;
+import net.minecraft.Util;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiComponent;
 import net.minecraft.client.gui.components.AbstractButton;
 import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.components.ImageButton;
 import net.minecraft.client.gui.components.events.GuiEventListener;
+import net.minecraft.client.gui.screens.ConfirmLinkScreen;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.gui.screens.inventory.MenuAccess;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.client.renderer.entity.ItemRenderer;
 import net.minecraft.client.resources.sounds.SimpleSoundInstance;
+import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvents;
@@ -32,6 +35,7 @@ import org.jetbrains.annotations.Nullable;
 import java.util.Optional;
 
 public abstract class AbstractArmorStandScreen extends Screen implements MenuAccess<ArmorStandMenu>, ArmorStandScreen {
+    public static final String VANILLA_TWEAKS_HOMEPAGE = "https://vanillatweaks.net/";
     private static final ResourceLocation ARMOR_STAND_BACKGROUND_LOCATION = ArmorStatuesApi.id("textures/gui/container/armor_stand/background.png");
     private static final ResourceLocation ARMOR_STAND_WIDGETS_LOCATION = ArmorStatuesApi.id("textures/gui/container/armor_stand/widgets.png");
     private static final ResourceLocation ARMOR_STAND_EQUIPMENT_LOCATION = ArmorStatuesApi.id("textures/gui/container/armor_stand/equipment.png");
@@ -141,6 +145,17 @@ public abstract class AbstractArmorStandScreen extends Screen implements MenuAcc
         }
     }
 
+    protected void addVanillaTweaksCreditButton() {
+        this.addRenderableWidget(new ImageButton(this.leftPos + 6, this.topPos + 6, 20, 20, 136, 64, 20, getArmorStandWidgetsLocation(), 256, 256, button -> {
+            this.minecraft.setScreen(new ConfirmLinkScreen((bl) -> {
+                if (bl) Util.getPlatform().openUri(VANILLA_TWEAKS_HOMEPAGE);
+                this.minecraft.setScreen(this);
+            }, VANILLA_TWEAKS_HOMEPAGE, true));
+        }, (button, poseStack, mouseX, mouseY) -> {
+            this.renderTooltip(poseStack, this.font.split(Component.translatable("armorstatues.screen.vanillaTweaksCredit"), 175), mouseX, mouseY);
+        }, CommonComponents.EMPTY));
+    }
+
     @Override
     public boolean mouseClicked(double mouseX, double mouseY, int button) {
         if (button == 0) {
@@ -222,8 +237,9 @@ public abstract class AbstractArmorStandScreen extends Screen implements MenuAcc
     public boolean mouseScrolled(double mouseX, double mouseY, double delta) {
         if (super.mouseScrolled(mouseX, mouseY, delta)) {
             return true;
+        } else {
+            return handleMouseScrolled((int) mouseX, (int) mouseY, delta, this.leftPos, this.topPos, this.imageHeight, this, this.dataSyncHandler.tabs());
         }
-        return handleMouseScrolled((int) mouseX, (int) mouseY, delta, this.leftPos, this.topPos, this.imageHeight, this, this.dataSyncHandler.tabs());
     }
 
     public static <T extends Screen & ArmorStandScreen> boolean handleMouseScrolled(int mouseX, int mouseY, double delta, int leftPos, int topPos, int imageHeight, T screen, ArmorStandScreenType[] tabs) {

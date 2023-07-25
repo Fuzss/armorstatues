@@ -35,10 +35,10 @@ public class NetworkDataSyncHandler implements DataSyncHandler {
     }
 
     @Override
-    public void sendPose(ArmorStandPose currentPose) {
-        currentPose.applyToEntity(this.getArmorStand());
+    public void sendPose(ArmorStandPose pose) {
+        pose.applyToEntity(this.getArmorStand());
         CompoundTag tag = new CompoundTag();
-        currentPose.serializeAllPoses(tag);
+        pose.serializeAllPoses(tag);
         ArmorStatuesApi.NETWORK.sendToServer(new C2SArmorStandPoseMessage(tag));
     }
 

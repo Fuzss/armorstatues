@@ -1,18 +1,22 @@
 package fuzs.armorstatues.api.client.gui.screens.armorstand;
 
+import com.google.common.collect.Lists;
 import com.mojang.blaze3d.vertex.PoseStack;
 import fuzs.armorstatues.api.network.client.data.DataSyncHandler;
 import fuzs.armorstatues.api.world.inventory.ArmorStandHolder;
 import fuzs.armorstatues.api.world.inventory.data.ArmorStandPose;
 import fuzs.armorstatues.api.world.inventory.data.ArmorStandScreenType;
+import net.minecraft.ChatFormatting;
 import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.ImageButton;
 import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.network.chat.Component;
+import net.minecraft.util.StringUtil;
 import net.minecraft.world.entity.decoration.ArmorStand;
 import net.minecraft.world.entity.player.Inventory;
 
+import java.util.List;
 import java.util.Optional;
 
 public class ArmorStandPosesScreen extends AbstractArmorStandScreen {
@@ -33,30 +37,58 @@ public class ArmorStandPosesScreen extends AbstractArmorStandScreen {
     protected void init() {
         super.init();
         this.cycleButtons[0] = this.addRenderableWidget(new ImageButton(this.leftPos + 17, this.topPos + 153, 20, 20, 156, 64, getArmorStandWidgetsLocation(), button -> {
-            firstPoseIndex -= POSES_PER_PAGE;
-            this.toggleCycleButtons();
+            this.toggleCycleButtons(-POSES_PER_PAGE);
         }));
         this.cycleButtons[1] = this.addRenderableWidget(new ImageButton(this.leftPos + 49, this.topPos + 153, 20, 20, 176, 64, getArmorStandWidgetsLocation(), button -> {
-            firstPoseIndex += POSES_PER_PAGE;
-            this.toggleCycleButtons();
+            this.toggleCycleButtons(POSES_PER_PAGE);
         }));
         for (int i = 0; i < this.poseButtons.length; i++) {
-            final int ii = i;
+            final int index = i;
             this.poseButtons[i] = this.addRenderableWidget(new ImageButton(this.leftPos + 83 + i % 2 * 62, this.topPos + 9 + i / 2 * 88, 60, 82, 76, 0, 82, getArmorStandWidgetsLocation(), 256, 256, button -> {
-                getPoseAt(ii).ifPresent(this.dataSyncHandler::sendPose);
+                getPoseAt(index).ifPresent(this.dataSyncHandler::sendPose);
             }, (Button button, PoseStack poseStack, int mouseX, int mouseY) -> {
-                getPoseAt(ii).ifPresent(pose -> this.renderTooltip(poseStack, Component.translatable(pose.getTranslationKey()), mouseX, mouseY));
+                getPoseAt(index).ifPresent(pose -> {
+                    String translationKey = pose.getTranslationKey();
+                    if (translationKey != null) {
+                        Component component = Component.translatable(translationKey);
+                        List<Component> lines = Lists.newArrayList(component);
+                        String source = pose.getSource();
+                        if (!StringUtil.isNullOrEmpty(source)) {
+                            lines.add(Component.translatable("armorstatues.entity.armor_stand.pose.by", source).withStyle(ChatFormatting.GRAY));
+                        }
+                        this.renderTooltip(poseStack, lines, Optional.empty(), mouseX, mouseY);
+                    }
+                });
             }, CommonComponents.EMPTY));
         }
-        this.toggleCycleButtons();
+        this.toggleCycleButtons(0);
+        this.addVanillaTweaksCreditButton();
     }
 
-    private void toggleCycleButtons() {
-        this.cycleButtons[0].active = firstPoseIndex > 0;
-        this.cycleButtons[1].active = firstPoseIndex + POSES_PER_PAGE < ArmorStandPose.values().length;
-        for (int i = 0; i < this.poseButtons.length; i++) {
-            this.poseButtons[i].visible = getPoseAt(i).isPresent();
+    private void toggleCycleButtons(int increment) {
+        int newFirstPoseIndex = firstPoseIndex + increment;
+        if (newFirstPoseIndex >= 0 && newFirstPoseIndex < ArmorStandPose.values().length) {
+            firstPoseIndex = newFirstPoseIndex;
+            this.cycleButtons[0].active = newFirstPoseIndex - POSES_PER_PAGE >= 0;
+            this.cycleButtons[1].active = newFirstPoseIndex + POSES_PER_PAGE < ArmorStandPose.values().length;
+            for (int i = 0; i < this.poseButtons.length; i++) {
+                this.poseButtons[i].visible = getPoseAt(i).isPresent();
+            }
         }
+    }
+
+    @Override
+    public boolean mouseScrolled(double mouseX, double mouseY, double delta) {
+        if (super.mouseScrolled(mouseX, mouseY, delta)) {
+            return true;
+        } else if (mouseX >= this.leftPos && mouseX < this.leftPos + this.imageWidth && mouseY >= this.topPos && mouseY < this.topPos + this.imageHeight) {
+            delta = Math.signum(delta);
+            if (delta != 0.0) {
+                this.toggleCycleButtons((int) (-1.0 * delta * POSES_PER_PAGE));
+                return true;
+            }
+        }
+        return false;
     }
 
     @Override

@@ -16,10 +16,10 @@ public class ModLanguageProvider extends LanguageProvider {
     protected void addTranslations() {
         this.add("armorstatues.item.armor_stand.description", "Use %s + %s with an empty hand to open configuration screen.");
         this.add("armorstatues.screen.style.name", "Set a name to display above the entity if enabled.");
+        this.add("armorstatues.entity.armor_stand.pose.by", "By %s");
         this.add(ArmorStandPose.ATHENA.getTranslationKey(), "Athena");
         this.add(ArmorStandPose.BRANDISH.getTranslationKey(), "Brandish");
-        this.add(ArmorStandPose.CANCAN_A.getTranslationKey(), "Cancan");
-        this.add(ArmorStandPose.CANCAN_B.getTranslationKey(), "Cancan (Mirrored)");
+        this.add(ArmorStandPose.CANCAN.getTranslationKey(), "Cancan");
         this.add(ArmorStandPose.DEFAULT.getTranslationKey(), "Default");
         this.add(ArmorStandPose.ENTERTAIN.getTranslationKey(), "Entertain");
         this.add(ArmorStandPose.HERO.getTranslationKey(), "Hero");
@@ -28,6 +28,24 @@ public class ModLanguageProvider extends LanguageProvider {
         this.add(ArmorStandPose.SALUTE.getTranslationKey(), "Salute");
         this.add(ArmorStandPose.SOLEMN.getTranslationKey(), "Solemn");
         this.add(ArmorStandPose.ZOMBIE.getTranslationKey(), "Zombie");
+        this.add(ArmorStandPose.WALKING.getTranslationKey(), "Walking");
+        this.add(ArmorStandPose.RUNNING.getTranslationKey(), "Running");
+        this.add(ArmorStandPose.POINTING.getTranslationKey(), "Pointing");
+        this.add(ArmorStandPose.BLOCKING.getTranslationKey(), "Blocking");
+        this.add(ArmorStandPose.LUNGEING.getTranslationKey(), "Lungeing");
+        this.add(ArmorStandPose.WINNING.getTranslationKey(), "Winning");
+        this.add(ArmorStandPose.SITTING.getTranslationKey(), "Sitting");
+        this.add(ArmorStandPose.ARABESQUE.getTranslationKey(), "Arabesque");
+        this.add(ArmorStandPose.CUPID.getTranslationKey(), "Cupid");
+        this.add(ArmorStandPose.CONFIDENT.getTranslationKey(), "Confident");
+        this.add(ArmorStandPose.DEATH.getTranslationKey(), "Death");
+        this.add(ArmorStandPose.FACEPALM.getTranslationKey(), "Facepalm");
+        this.add(ArmorStandPose.LAZING.getTranslationKey(), "Lazing");
+        this.add(ArmorStandPose.CONFUSED.getTranslationKey(), "Confused");
+        this.add(ArmorStandPose.FORMAL.getTranslationKey(), "Formal");
+        this.add(ArmorStandPose.SAD.getTranslationKey(), "Sad");
+        this.add(ArmorStandPose.JOYOUS.getTranslationKey(), "Joyous");
+        this.add(ArmorStandPose.STARGAZING.getTranslationKey(), "Stargazing");
         this.add(ArmorStandScreenType.EQUIPMENT.getTranslationKey(), "Equipment");
         this.add(ArmorStandScreenType.ROTATIONS.getTranslationKey(), "Rotations");
         this.add(ArmorStandScreenType.STYLE.getTranslationKey(), "Style");
@@ -58,9 +76,6 @@ public class ModLanguageProvider extends LanguageProvider {
         this.add("armorstatues.screen.position.z", "Z-Position:");
         this.add("armorstatues.screen.position.increment", "Increment by %s");
         this.add("armorstatues.screen.position.decrement", "Decrement by %s");
-        this.add("armorstatues.screen.position.centered", "Align Centered");
-        this.add("armorstatues.screen.position.cornered", "Align Cornered");
-        this.add("armorstatues.screen.position.aligned", "Aligned!");
         this.add("armorstatues.screen.pose.randomize", "Randomize");
         this.add("armorstatues.screen.pose.randomized", "Applied!");
         this.add("armorstatues.screen.rotations.pose.head", "Head");
@@ -81,14 +96,23 @@ public class ModLanguageProvider extends LanguageProvider {
         this.add("armorstatues.screen.rotations.x", "X: %s");
         this.add("armorstatues.screen.rotations.y", "Y: %s");
         this.add("armorstatues.screen.rotations.z", "Z: %s");
-        this.add("armorstatues.screen.alignments.block", "Align Block");
-        this.add("armorstatues.screen.alignments.itemFloating", "Align Item As Floating");
-        this.add("armorstatues.screen.alignments.itemFlat", "Align Item As Flat");
-        this.add("armorstatues.screen.alignments.tool", "Align Tool As Flat");
-        this.add("armorstatues.screen.alignments.credit", "Alignment values are taken from the Vanilla Tweaks \"Armor Statues\" data pack. Click this button to go to their website!");
+        this.add("armorstatues.screen.alignments.centered", "Align Centered");
+        this.add("armorstatues.screen.alignments.centered.description", "Align an armor stand in the center of the block position it is placed on.");
+        this.add("armorstatues.screen.alignments.cornered", "Align Cornered");
+        this.add("armorstatues.screen.alignments.cornered.description", "Align an armor stand at the corner of the block position it is placed on.");
+        this.add("armorstatues.screen.alignments.aligned", "Aligned!");
+        this.add("armorstatues.screen.alignments.block", "Align Block on Surface");
+        this.add("armorstatues.screen.alignments.block.description", "Align an armor stand placed on a surface so that a block held by it appears on the surface.");
+        this.add("armorstatues.screen.alignments.itemFloating", "Align Item On Surface");
+        this.add("armorstatues.screen.alignments.itemFloating.description", "Align an armor stand placed on a surface so that an item held by it appears upright on the surface.");
+        this.add("armorstatues.screen.alignments.itemFlat", "Align Item Flat On Surface");
+        this.add("armorstatues.screen.alignments.itemFlat.description", "Align an armor stand placed on a surface so that a non-tool item held by it appears flat on the surface.");
+        this.add("armorstatues.screen.alignments.tool", "Align Tool Flat On Surface");
+        this.add("armorstatues.screen.alignments.tool.description", "Align an armor stand placed on a surface so that a tool held by it appears flat on the surface.");
+        this.add("armorstatues.screen.vanillaTweaksCredit", "Some content on this page originates from the Vanilla Tweaks \"Armor Statues\" data pack. Click this button to go to their website!");
         this.add("armorstatues.screen.failure", "Unable to modify armor stand data: %s");
         this.add("armorstatues.screen.failure.noPermission", "No Permission");
-        this.add("armorstatues.screen.failure.notFinished", "Last Action Not Finished");
+        this.add("armorstatues.screen.failure.notFinished", "Queue Not Empty");
         this.add("armorstatues.screen.finished", "Finished sending queued armor stand data");
     }
 }

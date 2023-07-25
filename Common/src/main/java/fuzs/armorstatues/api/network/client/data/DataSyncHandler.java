@@ -15,13 +15,29 @@ public interface DataSyncHandler extends ArmorStandHolder {
 
     void sendName(String name);
 
-    void sendPose(ArmorStandPose currentPose);
+    void sendPose(ArmorStandPose pose);
+
+    default void sendPose(ArmorStandPose pose, boolean finalize) {
+        this.sendPose(pose);
+    }
 
     void sendPosition(double posX, double posY, double posZ);
 
+    default void sendPosition(double posX, double posY, double posZ, boolean finalize) {
+        this.sendPosition(posX, posY, posZ);
+    }
+
     void sendRotation(float rotation);
 
+    default void sendRotation(float rotation, boolean finalize) {
+        this.sendRotation(rotation);
+    }
+
     void sendStyleOption(ArmorStandStyleOption styleOption, boolean value);
+
+    default void sendStyleOption(ArmorStandStyleOption styleOption, boolean value, boolean finalize) {
+        this.sendStyleOption(styleOption, value);
+    }
 
     ArmorStandScreenType[] tabs();
 
@@ -35,6 +51,10 @@ public interface DataSyncHandler extends ArmorStandHolder {
 
     default boolean shouldContinueTicking() {
         return false;
+    }
+
+    default void finalizeCurrentOperation() {
+
     }
 
     static void setCustomArmorStandName(ArmorStand armorStand, String name) {

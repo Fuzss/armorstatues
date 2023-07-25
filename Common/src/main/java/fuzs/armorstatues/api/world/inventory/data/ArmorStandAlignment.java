@@ -1,8 +1,9 @@
 package fuzs.armorstatues.api.world.inventory.data;
 
 import net.minecraft.core.Rotations;
-import net.minecraft.network.chat.Component;
 import net.minecraft.world.phys.Vec3;
+
+import java.util.Locale;
 
 /**
  * values copied from <a href="https://vanillatweaks.net/">Vanilla Tweaks</a> data pack
@@ -27,11 +28,15 @@ public enum ArmorStandAlignment {
 
     @Override
     public String toString() {
-        return this.name;
+        return this.name.toUpperCase(Locale.ROOT);
     }
 
-    public Component getComponent() {
-        return Component.translatable("armorstatues.screen.alignments." + this.name);
+    public String getTranslationKey() {
+        return "armorstatues.screen.alignments." + this.name;
+    }
+
+    public String getDescriptionsKey() {
+        return this.getTranslationKey() + ".description";
     }
 
     public ArmorStandPose getPose() {

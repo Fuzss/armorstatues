@@ -8,13 +8,10 @@ import fuzs.armorstatues.api.world.inventory.ArmorStandHolder;
 import fuzs.armorstatues.api.world.inventory.data.ArmorStandAlignment;
 import fuzs.armorstatues.api.world.inventory.data.ArmorStandScreenType;
 import fuzs.armorstatues.api.world.inventory.data.ArmorStandStyleOptions;
-import net.minecraft.Util;
 import net.minecraft.client.gui.components.AbstractWidget;
-import net.minecraft.client.gui.components.ImageButton;
-import net.minecraft.client.gui.screens.ConfirmLinkScreen;
 import net.minecraft.core.Direction;
-import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.network.chat.Component;
+import net.minecraft.util.FormattedCharSequence;
 import net.minecraft.world.entity.decoration.ArmorStand;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.phys.Vec3;
@@ -23,7 +20,6 @@ import java.util.EnumSet;
 import java.util.List;
 
 public class ArmorStandAlignmentsScreen extends ArmorStandWidgetsScreen {
-    public static final String VANILLA_TWEAKS_HOMEPAGE = "https://vanillatweaks.net/";
 
     public ArmorStandAlignmentsScreen(ArmorStandHolder holder, Inventory inventory, Component component, DataSyncHandler dataSyncHandler) {
         super(holder, inventory, component, dataSyncHandler);
@@ -41,14 +37,7 @@ public class ArmorStandAlignmentsScreen extends ArmorStandWidgetsScreen {
     @Override
     protected void init() {
         super.init();
-        this.addRenderableWidget(new ImageButton(this.leftPos + 6, this.topPos + 6, 20, 20, 136, 64, 20, getArmorStandWidgetsLocation(), 256, 256, button -> {
-            this.minecraft.setScreen(new ConfirmLinkScreen((bl) -> {
-                if (bl) Util.getPlatform().openUri(VANILLA_TWEAKS_HOMEPAGE);
-                this.minecraft.setScreen(this);
-            }, VANILLA_TWEAKS_HOMEPAGE, true));
-        }, (button, poseStack, mouseX, mouseY) -> {
-            this.renderTooltip(poseStack, Component.translatable("armorstatues.screen.alignments.credit"), mouseX, mouseY);
-        }, CommonComponents.EMPTY));
+        this.addVanillaTweaksCreditButton();
     }
 
     @Override
@@ -84,11 +73,15 @@ public class ArmorStandAlignmentsScreen extends ArmorStandWidgetsScreen {
         @Override
         public void init(int posX, int posY) {
             super.init(posX, posY);
-            this.children.add(ArmorStandAlignmentsScreen.this.addRenderableWidget(new TickButton(posX, posY + 1, 94, 20, Component.translatable("armorstatues.screen.position.centered"), Component.translatable("armorstatues.screen.position.aligned"), button -> {
+            this.children.add(ArmorStandAlignmentsScreen.this.addRenderableWidget(new TickButton(posX, posY + 1, 94, 20, Component.translatable("armorstatues.screen.alignments.centered"), Component.translatable("armorstatues.screen.alignments.aligned"), button -> {
                 this.setNewPosition(this.getCurrentPosition().align(EnumSet.allOf(Direction.Axis.class)).add(0.5, 0.0, 0.5));
+            }, (button, poseStack, mouseX, mouseY) -> {
+                ArmorStandAlignmentsScreen.this.renderTooltip(poseStack, ArmorStandAlignmentsScreen.this.font.split(Component.translatable("armorstatues.screen.alignments.centered.description"), 175), mouseX, mouseY);
             })));
-            this.children.add(ArmorStandAlignmentsScreen.this.addRenderableWidget(new TickButton(posX + 100, posY + 1, 94, 20, Component.translatable("armorstatues.screen.position.cornered"), Component.translatable("armorstatues.screen.position.aligned"), button -> {
+            this.children.add(ArmorStandAlignmentsScreen.this.addRenderableWidget(new TickButton(posX + 100, posY + 1, 94, 20, Component.translatable("armorstatues.screen.alignments.cornered"), Component.translatable("armorstatues.screen.alignments.aligned"), button -> {
                 this.setNewPosition(this.getCurrentPosition().align(EnumSet.allOf(Direction.Axis.class)));
+            }, (button, poseStack, mouseX, mouseY) -> {
+                ArmorStandAlignmentsScreen.this.renderTooltip(poseStack, ArmorStandAlignmentsScreen.this.font.split(Component.translatable("armorstatues.screen.alignments.cornered.description"), 175), mouseX, mouseY);
             })));
         }
     }
@@ -103,16 +96,21 @@ public class ArmorStandAlignmentsScreen extends ArmorStandWidgetsScreen {
         @Override
         public void init(int posX, int posY) {
             super.init(posX, posY);
-            this.children.add(ArmorStandAlignmentsScreen.this.addRenderableWidget(new TickButton(posX, posY + 1, 194, 20, this.alignment.getComponent(), Component.translatable("armorstatues.screen.position.aligned"), button -> {
-                ArmorStandAlignmentsScreen.this.dataSyncHandler.sendPose(this.alignment.getPose());
+            this.children.add(ArmorStandAlignmentsScreen.this.addRenderableWidget(new TickButton(posX, posY + 1, 194, 20, Component.translatable(this.alignment.getTranslationKey()), Component.translatable("armorstatues.screen.alignments.aligned"), button -> {
+                ArmorStandAlignmentsScreen.this.dataSyncHandler.sendPose(this.alignment.getPose(), false);
                 ArmorStand armorStand = ArmorStandAlignmentsScreen.this.holder.getArmorStand();
                 this.setNewPosition(this.getCurrentPosition().align(EnumSet.allOf(Direction.Axis.class)).add(0.5, 0.0, 0.5).add(this.alignment.getPosition(armorStand.isSmall())));
                 if (!armorStand.isInvisible()) {
-                    ArmorStandAlignmentsScreen.this.dataSyncHandler.sendStyleOption(ArmorStandStyleOptions.INVISIBLE, true);
+                    ArmorStandAlignmentsScreen.this.dataSyncHandler.sendStyleOption(ArmorStandStyleOptions.INVISIBLE, true, false);
                 }
                 if (!armorStand.isNoGravity()) {
-                    ArmorStandAlignmentsScreen.this.dataSyncHandler.sendStyleOption(ArmorStandStyleOptions.NO_GRAVITY, true);
+                    ArmorStandAlignmentsScreen.this.dataSyncHandler.sendStyleOption(ArmorStandStyleOptions.NO_GRAVITY, true, false);
                 }
+                ArmorStandAlignmentsScreen.this.dataSyncHandler.finalizeCurrentOperation();
+            }, (button, poseStack, mouseX, mouseY) -> {
+                Component component = Component.translatable(this.alignment.getDescriptionsKey());
+                List<FormattedCharSequence> lines = ArmorStandAlignmentsScreen.this.font.split(component, 175);
+                ArmorStandAlignmentsScreen.this.renderTooltip(poseStack, lines, mouseX, mouseY);
             })));
         }
     }
