@@ -3,7 +3,6 @@ package fuzs.armorstatues.api.world.inventory.data;
 import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBiMap;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.decoration.ArmorStand;
 import net.minecraft.world.entity.player.Player;
@@ -14,14 +13,14 @@ public interface ArmorStandStyleOption {
     int ARMOR_STAND_ALL_SLOTS_DISABLED = 4144959;
     BiMap<ResourceLocation, ArmorStandStyleOption> OPTIONS_REGISTRY = HashBiMap.create();
 
-    String getTranslationId();
+    String getName();
 
-    default Component getComponent() {
-        return Component.translatable("armorstatues.screen.style." + this.getTranslationId());
+    default String getTranslationKey() {
+        return "armorstatues.screen.style." + this.getName();
     }
 
-    default Component getDescriptionComponent() {
-        return Component.translatable("armorstatues.screen.style." + this.getTranslationId() + ".description");
+    default String getDescriptionKey() {
+        return this.getTranslationKey() + ".description";
     }
 
     void setOption(ArmorStand armorStand, boolean setting);
@@ -35,7 +34,7 @@ public interface ArmorStandStyleOption {
     }
 
     default ResourceLocation getId() {
-        return Objects.requireNonNull(OPTIONS_REGISTRY.inverse().get(this), "Armor stand style option %s has not been registered".formatted(this.getTranslationId()));
+        return Objects.requireNonNull(OPTIONS_REGISTRY.inverse().get(this), "Armor stand style option %s has not been registered".formatted(this.getName()));
     }
 
     static void register(ResourceLocation id, ArmorStandStyleOption styleOption) {
@@ -54,7 +53,7 @@ public interface ArmorStandStyleOption {
         armorStand.getEntityData().set(ArmorStand.DATA_CLIENT_FLAGS, setBit(armorStand.getEntityData().get(ArmorStand.DATA_CLIENT_FLAGS), offset, setting));
     }
 
-    private static byte setBit(byte oldBit, int offset, boolean value) {
+    static byte setBit(byte oldBit, int offset, boolean value) {
         if (value) {
             oldBit = (byte) (oldBit | offset);
         } else {

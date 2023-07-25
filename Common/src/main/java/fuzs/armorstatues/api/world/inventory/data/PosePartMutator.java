@@ -18,19 +18,19 @@ public final class PosePartMutator {
     public static final PosePartMutator LEFT_LEG = new PosePartMutator("leftLeg", ArmorStandPose::getRightLegPose, ArmorStandPose::withRightLegPose, PosePartAxisRange.range(-120.0, 120.0), PosePartAxisRange.range(-90.0, 0.0), PosePartAxisRange.range(-120.0, 120.0));
     public static final PosePartMutator RIGHT_LEG = new PosePartMutator("rightLeg", ArmorStandPose::getLeftLegPose, ArmorStandPose::withLeftLegPose, PosePartAxisRange.range(-120.0, 120.0), PosePartAxisRange.range(0.0, 90.0), PosePartAxisRange.range(-120.0, 120.0));
 
-    private final String translationId;
+    private final String name;
     private final Function<ArmorStandPose, Rotations> getRotations;
     private final BiFunction<ArmorStandPose, Rotations, ArmorStandPose> setRotations;
     private final PosePartAxisRange[] axisRanges;
     private final Direction.Axis[] axisOrder;
     private final byte invertedIndices;
 
-    public PosePartMutator(String translationId, Function<ArmorStandPose, Rotations> getRotations, BiFunction<ArmorStandPose, Rotations, ArmorStandPose> setRotations, PosePartAxisRange rangeX, PosePartAxisRange rangeY, PosePartAxisRange rangeZ) {
-        this(translationId, getRotations, setRotations, rangeX, rangeY, rangeZ, new Direction.Axis[]{Direction.Axis.X, Direction.Axis.Y, Direction.Axis.Z}, Direction.Axis.Y);
+    public PosePartMutator(String name, Function<ArmorStandPose, Rotations> getRotations, BiFunction<ArmorStandPose, Rotations, ArmorStandPose> setRotations, PosePartAxisRange rangeX, PosePartAxisRange rangeY, PosePartAxisRange rangeZ) {
+        this(name, getRotations, setRotations, rangeX, rangeY, rangeZ, new Direction.Axis[]{Direction.Axis.X, Direction.Axis.Y, Direction.Axis.Z}, Direction.Axis.Y);
     }
 
-    public PosePartMutator(String translationId, Function<ArmorStandPose, Rotations> getRotations, BiFunction<ArmorStandPose, Rotations, ArmorStandPose> setRotations, PosePartAxisRange rangeX, PosePartAxisRange rangeY, PosePartAxisRange rangeZ, Direction.Axis[] axisOrder, Direction.Axis... invertedAxes) {
-        this.translationId = translationId;
+    public PosePartMutator(String name, Function<ArmorStandPose, Rotations> getRotations, BiFunction<ArmorStandPose, Rotations, ArmorStandPose> setRotations, PosePartAxisRange rangeX, PosePartAxisRange rangeY, PosePartAxisRange rangeZ, Direction.Axis[] axisOrder, Direction.Axis... invertedAxes) {
+        this.name = name;
         this.getRotations = getRotations;
         this.setRotations = setRotations;
         this.axisRanges = new PosePartAxisRange[]{rangeX, rangeY, rangeZ};
@@ -48,11 +48,11 @@ public final class PosePartMutator {
 
     @Override
     public String toString() {
-        return this.translationId.toUpperCase(Locale.ROOT);
+        return this.name.toUpperCase(Locale.ROOT);
     }
 
-    public Component getComponent() {
-        return Component.translatable("armorstatues.screen.rotations.pose." + this.translationId);
+    public String getTranslationKey() {
+        return "armorstatues.screen.rotations.pose." + this.name;
     }
 
     public Component getAxisComponent(ArmorStandPose pose, int index) {

@@ -21,19 +21,19 @@ public enum ArmorStandStyleOptions implements ArmorStandStyleOption {
         ((ArmorStandAccessor) armorStand).setDisabledSlots(setting ? ArmorStandStyleOption.ARMOR_STAND_ALL_SLOTS_DISABLED : 0);
     }, Entity::isInvulnerable);
 
-    private final String translationId;
+    private final String name;
     private final BiConsumer<ArmorStand, Boolean> newValue;
     private final Function<ArmorStand, Boolean> currentValue;
 
-    ArmorStandStyleOptions(String translationId, BiConsumer<ArmorStand, Boolean> newValue, Function<ArmorStand, Boolean> currentValue) {
-        this.translationId = translationId;
+    ArmorStandStyleOptions(String name, BiConsumer<ArmorStand, Boolean> newValue, Function<ArmorStand, Boolean> currentValue) {
+        this.name = name;
         this.newValue = newValue;
         this.currentValue = currentValue;
     }
 
     @Override
-    public String getTranslationId() {
-        return this.translationId;
+    public String getName() {
+        return this.name;
     }
 
     @Override

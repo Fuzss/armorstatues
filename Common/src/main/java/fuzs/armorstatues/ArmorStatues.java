@@ -1,10 +1,13 @@
 package fuzs.armorstatues;
 
+import fuzs.armorstatues.config.ClientConfig;
 import fuzs.armorstatues.init.ModRegistry;
 import fuzs.armorstatues.network.S2CPingMessage;
 import fuzs.armorstatues.proxy.ClientProxy;
 import fuzs.armorstatues.proxy.Proxy;
 import fuzs.armorstatues.proxy.ServerProxy;
+import fuzs.puzzleslib.config.ConfigHolder;
+import fuzs.puzzleslib.core.CommonFactories;
 import fuzs.puzzleslib.core.CoreServices;
 import fuzs.puzzleslib.core.DistTypeExecutor;
 import fuzs.puzzleslib.core.ModConstructor;
@@ -20,10 +23,13 @@ public class ArmorStatues implements ModConstructor {
 
     public static final NetworkHandler NETWORK = CoreServices.FACTORIES.network(MOD_ID, true, true);
     @SuppressWarnings("Convert2MethodRef")
+    public static final ConfigHolder CONFIG = CommonFactories.INSTANCE.clientConfig(ClientConfig.class, () -> new ClientConfig());
+    @SuppressWarnings("Convert2MethodRef")
     public static final Proxy PROXY = DistTypeExecutor.getForDistType(() -> () -> new ClientProxy(), () -> () -> new ServerProxy());
 
     @Override
     public void onConstructMod() {
+        CONFIG.bakeConfigs(MOD_ID);
         ModRegistry.touch();
         registerMessages();
     }

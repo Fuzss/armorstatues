@@ -30,13 +30,13 @@ public class NetworkDataSyncHandler implements DataSyncHandler {
 
     @Override
     public void sendName(String name) {
-        DataSyncHandler.super.sendName(name);
+        DataSyncHandler.setCustomArmorStandName(this.getArmorStand(), name);
         ArmorStatuesApi.NETWORK.sendToServer(new C2SArmorStandNameMessage(name));
     }
 
     @Override
     public void sendPose(ArmorStandPose currentPose) {
-        DataSyncHandler.super.sendPose(currentPose);
+        currentPose.applyToEntity(this.getArmorStand());
         CompoundTag tag = new CompoundTag();
         currentPose.serializeAllPoses(tag);
         ArmorStatuesApi.NETWORK.sendToServer(new C2SArmorStandPoseMessage(tag));
@@ -44,19 +44,17 @@ public class NetworkDataSyncHandler implements DataSyncHandler {
 
     @Override
     public void sendPosition(double posX, double posY, double posZ) {
-        DataSyncHandler.super.sendPosition(posX, posY, posZ);
         ArmorStatuesApi.NETWORK.sendToServer(new C2SArmorStandPositionMessage(posX, posY, posZ));
     }
 
     @Override
     public void sendRotation(float rotation) {
-        DataSyncHandler.super.sendRotation(rotation);
         ArmorStatuesApi.NETWORK.sendToServer(new C2SArmorStandRotationMessage(rotation));
     }
 
     @Override
     public void sendStyleOption(ArmorStandStyleOption styleOption, boolean value) {
-        DataSyncHandler.super.sendStyleOption(styleOption, value);
+        styleOption.setOption(this.getArmorStand(), value);
         ArmorStatuesApi.NETWORK.sendToServer(new C2SArmorStandStyleMessage(styleOption, value));
     }
 

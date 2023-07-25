@@ -39,7 +39,7 @@ public class TickBoxButton extends Button {
     @Override
     public void renderButton(PoseStack poseStack, int mouseX, int mouseY, float partialTick) {
         Minecraft minecraft = Minecraft.getInstance();
-        RenderSystem.setShaderTexture(0, AbstractArmorStandScreen.ARMOR_STAND_WIDGETS_LOCATION);
+        RenderSystem.setShaderTexture(0, AbstractArmorStandScreen.getArmorStandWidgetsLocation());
         RenderSystem.enableDepthTest();
         Font font = minecraft.font;
         RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, this.alpha);

@@ -1,6 +1,6 @@
 package fuzs.armorstatues.client.handler;
 
-import net.minecraft.ChatFormatting;
+import fuzs.armorstatues.api.proxy.Proxy;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
@@ -12,9 +12,9 @@ public class ArmorStandTooltipHandler {
 
     public static void onItemTooltip(ItemStack stack, TooltipFlag context, List<Component> lines) {
         if (stack.is(Items.ARMOR_STAND)) {
-            Component component = Component.translatable("armorstatues.item.armor_stand.description").withStyle(ChatFormatting.GRAY);
+            Component component = Proxy.INSTANCE.getStatueHoverText();
             if (context.isAdvanced()) {
-                lines.add(lines.size() - 1, component);
+                lines.add(lines.size() - (stack.hasTag() ? 2 : 1), component);
             } else {
                 lines.add(component);
             }

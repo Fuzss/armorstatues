@@ -20,7 +20,7 @@ public class NewTextureTickButton extends NewTextureButton implements TickingBut
     }
 
     public NewTextureTickButton(int x, int y, int width, int height, int imageTextureX, int imageTextureY, ResourceLocation imageTextureLocation, OnPress onPress, OnTooltip onTooltip) {
-        super(x, y, width, height, 0, 184, AbstractArmorStandScreen.ARMOR_STAND_WIDGETS_LOCATION, CommonComponents.EMPTY, onPress, onTooltip);
+        super(x, y, width, height, 0, 184, AbstractArmorStandScreen.getArmorStandWidgetsLocation(), CommonComponents.EMPTY, onPress, onTooltip);
         this.imageTextureX = imageTextureX;
         this.imageTextureY = imageTextureY;
         this.imageTextureLocation = imageTextureLocation;

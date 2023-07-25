@@ -30,9 +30,7 @@ public class ArmorStatuesForge {
     private static void registerHandlers() {
         // high priority so we run before the Quark mod
         MinecraftForge.EVENT_BUS.addListener(EventPriority.HIGH, (final PlayerInteractEvent.EntityInteractSpecific evt) -> {
-            // we use our custom event client-side, as it allows for cancelling the packet being sent to the server
-            if (!evt.getSide().isServer()) return;
-            ArmorStandInteractHandler.onEntityInteract(evt.getEntity(), evt.getLevel(), evt.getHand(), evt.getTarget(), evt.getLocalPos()).ifPresent(result -> {
+            ArmorStandInteractHandler.onUseEntityAt(evt.getEntity(), evt.getLevel(), evt.getHand(), evt.getTarget(), evt.getLocalPos()).ifPresent(result -> {
                 evt.setCancellationResult(result);
                 evt.setCanceled(true);
             });

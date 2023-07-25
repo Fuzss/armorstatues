@@ -13,25 +13,15 @@ import java.util.Optional;
 
 public interface DataSyncHandler extends ArmorStandHolder {
 
-    default void sendName(String name) {
-        setCustomArmorStandName(this.getArmorStand(), name);
-    }
+    void sendName(String name);
 
-    default void sendPose(ArmorStandPose currentPose) {
-        currentPose.applyToEntity(this.getArmorStand());
-    }
+    void sendPose(ArmorStandPose currentPose);
 
-    default void sendPosition(double posX, double posY, double posZ) {
+    void sendPosition(double posX, double posY, double posZ);
 
-    }
+    void sendRotation(float rotation);
 
-    default void sendRotation(float rotation) {
-
-    }
-
-    default void sendStyleOption(ArmorStandStyleOption styleOption, boolean value) {
-        styleOption.setOption(this.getArmorStand(), value);
-    }
+    void sendStyleOption(ArmorStandStyleOption styleOption, boolean value);
 
     ArmorStandScreenType[] tabs();
 
@@ -39,11 +29,19 @@ public interface DataSyncHandler extends ArmorStandHolder {
 
     void setLastType(ArmorStandScreenType lastType);
 
+    default void tick() {
+
+    }
+
+    default boolean shouldContinueTicking() {
+        return false;
+    }
+
     static void setCustomArmorStandName(ArmorStand armorStand, String name) {
-        String s = SharedConstants.filterText(name);
-        if (s.length() <= 50) {
-            boolean remove = s.isBlank() || s.equals(EntityType.ARMOR_STAND.getDescription().getString());
-            armorStand.setCustomName(remove ? null : Component.literal(s));
+        name = SharedConstants.filterText(name);
+        if (name.length() <= 50) {
+            boolean remove = name.isBlank() || name.equals(EntityType.ARMOR_STAND.getDescription().getString());
+            armorStand.setCustomName(remove ? null : Component.literal(name));
         }
     }
 }

@@ -35,18 +35,15 @@ public abstract class ArmorStandTickBoxScreen<T> extends AbstractArmorStandScree
 
     private void testNameInputChanged(boolean testEquality) {
         if (this.inputUpdateTicks == 0 || !testEquality && this.inputUpdateTicks != -1) {
-            this.onNameChanged(this.name.getValue());
+            String name = this.name.getValue().trim();
+            if (!name.equals(this.getNameDefaultValue())) {
+                this.syncNameChange(name);
+            }
             this.inputUpdateTicks = -1;
         }
     }
 
-    private void onNameChanged(String input) {
-        input = input.trim();
-        ArmorStand armorStand = this.holder.getArmorStand();
-        if (!input.equals(armorStand.getName().getString())) {
-            this.dataSyncHandler.sendName(input);
-        }
-    }
+    protected abstract void syncNameChange(String input);
 
     @Override
     protected void init() {
@@ -56,8 +53,8 @@ public abstract class ArmorStandTickBoxScreen<T> extends AbstractArmorStandScree
         this.name = new EditBox(this.font, this.leftPos + 16, this.topPos + 32, 66, 9, EntityType.ARMOR_STAND.getDescription());
         this.name.setTextColor(16777215);
         this.name.setBordered(false);
-        this.name.setMaxLength(50);
-        this.name.setValue(armorStand.getName().getString());
+        this.name.setMaxLength(this.getNameMaxLength());
+        this.name.setValue(this.getNameDefaultValue());
         this.name.setResponder(input -> this.inputUpdateTicks = 20);
         this.addWidget(this.name);
         this.inputUpdateTicks = -1;
@@ -68,9 +65,23 @@ public abstract class ArmorStandTickBoxScreen<T> extends AbstractArmorStandScree
         }
     }
 
+    protected abstract int getNameMaxLength();
+
+    protected abstract String getNameDefaultValue();
+
     protected abstract T[] getAllTickBoxValues();
 
     protected abstract AbstractWidget makeTickBoxWidget(ArmorStand armorStand, int buttonStartY, int index, T option);
+
+    @Override
+    public void render(PoseStack poseStack, int mouseX, int mouseY, float partialTick) {
+        super.render(poseStack, mouseX, mouseY, partialTick);
+        if (this.name.isMouseOver(mouseX, mouseY)) {
+            this.renderTooltip(poseStack, this.font.split(this.getNameComponent(), 175), mouseX, mouseY);
+        }
+    }
+
+    protected abstract Component getNameComponent();
 
     @Override
     public void resize(Minecraft pMinecraft, int pWidth, int pHeight) {
@@ -107,7 +118,7 @@ public abstract class ArmorStandTickBoxScreen<T> extends AbstractArmorStandScree
         super.renderBg(poseStack, partialTick, mouseX, mouseY);
         RenderSystem.setShader(GameRenderer::getPositionTexShader);
         RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
-        RenderSystem.setShaderTexture(0, ARMOR_STAND_WIDGETS_LOCATION);
+        RenderSystem.setShaderTexture(0, getArmorStandWidgetsLocation());
         // name edit box background
         this.blit(poseStack, this.leftPos + 14, this.topPos + 30, 0, 108, 76, 12);
         this.name.render(poseStack, mouseX, mouseY, partialTick);

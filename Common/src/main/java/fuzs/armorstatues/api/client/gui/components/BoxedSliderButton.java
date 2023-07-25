@@ -64,7 +64,7 @@ public abstract class BoxedSliderButton extends AbstractWidget implements Unboun
     @Override
     public void renderButton(PoseStack poseStack, int mouseX, int mouseY, float partialTick) {
         RenderSystem.setShader(GameRenderer::getPositionTexShader);
-        RenderSystem.setShaderTexture(0, AbstractArmorStandScreen.ARMOR_STAND_WIDGETS_LOCATION);
+        RenderSystem.setShaderTexture(0, AbstractArmorStandScreen.getArmorStandWidgetsLocation());
         RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, this.alpha);
         RenderSystem.enableBlend();
         RenderSystem.defaultBlendFunc();
@@ -81,7 +81,7 @@ public abstract class BoxedSliderButton extends AbstractWidget implements Unboun
         } else if (horizontalValueLocked) {
             this.blit(poseStack, this.x + sliderX, this.y, 54, 120, SLIDER_SIZE + 2, this.height);
         } else {
-            this.blit(poseStack, this.x, this.y + sliderY, 136, 45, this.width, SLIDER_SIZE + 2);
+            this.blit(poseStack, this.x, this.y + sliderY, 136, 49, this.width, SLIDER_SIZE + 2);
         }
         int i = this.getYImage(hoveredOrFocused);
         this.blit(poseStack, this.x + 1 + sliderX, this.y + 1 + sliderY, 151, i * SLIDER_SIZE, SLIDER_SIZE, SLIDER_SIZE);

@@ -3,6 +3,13 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog].
 
+## [v4.0.5-1.19.2] - 2023-07-24
+### Changed
+- Text fields now show description tooltips when hovered to make it more clear which field is for setting a new display name and which one changes the statue skin
+- Opening the statue menu no longer requires a stick to be held, instead shift + right-click with an empty hand is the way to go, which the statue item tooltip reflects
+### Fixed
+- Fixed a rare network issue on servers when both Armor Statues and Straw Statues are installed
+
 ## [v4.0.4-1.19.2] - 2023-01-17
 ### Changed
 - Opening the statue menu now requires a stick to be held in addition to sneaking, this was changed to improve compatibility with the Quark mod

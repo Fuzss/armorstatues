@@ -29,7 +29,6 @@ import java.util.Locale;
 import java.util.function.Consumer;
 import java.util.function.DoubleConsumer;
 import java.util.function.DoubleSupplier;
-import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
 public class ArmorStandPositionScreen extends ArmorStandWidgetsScreen {
@@ -60,7 +59,7 @@ public class ArmorStandPositionScreen extends ArmorStandWidgetsScreen {
     protected List<PositionScreenWidget> buildWidgets(ArmorStand armorStand) {
         // only move server-side to prevent rubber banding
         return Lists.newArrayList(
-                new RotationWidget(armorStand::getYRot, this.dataSyncHandler::sendRotation),
+                new RotationWidget(Component.translatable("armorstatues.screen.position.rotation"), armorStand::getYRot, this.dataSyncHandler::sendRotation),
                 new PositionIncrementWidget(),
                 new PositionComponentWidget("x", armorStand::getX, x -> {
                     this.dataSyncHandler.sendPosition(x, armorStand.getY(), armorStand.getZ());
@@ -91,30 +90,59 @@ public class ArmorStandPositionScreen extends ArmorStandWidgetsScreen {
         return (int) Math.round(increment * 16.0);
     }
 
-    public static double fromWrappedDegrees(double value) {
-        return (Mth.wrapDegrees(value) + 180.0) / 360.0;
-    }
+    protected class RotationWidget extends AbstractPositionScreenWidget {
+        protected final DoubleSupplier currentValue;
+        protected final Consumer<Float> newValue;
+        private final double snapInterval;
+        @Nullable
+        private Runnable reset;
 
-    public static float toWrappedDegrees(double value) {
-        return (float) Mth.wrapDegrees(value * 360.0 - 180.0);
-    }
+        public RotationWidget(Component title, DoubleSupplier currentValue, Consumer<Float> newValue) {
+            this(title, currentValue, newValue, ArmorStandPose.DEGREES_SNAP_INTERVAL);
+        }
 
-    private class RotationWidget extends AbstractPositionScreenWidget {
-        private final Supplier<Float> currentRotation;
-        private final Consumer<Float> newRotation;
+        public RotationWidget(Component title, DoubleSupplier currentValue, Consumer<Float> newValue, double snapInterval) {
+            super(title);
+            this.currentValue = currentValue;
+            this.newValue = newValue;
+            this.snapInterval = snapInterval;
+        }
 
-        public RotationWidget(Supplier<Float> currentRotation, Consumer<Float> newRotation) {
-            super(Component.translatable("armorstatues.screen.position.rotation"));
-            this.currentRotation = currentRotation;
-            this.newRotation = newRotation;
+        protected double getCurrentValue() {
+            return fromWrappedDegrees(this.currentValue.getAsDouble());
+        }
+
+        protected void setNewValue(double newValue) {
+            this.newValue.accept(toWrappedDegrees(newValue));
+        }
+
+        protected Component getTooltipComponent(double mouseValue) {
+            return Component.translatable("armorstatues.screen.position.degrees", ArmorStandPose.ROTATION_FORMAT.format(toWrappedDegrees(mouseValue)));
+        }
+
+        protected static double fromWrappedDegrees(double value) {
+            return (Mth.wrapDegrees(value) + 180.0) / 360.0;
+        }
+
+        protected static float toWrappedDegrees(double value) {
+            return (float) Mth.wrapDegrees(value * 360.0 - 180.0);
+        }
+
+        protected void applyClientValue(double newValue) {
+
+        }
+
+        @Override
+        public void reset() {
+            if (this.reset != null) this.reset.run();
         }
 
         @Override
         public void init(int posX, int posY) {
             super.init(posX, posY);
-            NewTextureSliderButton sliderButton = ArmorStandPositionScreen.this.addRenderableWidget(new NewTextureSliderButton(posX + 76, posY + 1, 90, 20, 0, 184, ARMOR_STAND_WIDGETS_LOCATION, CommonComponents.EMPTY, fromWrappedDegrees(this.currentRotation.get()), (button, poseStack, mouseX, mouseY) -> {
-                double mouseValue = ArmorStandPose.snapValue((mouseX - button.x) / (double) button.getWidth(), ArmorStandPose.DEGREES_SNAP_INTERVAL);
-                ArmorStandPositionScreen.this.renderTooltip(poseStack, Component.translatable("armorstatues.screen.position.degrees", ArmorStandPose.ROTATION_FORMAT.format(toWrappedDegrees(mouseValue))), mouseX, mouseY);
+            var sliderButton = ArmorStandPositionScreen.this.addRenderableWidget(new NewTextureSliderButton(posX + 76, posY + 1, 90, 20, 0, 184, getArmorStandWidgetsLocation(), CommonComponents.EMPTY, this.getCurrentValue(), (button, poseStack, mouseX, mouseY) -> {
+                double mouseValue = ArmorStandPose.snapValue((mouseX - button.x) / (double) button.getWidth(), this.snapInterval);
+                ArmorStandPositionScreen.this.renderTooltip(poseStack, this.getTooltipComponent(mouseValue), mouseX, mouseY);
             }) {
                 private boolean dirty;
 
@@ -123,9 +151,14 @@ public class ArmorStandPositionScreen extends ArmorStandWidgetsScreen {
 
                 }
 
+                public void reset() {
+                    this.value = RotationWidget.this.getCurrentValue();
+                }
+
                 @Override
                 protected void applyValue() {
                     this.dirty = true;
+                    RotationWidget.this.applyClientValue(this.value);
                 }
 
                 @Override
@@ -134,7 +167,7 @@ public class ArmorStandPositionScreen extends ArmorStandWidgetsScreen {
                     // we use #onRelease instead of directly applying in #applyValue as the armor stand will otherwise glitch out visually since the server constantly sends outdated values
                     if (this.isDirty()) {
                         this.dirty = false;
-                        RotationWidget.this.newRotation.accept(toWrappedDegrees(this.value));
+                        RotationWidget.this.setNewValue(this.value);
                     }
                 }
 
@@ -143,9 +176,10 @@ public class ArmorStandPositionScreen extends ArmorStandWidgetsScreen {
                     return this.dirty;
                 }
             });
-            sliderButton.snapInterval = ArmorStandPose.DEGREES_SNAP_INTERVAL;
+            sliderButton.snapInterval = this.snapInterval;
+            this.reset = sliderButton::reset;
             this.children.add(sliderButton);
-            this.children.add(ArmorStandPositionScreen.this.addRenderableWidget(new ImageButton(posX + 174, posY + 1, 20, 20, 236, 64, ARMOR_STAND_WIDGETS_LOCATION, button -> {
+            this.children.add(ArmorStandPositionScreen.this.addRenderableWidget(new ImageButton(posX + 174, posY + 1, 20, 20, 236, 64, getArmorStandWidgetsLocation(), button -> {
                 ArmorStandPositionScreen.this.setActiveWidget(this);
             })));
         }
@@ -162,7 +196,7 @@ public class ArmorStandPositionScreen extends ArmorStandWidgetsScreen {
             super.init(posX, posY);
             for (int i = 0; i < INCREMENTS.length; i++) {
                 double increment = INCREMENTS[i];
-                AbstractWidget widget = ArmorStandPositionScreen.this.addRenderableWidget(new NewTextureButton(posX + 76 + i * 24 + (i > 1 ? 1 : 0), posY + 1, 20, 20, 0, 184, ARMOR_STAND_WIDGETS_LOCATION, Component.literal(String.valueOf(getBlockPixelIncrement(increment))), button -> {
+                AbstractWidget widget = ArmorStandPositionScreen.this.addRenderableWidget(new NewTextureButton(posX + 76 + i * 24 + (i > 1 ? 1 : 0), posY + 1, 20, 20, 0, 184, getArmorStandWidgetsLocation(), Component.literal(String.valueOf(getBlockPixelIncrement(increment))), button -> {
                     this.setActiveIncrement(button, increment);
                 }, (Button button, PoseStack poseStack, int mouseX, int mouseY) -> {
                     List<Component> lines = Lists.newArrayList(getPixelIncrementComponent(increment), getBlockIncrementComponent(increment));
@@ -173,7 +207,7 @@ public class ArmorStandPositionScreen extends ArmorStandWidgetsScreen {
                     widget.active = false;
                 }
             }
-            this.children.add(ArmorStandPositionScreen.this.addRenderableWidget(new ImageButton(posX + 174, posY + 1, 20, 20, 236, 64, ARMOR_STAND_WIDGETS_LOCATION, button -> {
+            this.children.add(ArmorStandPositionScreen.this.addRenderableWidget(new ImageButton(posX + 174, posY + 1, 20, 20, 236, 64, getArmorStandWidgetsLocation(), button -> {
                 ArmorStandPositionScreen.this.setActiveWidget(this);
             })));
         }
@@ -224,17 +258,17 @@ public class ArmorStandPositionScreen extends ArmorStandWidgetsScreen {
             this.editBox.setTextColorUneditable(14737632);
             this.editBox.setValue(BLOCK_INCREMENT_FORMAT.format(this.getPositionValue()));
             this.children.add(this.editBox);
-            this.children.add(ArmorStandPositionScreen.this.addRenderableWidget(new ImageButton(posX + 149, posY + 1, 20, 10, 196, 64, 20, ARMOR_STAND_WIDGETS_LOCATION, 256, 256, button -> {
+            this.children.add(ArmorStandPositionScreen.this.addRenderableWidget(new ImageButton(posX + 149, posY + 1, 20, 10, 196, 64, 20, getArmorStandWidgetsLocation(), 256, 256, button -> {
                 this.setPositionValue(this.getPositionValue() + currentIncrement);
             }, (Button button, PoseStack poseStack, int mouseX, int mouseY) -> {
                 ArmorStandPositionScreen.this.renderTooltip(poseStack, Component.translatable("armorstatues.screen.position.increment", getPixelIncrementComponent(currentIncrement)), mouseX, mouseY);
             }, CommonComponents.EMPTY)));
-            this.children.add(ArmorStandPositionScreen.this.addRenderableWidget(new ImageButton(posX + 149, posY + 11, 20, 10, 216, 74, 20, ARMOR_STAND_WIDGETS_LOCATION, 256, 256, button -> {
+            this.children.add(ArmorStandPositionScreen.this.addRenderableWidget(new ImageButton(posX + 149, posY + 11, 20, 10, 216, 74, 20, getArmorStandWidgetsLocation(), 256, 256, button -> {
                 this.setPositionValue(this.getPositionValue() - currentIncrement);
             }, (Button button, PoseStack poseStack, int mouseX, int mouseY) -> {
                 ArmorStandPositionScreen.this.renderTooltip(poseStack, Component.translatable("armorstatues.screen.position.decrement", getPixelIncrementComponent(currentIncrement)), mouseX, mouseY);
             }, CommonComponents.EMPTY)));
-            this.children.add(ArmorStandPositionScreen.this.addRenderableWidget(new ImageButton(posX + 174, posY + 1, 20, 20, 236, 64, ARMOR_STAND_WIDGETS_LOCATION, button -> {
+            this.children.add(ArmorStandPositionScreen.this.addRenderableWidget(new ImageButton(posX + 174, posY + 1, 20, 20, 236, 64, getArmorStandWidgetsLocation(), button -> {
                 ArmorStandPositionScreen.this.setActiveWidget(this);
             })));
         }

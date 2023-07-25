@@ -4,7 +4,6 @@ import fuzs.armorstatues.mixin.accessor.ArmorStandAccessor;
 import net.minecraft.Util;
 import net.minecraft.core.Rotations;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.decoration.ArmorStand;
 import org.jetbrains.annotations.Nullable;
 
@@ -34,7 +33,7 @@ public class ArmorStandPose {
     private static final Random RANDOM = new Random();
     
     @Nullable
-    private final String translationId;
+    private final String name;
     private final Rotations headPose;
     private final Rotations bodyPose;
     private final Rotations leftArmPose;
@@ -42,12 +41,12 @@ public class ArmorStandPose {
     private final Rotations leftLegPose;
     private final Rotations rightLegPose;
 
-    private ArmorStandPose(@Nullable String translationId) {
-        this(translationId, new Rotations(0.0F, 0.0F, 0.0F), new Rotations(0.0F, 0.0F, 0.0F), new Rotations(0.0F, 0.0F, 0.0F), new Rotations(0.0F, 0.0F, 0.0F), new Rotations(0.0F, 0.0F, 0.0F), new Rotations(0.0F, 0.0F, 0.0F));
+    private ArmorStandPose(@Nullable String name) {
+        this(name, new Rotations(0.0F, 0.0F, 0.0F), new Rotations(0.0F, 0.0F, 0.0F), new Rotations(0.0F, 0.0F, 0.0F), new Rotations(0.0F, 0.0F, 0.0F), new Rotations(0.0F, 0.0F, 0.0F), new Rotations(0.0F, 0.0F, 0.0F));
     }
 
-    private ArmorStandPose(@Nullable String translationId, Rotations headPose, Rotations bodyPose, Rotations leftArmPose, Rotations rightArmPose, Rotations leftLegPose, Rotations rightLegPose) {
-        this.translationId = translationId;
+    private ArmorStandPose(@Nullable String name, Rotations headPose, Rotations bodyPose, Rotations leftArmPose, Rotations rightArmPose, Rotations leftLegPose, Rotations rightLegPose) {
+        this.name = name;
         this.headPose = headPose;
         this.bodyPose = bodyPose;
         this.leftArmPose = leftArmPose;
@@ -62,14 +61,12 @@ public class ArmorStandPose {
 
     @Override
     public String toString() {
-        if (this.translationId != null) {
-            return this.translationId.toUpperCase(Locale.ROOT);
-        }
-        return super.toString();
+        return this.name != null ? this.name.toUpperCase(Locale.ROOT) : "POSE";
     }
 
-    public Component getComponent() {
-        return Component.translatable("armorstatues.entity.armor_stand.pose." + Objects.requireNonNull(this.translationId, "Trying to get component for transient armor stand pose"));
+    public String getTranslationKey() {
+        Objects.requireNonNull(this.name, "name is null");
+        return "armorstatues.entity.armor_stand.pose." + this.name;
     }
 
     public Rotations getHeadPose() {
@@ -97,27 +94,35 @@ public class ArmorStandPose {
     }
 
     public ArmorStandPose withHeadPose(Rotations rotation) {
-        return new ArmorStandPose(this.translationId, rotation, this.bodyPose, this.leftArmPose, this.rightArmPose, this.leftLegPose, this.rightLegPose);
+        return new ArmorStandPose(this.name, rotation, this.bodyPose, this.leftArmPose, this.rightArmPose, this.leftLegPose, this.rightLegPose);
     }
 
     public ArmorStandPose withBodyPose(Rotations rotation) {
-        return new ArmorStandPose(this.translationId, this.headPose, rotation, this.leftArmPose, this.rightArmPose, this.leftLegPose, this.rightLegPose);
+        return new ArmorStandPose(this.name, this.headPose, rotation, this.leftArmPose, this.rightArmPose, this.leftLegPose, this.rightLegPose);
     }
 
     public ArmorStandPose withLeftArmPose(Rotations rotation) {
-        return new ArmorStandPose(this.translationId, this.headPose, this.bodyPose, rotation, this.rightArmPose, this.leftLegPose, this.rightLegPose);
+        return new ArmorStandPose(this.name, this.headPose, this.bodyPose, rotation, this.rightArmPose, this.leftLegPose, this.rightLegPose);
     }
 
     public ArmorStandPose withRightArmPose(Rotations rotation) {
-        return new ArmorStandPose(this.translationId, this.headPose, this.bodyPose, this.leftArmPose, rotation, this.leftLegPose, this.rightLegPose);
+        return new ArmorStandPose(this.name, this.headPose, this.bodyPose, this.leftArmPose, rotation, this.leftLegPose, this.rightLegPose);
     }
 
     public ArmorStandPose withLeftLegPose(Rotations rotation) {
-        return new ArmorStandPose(this.translationId, this.headPose, this.bodyPose, this.leftArmPose, this.rightArmPose, rotation, this.rightLegPose);
+        return new ArmorStandPose(this.name, this.headPose, this.bodyPose, this.leftArmPose, this.rightArmPose, rotation, this.rightLegPose);
     }
 
     public ArmorStandPose withRightLegPose(Rotations rotation) {
-        return new ArmorStandPose(this.translationId, this.headPose, this.bodyPose, this.leftArmPose, this.rightArmPose, this.leftLegPose, rotation);
+        return new ArmorStandPose(this.name, this.headPose, this.bodyPose, this.leftArmPose, this.rightArmPose, this.leftLegPose, rotation);
+    }
+
+    public ArmorStandPose mirror() {
+        return new ArmorStandPose(this.name, mirrorRotation(this.headPose), mirrorRotation(this.bodyPose), mirrorRotation(this.rightArmPose), mirrorRotation(this.leftArmPose), mirrorRotation(this.rightLegPose), mirrorRotation(this.leftLegPose));
+    }
+
+    private static Rotations mirrorRotation(Rotations rotations) {
+        return new Rotations(rotations.getX(), -rotations.getY(), -rotations.getZ());
     }
 
     public void applyToEntity(ArmorStand armorStand) {

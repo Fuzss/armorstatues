@@ -4,14 +4,13 @@ import fuzs.armorstatues.api.world.inventory.data.ArmorStandPose;
 import fuzs.armorstatues.api.world.inventory.data.ArmorStandScreenType;
 import fuzs.armorstatues.api.world.inventory.data.ArmorStandStyleOption;
 import net.minecraft.ChatFormatting;
-import net.minecraft.client.Minecraft;
+import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.DoubleTag;
 import net.minecraft.nbt.FloatTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.decoration.ArmorStand;
-import net.minecraft.world.entity.player.Player;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Arrays;
@@ -22,15 +21,19 @@ import java.util.function.Predicate;
 import java.util.stream.Stream;
 
 public class CommandDataSyncHandler implements DataSyncHandler {
+    private static final Component NO_PERMISSION_COMPONENT = Component.translatable("armorstatues.screen.failure.noPermission");
+
     @Nullable
     static ArmorStandScreenType lastType;
 
     private final ArmorStand armorStand;
+    protected final LocalPlayer player;
     private ArmorStandPose lastSyncedPose;
 
-    public CommandDataSyncHandler(ArmorStand armorStand) {
+    public CommandDataSyncHandler(ArmorStand armorStand, LocalPlayer player) {
         this.armorStand = armorStand;
         this.lastSyncedPose = ArmorStandPose.fromEntity(armorStand);
+        this.player = player;
     }
 
     @Override
@@ -41,16 +44,16 @@ public class CommandDataSyncHandler implements DataSyncHandler {
     @Override
     public void sendName(String name) {
         if (!this.testPermissionLevel()) return;
-        DataSyncHandler.super.sendName(name);
+        DataSyncHandler.setCustomArmorStandName(this.getArmorStand(), name);
         CompoundTag tag = new CompoundTag();
         tag.putString("CustomName", Component.Serializer.toJson(Component.literal(name)));
-        this.sendCommand(tag);
+        this.sendDataCommand(tag);
     }
 
     @Override
     public void sendPose(ArmorStandPose currentPose) {
         if (!this.testPermissionLevel()) return;
-        DataSyncHandler.super.sendPose(currentPose);
+        currentPose.applyToEntity(this.getArmorStand());
         // split this into multiple chat messages as the client chat field has a very low character limit
         this.sendPosePart(currentPose::serializeBodyPoses, this.lastSyncedPose);
         this.sendPosePart(currentPose::serializeArmPoses, this.lastSyncedPose);
@@ -63,42 +66,40 @@ public class CommandDataSyncHandler implements DataSyncHandler {
         if (dataWriter.test(tag, lastSyncedPose)) {
             CompoundTag tag1 = new CompoundTag();
             tag1.put("Pose", tag);
-            this.sendCommand(tag1);
+            this.sendDataCommand(tag1);
         }
     }
 
     @Override
     public void sendPosition(double posX, double posY, double posZ) {
         if (!this.testPermissionLevel()) return;
-        DataSyncHandler.super.sendPosition(posX, posY, posZ);
         ListTag listTag = new ListTag();
         listTag.add(DoubleTag.valueOf(posX));
         listTag.add(DoubleTag.valueOf(posY));
         listTag.add(DoubleTag.valueOf(posZ));
         CompoundTag tag = new CompoundTag();
         tag.put("Pos", listTag);
-        this.sendCommand(tag);
+        this.sendDataCommand(tag);
 
     }
 
     @Override
     public void sendRotation(float rotation) {
         if (!this.testPermissionLevel()) return;
-        DataSyncHandler.super.sendRotation(rotation);
         ListTag listTag = new ListTag();
         listTag.add(FloatTag.valueOf(rotation));
         CompoundTag tag = new CompoundTag();
         tag.put("Rotation", listTag);
-        this.sendCommand(tag);
+        this.sendDataCommand(tag);
     }
 
     @Override
     public void sendStyleOption(ArmorStandStyleOption styleOption, boolean value) {
         if (!this.testPermissionLevel()) return;
-        DataSyncHandler.super.sendStyleOption(styleOption, value);
+        styleOption.setOption(this.getArmorStand(), value);
         CompoundTag tag = new CompoundTag();
         styleOption.toTag(tag, value);
-        this.sendCommand(tag);
+        this.sendDataCommand(tag);
     }
 
     @Override
@@ -118,15 +119,22 @@ public class CommandDataSyncHandler implements DataSyncHandler {
     }
 
     private boolean testPermissionLevel() {
-        Player player = Minecraft.getInstance().player;
-        if (!player.hasPermissions(2)) {
-            player.displayClientMessage(Component.translatable("armorstatues.screen.noPermission").withStyle(ChatFormatting.RED), false);
+        if (!this.player.hasPermissions(2)) {
+            this.sendFailureMessage(NO_PERMISSION_COMPONENT);
             return false;
         }
         return true;
     }
 
-    private void sendCommand(CompoundTag tag) {
-        Minecraft.getInstance().player.commandSigned("data merge entity %s %s".formatted(this.getArmorStand().getStringUUID(), tag.getAsString()), null);
+    protected void sendFailureMessage(Component component) {
+        this.sendDisplayMessage(Component.translatable("armorstatues.screen.failure", component), true);
+    }
+
+    protected void sendDisplayMessage(Component component, boolean failure) {
+        this.player.displayClientMessage(Component.empty().append(component).withStyle(failure ? ChatFormatting.RED : ChatFormatting.GREEN), false);
+    }
+
+    private void sendDataCommand(CompoundTag tag) {
+        this.player.commandSigned("data merge entity %s %s".formatted(this.getArmorStand().getStringUUID(), tag.getAsString()), null);
     }
 }

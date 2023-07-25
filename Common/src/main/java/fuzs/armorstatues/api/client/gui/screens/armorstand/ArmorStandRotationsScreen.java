@@ -17,6 +17,7 @@ import net.minecraft.client.gui.components.events.GuiEventListener;
 import net.minecraft.client.sounds.SoundManager;
 import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.network.chat.Component;
+import net.minecraft.util.FormattedCharSequence;
 import net.minecraft.world.entity.decoration.ArmorStand;
 import net.minecraft.world.entity.player.Inventory;
 import org.apache.commons.compress.utils.Lists;
@@ -51,22 +52,22 @@ public class ArmorStandRotationsScreen extends AbstractArmorStandScreen {
     protected void init() {
         super.init();
         this.minecraft.keyboardHandler.setSendRepeatsToGui(true);
-        this.lockButtons[0] = this.addRenderableWidget(new ImageButton(this.leftPos + 83, this.topPos + 10, 20, 20, 156, 124, 20, ARMOR_STAND_WIDGETS_LOCATION, 256, 256, button -> {
+        this.lockButtons[0] = this.addRenderableWidget(new ImageButton(this.leftPos + 83, this.topPos + 10, 20, 20, 156, 124, 20, getArmorStandWidgetsLocation(), 256, 256, button -> {
             clampRotations = true;
             this.toggleLockButtons();
             this.refreshLiveButtons();
         }, (button, poseStack, mouseX, mouseY) -> {
             this.renderTooltip(poseStack, Component.translatable("armorstatues.screen.rotations.unlimited"), mouseX, mouseY);
         }, Component.translatable("armorstatues.screen.rotations.unlimited")));
-        this.lockButtons[1] = this.addRenderableWidget(new ImageButton(this.leftPos + 83, this.topPos + 10, 20, 20, 136, 124, 20, ARMOR_STAND_WIDGETS_LOCATION, 256, 256, button -> {
+        this.lockButtons[1] = this.addRenderableWidget(new ImageButton(this.leftPos + 83, this.topPos + 10, 20, 20, 136, 124, 20, getArmorStandWidgetsLocation(), 256, 256, button -> {
             clampRotations = false;
             this.toggleLockButtons();
             this.refreshLiveButtons();
         }, (button, poseStack, mouseX, mouseY) -> {
             this.renderTooltip(poseStack, Component.translatable("armorstatues.screen.rotations.limited"), mouseX, mouseY);
         }, Component.translatable("armorstatues.screen.rotations.limited")));
-        Component tipComponent = this.getTipComponent();
-        this.addRenderableWidget(new ImageButton(this.leftPos + 107, this.topPos + 10, 20, 20, 136, 64, 20, ARMOR_STAND_WIDGETS_LOCATION, 256, 256, button -> {}, (button, poseStack, mouseX, mouseY) -> {
+        List<FormattedCharSequence> tipComponent = this.font.split(this.getTipComponent(), 175);
+        this.addRenderableWidget(new ImageButton(this.leftPos + 107, this.topPos + 10, 20, 20, 136, 64, 20, getArmorStandWidgetsLocation(), 256, 256, button -> {}, (button, poseStack, mouseX, mouseY) -> {
             this.renderTooltip(poseStack, tipComponent, mouseX, mouseY);
         }, CommonComponents.EMPTY) {
 
@@ -75,27 +76,32 @@ public class ArmorStandRotationsScreen extends AbstractArmorStandScreen {
 
             }
         });
-        this.addRenderableWidget(new NewTextureTickButton(this.leftPos + 83, this.topPos + 34, 20, 20, 240, 124, ARMOR_STAND_WIDGETS_LOCATION, button -> {
+        this.addRenderableWidget(new NewTextureTickButton(this.leftPos + 107, this.topPos + 34, 20, 20, 240, 124, getArmorStandWidgetsLocation(), button -> {
             this.setCurrentPose(ArmorStandPose.empty());
         }, (button, poseStack, mouseX, mouseY) -> {
             this.renderTooltip(poseStack, Component.translatable("armorstatues.screen.rotations.reset"), mouseX, mouseY);
         }));
-        this.addRenderableWidget(new NewTextureTickButton(this.leftPos + 107, this.topPos + 34, 20, 20, 192, 124, ARMOR_STAND_WIDGETS_LOCATION, button -> {
+        this.addRenderableWidget(new NewTextureTickButton(this.leftPos + 83, this.topPos + 34, 20, 20, 192, 124, getArmorStandWidgetsLocation(), button -> {
             this.setCurrentPose(this.holder.getDataProvider().getRandomPose(true));
         }, (button, poseStack, mouseX, mouseY) -> {
             this.renderTooltip(poseStack, Component.translatable("armorstatues.screen.rotations.randomize"), mouseX, mouseY);
         }));
-        AbstractWidget pasteButton = this.addRenderableWidget(new NewTextureTickButton(this.leftPos + 83, this.topPos + 158, 44, 20, 224, 124, ARMOR_STAND_WIDGETS_LOCATION, button -> {
+        AbstractWidget pasteButton = this.addRenderableWidget(new NewTextureTickButton(this.leftPos + 107, this.topPos + 158, 20, 20, 224, 124, getArmorStandWidgetsLocation(), button -> {
             if (clipboard != null) this.setCurrentPose(clipboard);
         }, (button, poseStack, mouseX, mouseY) -> {
             this.renderTooltip(poseStack, Component.translatable("armorstatues.screen.rotations.paste"), mouseX, mouseY);
         }));
         pasteButton.active = clipboard != null;
-        this.addRenderableWidget(new NewTextureTickButton(this.leftPos + 83, this.topPos + 134, 44, 20, 208, 124, ARMOR_STAND_WIDGETS_LOCATION, button -> {
+        this.addRenderableWidget(new NewTextureTickButton(this.leftPos + 83, this.topPos + 158, 20, 20, 208, 124, getArmorStandWidgetsLocation(), button -> {
             clipboard = this.currentPose;
             pasteButton.active = true;
         }, (button, poseStack, mouseX, mouseY) -> {
             this.renderTooltip(poseStack, Component.translatable("armorstatues.screen.rotations.copy"), mouseX, mouseY);
+        }));
+        this.addRenderableWidget(new NewTextureTickButton(this.leftPos + 83, this.topPos + 134, 44, 20, 179, 0, getArmorStandWidgetsLocation(), button -> {
+            this.setCurrentPose(this.currentPose.mirror());
+        }, (button, poseStack, mouseX, mouseY) -> {
+            this.renderTooltip(poseStack, Component.translatable("armorstatues.screen.rotations.mirror"), mouseX, mouseY);
         }));
         ArmorStand armorStand = this.holder.getArmorStand();
         PosePartMutator[] values = this.holder.getDataProvider().getPosePartMutators();
@@ -105,7 +111,7 @@ public class ArmorStandRotationsScreen extends AbstractArmorStandScreen {
             boolean isLeft = i % 2 == 0;
             this.addRenderableWidget(new BoxedSliderButton(this.leftPos + 23 + i % 2 * 110, this.topPos + 7 + i / 2 * 60, () -> mutator.getNormalizedRotationsAtAxis(1, this.currentPose, clampRotations), () -> mutator.getNormalizedRotationsAtAxis(0, this.currentPose, clampRotations), (button, poseStack, mouseX, mouseY) -> {
                 List<Component> lines = Lists.newArrayList();
-                lines.add(mutator.getComponent());
+                lines.add(Component.translatable(mutator.getTranslationKey()));
                 lines.add(mutator.getAxisComponent(this.currentPose, 0));
                 lines.add(mutator.getAxisComponent(this.currentPose, 1));
                 int offset = isLeft ? 24 + lines.stream().mapToInt(minecraft.font::width).max().orElse(0) : 0;
@@ -136,7 +142,7 @@ public class ArmorStandRotationsScreen extends AbstractArmorStandScreen {
             }).active = isPosePartMutatorActive(mutator, armorStand);
             this.addRenderableWidget(new VerticalSliderButton(this.leftPos + 6 + i % 2 * 183, this.topPos + 7 + i / 2 * 60, () -> mutator.getNormalizedRotationsAtAxis(2, this.currentPose, clampRotations), (button, poseStack, mouseX, mouseY) -> {
                 List<Component> lines = Lists.newArrayList();
-                lines.add(mutator.getComponent());
+                lines.add(Component.translatable(mutator.getTranslationKey()));
                 lines.add(mutator.getAxisComponent(this.currentPose, 2));
                 int offset = isLeft ? 24 + lines.stream().mapToInt(minecraft.font::width).max().orElse(0) : 0;
                 this.renderTooltip(poseStack, lines.stream().map(Component::getVisualOrderText).collect(Collectors.toList()), mouseX - offset, mouseY);

@@ -1,6 +1,5 @@
 package fuzs.armorstatues.api.world.inventory.data;
 
-import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 
@@ -14,27 +13,27 @@ public class ArmorStandScreenType {
     public static final ArmorStandScreenType POSITION = new ArmorStandScreenType("position", new ItemStack(Items.GRASS_BLOCK));
     public static final ArmorStandScreenType ALIGNMENTS = new ArmorStandScreenType("alignments", new ItemStack(Items.DIAMOND_PICKAXE));
 
-    private final String translationId;
+    private final String name;
     private final ItemStack icon;
     private final boolean requiresServer;
 
-    public ArmorStandScreenType(String translationId, ItemStack icon) {
-        this(translationId, icon, false);
+    public ArmorStandScreenType(String name, ItemStack icon) {
+        this(name, icon, false);
     }
 
-    public ArmorStandScreenType(String translationId, ItemStack icon, boolean requiresServer) {
-        this.translationId = translationId;
+    public ArmorStandScreenType(String name, ItemStack icon, boolean requiresServer) {
+        this.name = name;
         this.icon = icon;
         this.requiresServer = requiresServer;
     }
 
     @Override
     public String toString() {
-        return this.translationId.toUpperCase(Locale.ROOT);
+        return this.name.toUpperCase(Locale.ROOT);
     }
 
-    public Component getComponent() {
-        return Component.translatable("armorstatues.screen.type." + this.translationId);
+    public String getTranslationKey() {
+        return "armorstatues.screen.type." + this.name;
     }
 
     public ItemStack getIcon() {

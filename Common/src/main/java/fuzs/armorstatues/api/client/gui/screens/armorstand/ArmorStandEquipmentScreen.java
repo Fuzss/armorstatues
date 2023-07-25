@@ -2,26 +2,21 @@ package fuzs.armorstatues.api.client.gui.screens.armorstand;
 
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
-import fuzs.armorstatues.api.ArmorStatuesApi;
 import fuzs.armorstatues.api.network.client.data.DataSyncHandler;
 import fuzs.armorstatues.api.world.inventory.ArmorStandHolder;
 import fuzs.armorstatues.api.world.inventory.ArmorStandMenu;
 import fuzs.armorstatues.api.world.inventory.data.ArmorStandScreenType;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
-import net.minecraft.client.gui.screens.inventory.InventoryScreen;
 import net.minecraft.client.gui.screens.inventory.MenuAccess;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.decoration.ArmorStand;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.Slot;
 
 public class ArmorStandEquipmentScreen extends AbstractContainerScreen<ArmorStandMenu> implements ArmorStandScreen {
-    private static final ResourceLocation ARMOR_STAND_EQUIPMENT_LOCATION = new ResourceLocation(ArmorStatuesApi.MOD_ID, "textures/gui/container/armor_stand/equipment.png");
-
     private final Inventory inventory;
     private final DataSyncHandler dataSyncHandler;
     private int mouseX;
@@ -41,6 +36,11 @@ public class ArmorStandEquipmentScreen extends AbstractContainerScreen<ArmorStan
     }
 
     @Override
+    public DataSyncHandler getDataSyncHandler() {
+        return this.dataSyncHandler;
+    }
+
+    @Override
     public <T extends Screen & MenuAccess<ArmorStandMenu> & ArmorStandScreen> T createScreenType(ArmorStandScreenType screenType) {
         T screen = ArmorStandScreenFactory.createScreenType(screenType, this.menu, this.inventory, this.title, this.dataSyncHandler);
         screen.setMouseX(this.mouseX);
@@ -56,6 +56,11 @@ public class ArmorStandEquipmentScreen extends AbstractContainerScreen<ArmorStan
     @Override
     public void setMouseY(int mouseY) {
         this.mouseY = mouseY;
+    }
+
+    @Override
+    protected void containerTick() {
+        this.dataSyncHandler.tick();
     }
 
     @Override
@@ -83,14 +88,14 @@ public class ArmorStandEquipmentScreen extends AbstractContainerScreen<ArmorStan
     }
 
     @Override
-    public void render(PoseStack poseStack, int mouseX, int mouseY, float pPartialTick) {
+    public void render(PoseStack poseStack, int mouseX, int mouseY, float partialTick) {
         this.renderBackground(poseStack);
-        this.renderBg(poseStack, pPartialTick, mouseX, mouseY);
-        super.render(poseStack, mouseX, mouseY, pPartialTick);
+        this.renderBg(poseStack, partialTick, mouseX, mouseY);
+        super.render(poseStack, mouseX, mouseY, partialTick);
         this.renderTooltip(poseStack, mouseX, mouseY);
         if (this.menu.getCarried().isEmpty()) {
             AbstractArmorStandScreen.findHoveredTab(this.leftPos, this.topPos, this.imageHeight, mouseX, mouseY, this.dataSyncHandler.tabs()).ifPresent(hoveredTab -> {
-                this.renderTooltip(poseStack, hoveredTab.getComponent(), mouseX, mouseY);
+                this.renderTooltip(poseStack, Component.translatable(hoveredTab.getTranslationKey()), mouseX, mouseY);
             });
         }
         this.mouseX = mouseX;
@@ -101,20 +106,19 @@ public class ArmorStandEquipmentScreen extends AbstractContainerScreen<ArmorStan
     protected void renderBg(PoseStack poseStack, float pPartialTick, int pX, int pY) {
         RenderSystem.setShader(GameRenderer::getPositionTexShader);
         RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
-        RenderSystem.setShaderTexture(0, ARMOR_STAND_EQUIPMENT_LOCATION);
+        RenderSystem.setShaderTexture(0, AbstractArmorStandScreen.getArmorStandEquipmentLocation());
         this.blit(poseStack, this.leftPos, this.topPos, 0, 0, this.imageWidth, this.imageHeight);
         for (int k = 0; k < ArmorStandMenu.SLOT_IDS.length; ++k) {
             Slot slot = this.menu.slots.get(k);
-            if (slot.isActive() && this.isSlotRestricted(ArmorStandMenu.SLOT_IDS[k])) {
+            if (slot.isActive() && isSlotRestricted(this.menu.getArmorStand(), ArmorStandMenu.SLOT_IDS[k])) {
                 this.blit(poseStack, this.leftPos + slot.x - 1, this.topPos + slot.y - 1, 210, 0, 18, 18);
             }
         }
         AbstractArmorStandScreen.drawTabs(poseStack, this.leftPos, this.topPos, this.imageHeight, this, this.dataSyncHandler.tabs());
-        InventoryScreen.renderEntityInInventory(this.leftPos + 104, this.topPos + 84, 30, (float) (this.leftPos + 104 - 10) - this.mouseX, (float) (this.topPos + 84 - 44) - this.mouseY, this.menu.getArmorStand());
+        this.renderArmorStandInInventory(this.leftPos + 104, this.topPos + 84, 30, (float) (this.leftPos + 104 - 10) - this.mouseX, (float) (this.topPos + 84 - 44) - this.mouseY);
     }
 
-    private boolean isSlotRestricted(EquipmentSlot equipmentSlot) {
-        ArmorStand armorStand = this.menu.getArmorStand();
+    private static boolean isSlotRestricted(ArmorStand armorStand, EquipmentSlot equipmentSlot) {
         return ArmorStandMenu.isSlotDisabled(armorStand, equipmentSlot, 0) || ArmorStandMenu.isSlotDisabled(armorStand, equipmentSlot, ArmorStand.DISABLE_TAKING_OFFSET) || ArmorStandMenu.isSlotDisabled(armorStand, equipmentSlot, ArmorStand.DISABLE_PUTTING_OFFSET);
     }
 

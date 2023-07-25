@@ -14,13 +14,13 @@ public class TickButton extends NewTextureButton implements TickingButton {
     protected int lastClickedTicksDelay = 30;
 
     public TickButton(int x, int y, int width, int height, Component title, Component clickedTitle, OnPress onPress) {
-        super(x, y, width, height, 0, 184, AbstractArmorStandScreen.ARMOR_STAND_WIDGETS_LOCATION, title, onPress);
+        super(x, y, width, height, 0, 184, AbstractArmorStandScreen.getArmorStandWidgetsLocation(), title, onPress);
         this.title = title;
         this.clickedTitle = clickedTitle;
     }
 
     public TickButton(int x, int y, int width, int height, Component title, Component clickedTitle, OnPress onPress, OnTooltip onTooltip) {
-        super(x, y, width, height, 0, 184, AbstractArmorStandScreen.ARMOR_STAND_WIDGETS_LOCATION, title, onPress, onTooltip);
+        super(x, y, width, height, 0, 184, AbstractArmorStandScreen.getArmorStandWidgetsLocation(), title, onPress, onTooltip);
         this.title = title;
         this.clickedTitle = clickedTitle;
     }

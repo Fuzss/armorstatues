@@ -24,7 +24,7 @@ import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 
 public class ArmorStandMenu extends AbstractContainerMenu implements ArmorStandHolder {
-    public static final ResourceLocation EMPTY_ARMOR_SLOT_SWORD = new ResourceLocation(ArmorStatuesApi.MOD_ID, "item/empty_armor_slot_sword");
+    public static final ResourceLocation EMPTY_ARMOR_SLOT_SWORD = ArmorStatuesApi.id("item/empty_armor_slot_sword");
     static final ResourceLocation[] TEXTURE_EMPTY_SLOTS = new ResourceLocation[]{InventoryMenu.EMPTY_ARMOR_SLOT_BOOTS, InventoryMenu.EMPTY_ARMOR_SLOT_LEGGINGS, InventoryMenu.EMPTY_ARMOR_SLOT_CHESTPLATE, InventoryMenu.EMPTY_ARMOR_SLOT_HELMET, InventoryMenu.EMPTY_ARMOR_SLOT_SHIELD, EMPTY_ARMOR_SLOT_SWORD};
     public static final EquipmentSlot[] SLOT_IDS = new EquipmentSlot[]{EquipmentSlot.HEAD, EquipmentSlot.CHEST, EquipmentSlot.LEGS, EquipmentSlot.FEET, EquipmentSlot.MAINHAND, EquipmentSlot.OFFHAND};
 
@@ -32,8 +32,8 @@ public class ArmorStandMenu extends AbstractContainerMenu implements ArmorStandH
     private final ArmorStand armorStand;
 
     public static ArmorStandMenu create(MenuType<?> menuType, int containerId, Inventory inventory, FriendlyByteBuf buf) {
-        // not sure how likely it is for this to fail, in that case the menu should just close immediately
-        ArmorStand entity = (ArmorStand) inventory.player.level.getEntity(buf.readInt());
+        int entityId = buf.readInt();
+        ArmorStand entity = (ArmorStand) inventory.player.level.getEntity(entityId);
         if (entity != null) {
             // vanilla doesn't sync these automatically, we need them for the menu
             entity.setInvulnerable(buf.readBoolean());
@@ -41,7 +41,10 @@ public class ArmorStandMenu extends AbstractContainerMenu implements ArmorStandH
             // also create the armor stand container client side, so that visual update instantly instead of having to wait for the server to resync data
             return create(menuType, containerId, inventory, entity);
         }
-        return new ArmorStandMenu(menuType, containerId, inventory, new SimpleContainer(6), null);
+        // exception is caught, so nothing will crash, only the screen will not open
+        // not sure how this is even possible, but there was a report about it
+        // report was concerning just placed statues, so maybe entity data arrived at remote after menu was opened
+        throw new IllegalStateException("trying to open invalid armor stand menu, entity for id %s was not found on client".formatted(entityId));
     }
 
     public static ArmorStandMenu create(MenuType<?> menuType, int containerId, Inventory inventory, ArmorStand armorStand) {

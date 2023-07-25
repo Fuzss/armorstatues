@@ -16,7 +16,7 @@ import java.util.Collection;
 import java.util.List;
 
 public abstract class ArmorStandWidgetsScreen extends AbstractArmorStandScreen {
-    private final List<PositionScreenWidget> widgets;
+    protected final List<PositionScreenWidget> widgets;
     @Nullable
     private PositionScreenWidget activeWidget;
 
@@ -97,6 +97,8 @@ public abstract class ArmorStandWidgetsScreen extends AbstractArmorStandScreen {
 
         void tick();
 
+        void reset();
+
         void init(int posX, int posY);
 
         void setVisible(boolean visible);
@@ -122,6 +124,11 @@ public abstract class ArmorStandWidgetsScreen extends AbstractArmorStandScreen {
         }
 
         @Override
+        public void reset() {
+
+        }
+
+        @Override
         public void init(int posX, int posY) {
             this.posX = posX;
             this.posY = posY;
@@ -138,9 +145,9 @@ public abstract class ArmorStandWidgetsScreen extends AbstractArmorStandScreen {
         @Override
         public void render(PoseStack poseStack, int mouseX, int mouseY, float partialTick) {
             if (ArmorStandWidgetsScreen.this.disableMenuRendering()) {
-                NewTextureButton.drawCenteredString(poseStack, ArmorStandWidgetsScreen.this.font, this.title, this.posX + 36, this.posY + 6, -1, true);
+                NewTextureButton.drawCenteredString(poseStack, ArmorStandWidgetsScreen.this.font, this.title, this.posX + 36, this.posY + 6, 0xFFFFFFFF, true);
             } else {
-                NewTextureButton.drawCenteredString(poseStack, ArmorStandWidgetsScreen.this.font, this.title, this.posX + 36, this.posY + 6, 4210752, false);
+                NewTextureButton.drawCenteredString(poseStack, ArmorStandWidgetsScreen.this.font, this.title, this.posX + 36, this.posY + 6, 0x404040, false);
             }
         }
 

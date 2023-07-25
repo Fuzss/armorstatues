@@ -11,12 +11,12 @@ import fuzs.armorstatues.api.world.inventory.ArmorStandMenu;
 import fuzs.armorstatues.api.world.inventory.data.ArmorStandScreenType;
 import fuzs.puzzleslib.client.core.ClientCoreServices;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.GuiComponent;
 import net.minecraft.client.gui.components.AbstractButton;
 import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.components.ImageButton;
 import net.minecraft.client.gui.components.events.GuiEventListener;
 import net.minecraft.client.gui.screens.Screen;
-import net.minecraft.client.gui.screens.inventory.InventoryScreen;
 import net.minecraft.client.gui.screens.inventory.MenuAccess;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.client.renderer.entity.ItemRenderer;
@@ -27,12 +27,16 @@ import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import org.apache.commons.lang3.ArrayUtils;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.Optional;
 
 public abstract class AbstractArmorStandScreen extends Screen implements MenuAccess<ArmorStandMenu>, ArmorStandScreen {
-    private static final ResourceLocation ARMOR_STAND_BACKGROUND_LOCATION = new ResourceLocation(ArmorStatuesApi.MOD_ID, "textures/gui/container/armor_stand/background.png");
-    public static final ResourceLocation ARMOR_STAND_WIDGETS_LOCATION = new ResourceLocation(ArmorStatuesApi.MOD_ID, "textures/gui/container/armor_stand/widgets.png");
+    private static final ResourceLocation ARMOR_STAND_BACKGROUND_LOCATION = ArmorStatuesApi.id("textures/gui/container/armor_stand/background.png");
+    private static final ResourceLocation ARMOR_STAND_WIDGETS_LOCATION = ArmorStatuesApi.id("textures/gui/container/armor_stand/widgets.png");
+    private static final ResourceLocation ARMOR_STAND_EQUIPMENT_LOCATION = ArmorStatuesApi.id("textures/gui/container/armor_stand/equipment.png");
+
+    static ArmorStandInInventoryRenderer armorStandRenderer = ArmorStandInInventoryRenderer.SIMPLE;
 
     protected final int imageWidth = 210;
     protected final int imageHeight = 188;
@@ -46,6 +50,7 @@ public abstract class AbstractArmorStandScreen extends Screen implements MenuAcc
     protected boolean smallInventoryEntity;
     protected int mouseX;
     protected int mouseY;
+    @Nullable
     private AbstractWidget closeButton;
 
     public AbstractArmorStandScreen(ArmorStandHolder holder, Inventory inventory, Component component, DataSyncHandler dataSyncHandler) {
@@ -55,9 +60,26 @@ public abstract class AbstractArmorStandScreen extends Screen implements MenuAcc
         this.dataSyncHandler = dataSyncHandler;
     }
 
+    public static ResourceLocation getArmorStandBackgroundLocation() {
+        return ARMOR_STAND_BACKGROUND_LOCATION;
+    }
+
+    public static ResourceLocation getArmorStandWidgetsLocation() {
+        return ARMOR_STAND_WIDGETS_LOCATION;
+    }
+
+    public static ResourceLocation getArmorStandEquipmentLocation() {
+        return ARMOR_STAND_EQUIPMENT_LOCATION;
+    }
+
     @Override
     public ArmorStandHolder getHolder() {
         return this.holder;
+    }
+
+    @Override
+    public DataSyncHandler getDataSyncHandler() {
+        return this.dataSyncHandler;
     }
 
     @Override
@@ -80,7 +102,7 @@ public abstract class AbstractArmorStandScreen extends Screen implements MenuAcc
 
     @Override
     public void tick() {
-        super.tick();
+        this.dataSyncHandler.tick();
         for (GuiEventListener child : this.children()) {
             if (child instanceof TickingButton button) button.tick();
         }
@@ -96,7 +118,7 @@ public abstract class AbstractArmorStandScreen extends Screen implements MenuAcc
     }
 
     public static AbstractButton makeCloseButton(Screen screen, int leftPos, int imageWidth, int topPos) {
-        return new ImageButton(leftPos + imageWidth - 15 - 8, topPos + 8, 15, 15, 136, 0, ARMOR_STAND_WIDGETS_LOCATION, button -> {
+        return new ImageButton(leftPos + imageWidth - 15 - 8, topPos + 8, 15, 15, 136, 0, getArmorStandWidgetsLocation(), button -> {
             screen.onClose();
         });
     }
@@ -114,7 +136,9 @@ public abstract class AbstractArmorStandScreen extends Screen implements MenuAcc
     }
 
     protected void toggleMenuRendering(boolean disableMenuRendering) {
-        this.closeButton.visible = !disableMenuRendering;
+        if (this.closeButton != null) {
+            this.closeButton.visible = !disableMenuRendering;
+        }
     }
 
     @Override
@@ -136,7 +160,7 @@ public abstract class AbstractArmorStandScreen extends Screen implements MenuAcc
         super.render(poseStack, mouseX, mouseY, partialTick);
         if (!this.disableMenuRendering()) {
             findHoveredTab(this.leftPos, this.topPos, this.imageHeight, mouseX, mouseY, this.dataSyncHandler.tabs()).ifPresent(hoveredTab -> {
-                this.renderTooltip(poseStack, hoveredTab.getComponent(), mouseX, mouseY);
+                this.renderTooltip(poseStack, Component.translatable(hoveredTab.getTranslationKey()), mouseX, mouseY);
             });
         }
         this.mouseX = mouseX;
@@ -147,7 +171,7 @@ public abstract class AbstractArmorStandScreen extends Screen implements MenuAcc
         if (!this.disableMenuRendering()) {
             RenderSystem.setShader(GameRenderer::getPositionTexShader);
             RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
-            RenderSystem.setShaderTexture(0, ARMOR_STAND_BACKGROUND_LOCATION);
+            RenderSystem.setShaderTexture(0, getArmorStandBackgroundLocation());
             this.blit(poseStack, this.leftPos, this.topPos, 0, 0, this.imageWidth, this.imageHeight);
             drawTabs(poseStack, this.leftPos, this.topPos, this.imageHeight, this, this.dataSyncHandler.tabs());
             this.renderEntityInInventory(poseStack);
@@ -158,13 +182,13 @@ public abstract class AbstractArmorStandScreen extends Screen implements MenuAcc
         if (this.renderInventoryEntity()) {
             RenderSystem.setShader(GameRenderer::getPositionTexShader);
             RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
-            RenderSystem.setShaderTexture(0, ARMOR_STAND_WIDGETS_LOCATION);
+            RenderSystem.setShaderTexture(0, getArmorStandWidgetsLocation());
             if (this.smallInventoryEntity) {
                 this.blit(poseStack, this.leftPos + this.inventoryEntityX, this.topPos + this.inventoryEntityY, 200, 184, 50, 72);
-                InventoryScreen.renderEntityInInventory(this.leftPos + this.inventoryEntityX + 24, this.topPos + this.inventoryEntityY + 65, 30, this.leftPos + this.inventoryEntityX + 24 - 10 - this.mouseX, this.topPos + this.inventoryEntityY + 65 - 44 - this.mouseY, this.holder.getArmorStand());
+                this.renderArmorStandInInventory(this.leftPos + this.inventoryEntityX + 24, this.topPos + this.inventoryEntityY + 65, 30, this.leftPos + this.inventoryEntityX + 24 - 10 - this.mouseX, this.topPos + this.inventoryEntityY + 65 - 44 - this.mouseY);
             } else {
                 this.blit(poseStack, this.leftPos + this.inventoryEntityX, this.topPos + this.inventoryEntityY, 0, 0, 76, 108);
-                InventoryScreen.renderEntityInInventory(this.leftPos + this.inventoryEntityX + 38, this.topPos + this.inventoryEntityY + 98, 45, (float) (this.leftPos + this.inventoryEntityX + 38 - 5) - this.mouseX, (float) (this.topPos + this.inventoryEntityY + 98 - 66) - this.mouseY, this.holder.getArmorStand());
+                this.renderArmorStandInInventory(this.leftPos + this.inventoryEntityX + 38, this.topPos + this.inventoryEntityY + 98, 45, (float) (this.leftPos + this.inventoryEntityX + 38 - 5) - this.mouseX, (float) (this.topPos + this.inventoryEntityY + 98 - 66) - this.mouseY);
             }
         }
     }
@@ -207,7 +231,7 @@ public abstract class AbstractArmorStandScreen extends Screen implements MenuAcc
         if (delta != 0.0) {
             Optional<ArmorStandScreenType> optional = findHoveredTab(leftPos, topPos, imageHeight, mouseX, mouseY, tabs);
             if (optional.isPresent()) {
-                ArmorStandScreenType screenType = cycleTabs(screen.getScreenType(), screen.getHolder().getDataProvider().getScreenTypes(), delta > 0.0);
+                ArmorStandScreenType screenType = cycleTabs(screen.getScreenType(), tabs, delta > 0.0);
                 return openTabScreen(screen, screenType, false);
             }
         }
@@ -244,8 +268,8 @@ public abstract class AbstractArmorStandScreen extends Screen implements MenuAcc
             int tabY = topPos + tabsStartY + 27 * i;
             RenderSystem.setShader(GameRenderer::getPositionTexShader);
             RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
-            RenderSystem.setShaderTexture(0, ARMOR_STAND_WIDGETS_LOCATION);
-            screen.blit(poseStack, tabX, tabY, 212, tabType == screen.getScreenType() ? 0 : 27, 35, 26);
+            RenderSystem.setShaderTexture(0, getArmorStandBackgroundLocation());
+            GuiComponent.blit(poseStack, tabX, tabY, tabY <= topPos ? 36 : tabY >= topPos + imageHeight - 36 ? 72 : 0, 188 + (tabType == screen.getScreenType() ? 0 : 26), 36, 26, 256, 256);
             ItemRenderer itemRenderer = ClientCoreServices.SCREENS.getItemRenderer(screen);
             itemRenderer.blitOffset = 100.0F;
             itemRenderer.renderAndDecorateItem(tabType.getIcon(), tabX + 10, tabY + 5);

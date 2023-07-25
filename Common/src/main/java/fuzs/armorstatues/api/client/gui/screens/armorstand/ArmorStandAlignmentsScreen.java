@@ -23,6 +23,7 @@ import java.util.EnumSet;
 import java.util.List;
 
 public class ArmorStandAlignmentsScreen extends ArmorStandWidgetsScreen {
+    public static final String VANILLA_TWEAKS_HOMEPAGE = "https://vanillatweaks.net/";
 
     public ArmorStandAlignmentsScreen(ArmorStandHolder holder, Inventory inventory, Component component, DataSyncHandler dataSyncHandler) {
         super(holder, inventory, component, dataSyncHandler);
@@ -40,11 +41,11 @@ public class ArmorStandAlignmentsScreen extends ArmorStandWidgetsScreen {
     @Override
     protected void init() {
         super.init();
-        this.addRenderableWidget(new ImageButton(this.leftPos + 6, this.topPos + 6, 20, 20, 136, 64, 20, ARMOR_STAND_WIDGETS_LOCATION, 256, 256, button -> {
+        this.addRenderableWidget(new ImageButton(this.leftPos + 6, this.topPos + 6, 20, 20, 136, 64, 20, getArmorStandWidgetsLocation(), 256, 256, button -> {
             this.minecraft.setScreen(new ConfirmLinkScreen((bl) -> {
-                if (bl) Util.getPlatform().openUri("https://vanillatweaks.net/");
+                if (bl) Util.getPlatform().openUri(VANILLA_TWEAKS_HOMEPAGE);
                 this.minecraft.setScreen(this);
-            }, "https://vanillatweaks.net/", true));
+            }, VANILLA_TWEAKS_HOMEPAGE, true));
         }, (button, poseStack, mouseX, mouseY) -> {
             this.renderTooltip(poseStack, Component.translatable("armorstatues.screen.alignments.credit"), mouseX, mouseY);
         }, CommonComponents.EMPTY));

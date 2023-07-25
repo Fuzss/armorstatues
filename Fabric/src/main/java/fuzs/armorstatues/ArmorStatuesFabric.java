@@ -3,6 +3,7 @@ package fuzs.armorstatues;
 import fuzs.armorstatues.api.ArmorStatuesApi;
 import fuzs.armorstatues.handler.ArmorStandInteractHandler;
 import fuzs.puzzleslib.core.CoreServices;
+import fuzs.puzzleslib.core.ModLoaderEnvironment;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.event.player.UseEntityCallback;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents;
@@ -13,12 +14,13 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.EntityHitResult;
 import net.minecraft.world.phys.Vec3;
-import org.jetbrains.annotations.Nullable;
 
 public class ArmorStatuesFabric implements ModInitializer {
 
     @Override
     public void onInitialize() {
+        // TODO remove again
+        if (ModLoaderEnvironment.INSTANCE.isServer()) return;
         CoreServices.FACTORIES.modConstructor(ArmorStatues.MOD_ID).accept(new ArmorStatuesApi());
         CoreServices.FACTORIES.modConstructor(ArmorStatues.MOD_ID).accept(new ArmorStatues());
         registerHandlers();
@@ -29,7 +31,7 @@ public class ArmorStatuesFabric implements ModInitializer {
             // this callback runs in two places, one runs only for armor stands and is hit location aware, that's the one we need
             if (entityHitResult == null) return InteractionResult.PASS;
             Vec3 vec3 = entityHitResult.getLocation().subtract(target.getX(), target.getY(), target.getZ());
-            return ArmorStandInteractHandler.onEntityInteract(player, level, interactionHand, target, vec3).orElse(InteractionResult.PASS);
+            return ArmorStandInteractHandler.onUseEntityAt(player, level, interactionHand, target, vec3).orElse(InteractionResult.PASS);
         });
         ServerPlayConnectionEvents.JOIN.register((handler, sender, server) -> {
             ArmorStandInteractHandler.onPlayerLoggedIn(handler.getPlayer());

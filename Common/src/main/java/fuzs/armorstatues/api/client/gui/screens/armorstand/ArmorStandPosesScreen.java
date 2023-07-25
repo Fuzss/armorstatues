@@ -8,7 +8,6 @@ import fuzs.armorstatues.api.world.inventory.data.ArmorStandScreenType;
 import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.ImageButton;
-import net.minecraft.client.gui.screens.inventory.InventoryScreen;
 import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.decoration.ArmorStand;
@@ -33,20 +32,20 @@ public class ArmorStandPosesScreen extends AbstractArmorStandScreen {
     @Override
     protected void init() {
         super.init();
-        this.cycleButtons[0] = this.addRenderableWidget(new ImageButton(this.leftPos + 17, this.topPos + 153, 20, 20, 156, 64, ARMOR_STAND_WIDGETS_LOCATION, button -> {
+        this.cycleButtons[0] = this.addRenderableWidget(new ImageButton(this.leftPos + 17, this.topPos + 153, 20, 20, 156, 64, getArmorStandWidgetsLocation(), button -> {
             firstPoseIndex -= POSES_PER_PAGE;
             this.toggleCycleButtons();
         }));
-        this.cycleButtons[1] = this.addRenderableWidget(new ImageButton(this.leftPos + 49, this.topPos + 153, 20, 20, 176, 64, ARMOR_STAND_WIDGETS_LOCATION, button -> {
+        this.cycleButtons[1] = this.addRenderableWidget(new ImageButton(this.leftPos + 49, this.topPos + 153, 20, 20, 176, 64, getArmorStandWidgetsLocation(), button -> {
             firstPoseIndex += POSES_PER_PAGE;
             this.toggleCycleButtons();
         }));
         for (int i = 0; i < this.poseButtons.length; i++) {
             final int ii = i;
-            this.poseButtons[i] = this.addRenderableWidget(new ImageButton(this.leftPos + 83 + i % 2 * 62, this.topPos + 9 + i / 2 * 88, 60, 82, 76, 0, 82, ARMOR_STAND_WIDGETS_LOCATION, 256, 256, button -> {
+            this.poseButtons[i] = this.addRenderableWidget(new ImageButton(this.leftPos + 83 + i % 2 * 62, this.topPos + 9 + i / 2 * 88, 60, 82, 76, 0, 82, getArmorStandWidgetsLocation(), 256, 256, button -> {
                 getPoseAt(ii).ifPresent(this.dataSyncHandler::sendPose);
             }, (Button button, PoseStack poseStack, int mouseX, int mouseY) -> {
-                getPoseAt(ii).ifPresent(pose -> this.renderTooltip(poseStack, pose.getComponent(), mouseX, mouseY));
+                getPoseAt(ii).ifPresent(pose -> this.renderTooltip(poseStack, Component.translatable(pose.getTranslationKey()), mouseX, mouseY));
             }, CommonComponents.EMPTY));
         }
         this.toggleCycleButtons();
@@ -69,7 +68,7 @@ public class ArmorStandPosesScreen extends AbstractArmorStandScreen {
             Optional<ArmorStandPose> pose = getPoseAt(i);
             if (pose.isPresent()) {
                 pose.get().applyToEntity(armorStand);
-                InventoryScreen.renderEntityInInventory(this.leftPos + 112 + i % 2 * 62, this.topPos + 79 + i / 2 * 88, 30, this.leftPos + 112 + i % 2 * 62 - 10 - this.mouseX, this.topPos + 79 + i / 2 * 88 - 44 - this.mouseY, armorStand);
+                this.renderArmorStandInInventory(this.leftPos + 112 + i % 2 * 62, this.topPos + 79 + i / 2 * 88, 30, this.leftPos + 112 + i % 2 * 62 - 10 - this.mouseX, this.topPos + 79 + i / 2 * 88 - 44 - this.mouseY);
             }
         }
         entityPose.applyToEntity(armorStand);

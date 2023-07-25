@@ -20,7 +20,7 @@ public abstract class NewTextureSliderButton extends AbstractSliderButton implem
     private final int textureY;
     protected final ResourceLocation textureLocation;
     protected final OnTooltip onTooltip;
-    public double snapInterval;
+    public double snapInterval = -1.0;
 
     public NewTextureSliderButton(int x, int y, int width, int height, int textureX, int textureY, ResourceLocation textureLocation, Component component, double value) {
         this(x, y, width, height, textureX, textureY, textureLocation, component, value, (button, poseStack, mouseX, mouseY) -> {
