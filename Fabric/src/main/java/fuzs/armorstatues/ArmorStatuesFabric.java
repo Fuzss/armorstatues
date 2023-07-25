@@ -3,7 +3,6 @@ package fuzs.armorstatues;
 import fuzs.armorstatues.api.ArmorStatuesApi;
 import fuzs.armorstatues.handler.ArmorStandInteractHandler;
 import fuzs.puzzleslib.core.CoreServices;
-import fuzs.puzzleslib.core.ModLoaderEnvironment;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.event.player.UseEntityCallback;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents;
@@ -19,8 +18,6 @@ public class ArmorStatuesFabric implements ModInitializer {
 
     @Override
     public void onInitialize() {
-        // TODO remove again
-        if (ModLoaderEnvironment.INSTANCE.isServer()) return;
         CoreServices.FACTORIES.modConstructor(ArmorStatues.MOD_ID).accept(new ArmorStatuesApi());
         CoreServices.FACTORIES.modConstructor(ArmorStatues.MOD_ID).accept(new ArmorStatues());
         registerHandlers();

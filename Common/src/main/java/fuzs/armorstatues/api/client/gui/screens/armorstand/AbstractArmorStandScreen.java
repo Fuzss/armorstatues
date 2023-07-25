@@ -10,6 +10,7 @@ import fuzs.armorstatues.api.world.inventory.ArmorStandHolder;
 import fuzs.armorstatues.api.world.inventory.ArmorStandMenu;
 import fuzs.armorstatues.api.world.inventory.data.ArmorStandScreenType;
 import fuzs.puzzleslib.client.core.ClientCoreServices;
+import fuzs.puzzleslib.client.gui.screens.CommonScreens;
 import net.minecraft.Util;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiComponent;
@@ -229,6 +230,20 @@ public abstract class AbstractArmorStandScreen extends Screen implements MenuAcc
         } else if (this.minecraft.options.keyInventory.matches(keyCode, scanCode)) {
             this.onClose();
             return true;
+        } else if (handleHotbarKeyPressed(keyCode, scanCode, this, this.dataSyncHandler.tabs())) {
+            return true;
+        }
+        return false;
+    }
+
+    public static <T extends Screen & ArmorStandScreen> boolean handleHotbarKeyPressed(int keyCode, int scanCode, T screen, ArmorStandScreenType[] tabs) {
+        Minecraft minecraft = CommonScreens.INSTANCE.getMinecraft(screen);
+        for (int i = 0; i < Math.min(tabs.length, 9); ++i) {
+            if (minecraft.options.keyHotbarSlots[i].matches(keyCode, scanCode)) {
+                if (openTabScreen(screen, tabs[i], true)) {
+                    return true;
+                }
+            }
         }
         return false;
     }
@@ -263,7 +278,8 @@ public abstract class AbstractArmorStandScreen extends Screen implements MenuAcc
         if (screenType != screen.getScreenType()) {
             Minecraft minecraft = ClientCoreServices.SCREENS.getMinecraft(screen);
             if (clickSound) {
-                minecraft.getSoundManager().play(SimpleSoundInstance.forUI(SoundEvents.UI_BUTTON_CLICK, 1.0F));
+                SimpleSoundInstance sound = SimpleSoundInstance.forUI(SoundEvents.UI_BUTTON_CLICK, 1.0F);
+                minecraft.getSoundManager().play(sound);
             }
             minecraft.setScreen(screen.createScreenType(screenType));
             return true;

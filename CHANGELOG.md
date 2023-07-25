@@ -10,7 +10,8 @@ The format is based on [Keep a Changelog].
 - Some actions such as switching poses take a couple of seconds to apply due to the nature of how data packs work unfortunately
 - Alternatively players with operator permissions on the server are still able to configure armor stands from the screen without any data pack requirement
 - Added a button to the rotations screen for mirroring the current pose
-- Added many new poses from the Vanilla Tweaks Armor Statues data pack 
+- Added many new poses from the Vanilla Tweaks Armor Statues data pack
+- Added the ability to switch between tabs by pressing hotbar keys
 ### Changed
 - Opening the statue menu no longer requires a stick to be held, instead shift + right-click with an empty hand is the way to go, which the statue item tooltip reflects
 ### Fixed

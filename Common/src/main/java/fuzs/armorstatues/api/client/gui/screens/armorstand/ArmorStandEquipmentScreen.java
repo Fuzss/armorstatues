@@ -128,6 +128,32 @@ public class ArmorStandEquipmentScreen extends AbstractContainerScreen<ArmorStan
     }
 
     @Override
+    public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
+        ArmorStandScreenType[] tabs = this.dataSyncHandler.tabs();
+        if (this.menu.getCarried().isEmpty() && this.hoveredSlot == null) {
+            AbstractArmorStandScreen.handleHotbarKeyPressed(keyCode, scanCode, this, tabs);
+        }
+        return super.keyPressed(keyCode, scanCode, modifiers);
+    }
+
+    private boolean shouldHandleHotbarSlotKeys(int keyCode, int scanCode, ArmorStandScreenType[] tabs) {
+        if (this.menu.getCarried().isEmpty() && this.hoveredSlot != null) {
+            if (this.hoveredSlot.hasItem()) {
+                return false;
+            } else {
+                for (int i = 0; i < Math.min(tabs.length, 9); ++i) {
+                    if (this.minecraft.options.keyHotbarSlots[i].matches(keyCode, scanCode)) {
+                        if (!this.minecraft.player.getInventory().getItem(i).isEmpty()) {
+                            return false;
+                        }
+                    }
+                }
+            }
+        }
+        return true;
+    }
+
+    @Override
     public ArmorStandScreenType getScreenType() {
         return ArmorStandScreenType.EQUIPMENT;
     }

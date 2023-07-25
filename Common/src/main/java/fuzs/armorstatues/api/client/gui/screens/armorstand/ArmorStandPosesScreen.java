@@ -67,10 +67,10 @@ public class ArmorStandPosesScreen extends AbstractArmorStandScreen {
 
     private void toggleCycleButtons(int increment) {
         int newFirstPoseIndex = firstPoseIndex + increment;
-        if (newFirstPoseIndex >= 0 && newFirstPoseIndex < ArmorStandPose.values().length) {
+        if (newFirstPoseIndex >= 0 && newFirstPoseIndex < ArmorStandPose.valuesLength()) {
             firstPoseIndex = newFirstPoseIndex;
             this.cycleButtons[0].active = newFirstPoseIndex - POSES_PER_PAGE >= 0;
-            this.cycleButtons[1].active = newFirstPoseIndex + POSES_PER_PAGE < ArmorStandPose.values().length;
+            this.cycleButtons[1].active = newFirstPoseIndex + POSES_PER_PAGE < ArmorStandPose.valuesLength();
             for (int i = 0; i < this.poseButtons.length; i++) {
                 this.poseButtons[i].visible = getPoseAt(i).isPresent();
             }
@@ -118,7 +118,7 @@ public class ArmorStandPosesScreen extends AbstractArmorStandScreen {
 
     private static Optional<ArmorStandPose> getPoseAt(int index) {
         index += firstPoseIndex;
-        if (index >= ArmorStandPose.values().length) return Optional.empty();
+        if (index >= ArmorStandPose.valuesLength()) return Optional.empty();
         return Optional.of(ArmorStandPose.values()[index]);
     }
 }

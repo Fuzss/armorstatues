@@ -68,7 +68,7 @@ public class CommandDataSyncHandler implements DataSyncHandler {
         this.sendPosePart(pose::serializeBodyPoses, this.lastSyncedPose);
         this.sendPosePart(pose::serializeArmPoses, this.lastSyncedPose);
         this.sendPosePart(pose::serializeLegPoses, this.lastSyncedPose);
-        this.lastSyncedPose = pose;
+        this.lastSyncedPose = pose.copyAndFillFrom(this.lastSyncedPose);
         if (finalize) this.finalizeCurrentOperation();
     }
 

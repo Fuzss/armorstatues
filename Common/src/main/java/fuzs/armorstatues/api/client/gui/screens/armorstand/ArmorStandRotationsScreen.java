@@ -79,7 +79,7 @@ public class ArmorStandRotationsScreen extends AbstractArmorStandScreen {
             });
         }
         this.addRenderableWidget(new NewTextureTickButton(this.leftPos + 107, this.topPos + 34, 20, 20, 240, 124, getArmorStandWidgetsLocation(), button -> {
-            this.setCurrentPose(ArmorStandPose.empty());
+            this.setCurrentPose(ArmorStandPose.EMPTY);
         }, (button, poseStack, mouseX, mouseY) -> {
             this.renderTooltip(poseStack, Component.translatable("armorstatues.screen.rotations.reset"), mouseX, mouseY);
         }));

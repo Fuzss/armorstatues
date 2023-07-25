@@ -7,7 +7,6 @@ import fuzs.armorstatues.client.handler.ArmorStandTooltipHandler;
 import fuzs.armorstatues.handler.ArmorStandInteractHandler;
 import fuzs.armorstatues.handler.DataSyncTickHandler;
 import fuzs.puzzleslib.client.core.ClientCoreServices;
-import fuzs.puzzleslib.core.ModLoaderEnvironment;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.fabricmc.fabric.api.client.item.v1.ItemTooltipCallback;
@@ -18,8 +17,6 @@ public class ArmorStatuesFabricClient implements ClientModInitializer {
 
     @Override
     public void onInitializeClient() {
-        // TODO remove again
-        if (ModLoaderEnvironment.INSTANCE.isServer()) return;
         ClientCoreServices.FACTORIES.clientModConstructor(ArmorStatues.MOD_ID).accept(new ArmorStatuesApiClient());
         ClientCoreServices.FACTORIES.clientModConstructor(ArmorStatues.MOD_ID).accept(new ArmorStatuesClient());
         registerHandlers();

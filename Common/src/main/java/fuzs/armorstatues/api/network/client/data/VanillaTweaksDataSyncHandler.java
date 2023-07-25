@@ -7,6 +7,7 @@ import fuzs.armorstatues.api.world.inventory.data.ArmorStandStyleOptions;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.core.Rotations;
 import net.minecraft.world.entity.decoration.ArmorStand;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.Map;
 import java.util.NavigableMap;
@@ -106,18 +107,19 @@ public class VanillaTweaksDataSyncHandler extends CommandDataSyncHandler {
     @Override
     public void sendPose(ArmorStandPose pose, boolean finalize) {
         $1: {
-            if (!this.tryApplyPoseIncrements(this.lastSyncedPose.getHeadPose(), pose.getHeadPose(), POSE_ADJUSTMENT_HEAD)) break $1;
-            if (!this.tryApplyPoseIncrements(this.lastSyncedPose.getBodyPose(), pose.getBodyPose(), POSE_ADJUSTMENT_BODY)) break $1;
-            if (!this.tryApplyPoseIncrements(this.lastSyncedPose.getRightArmPose(), pose.getRightArmPose(), POSE_ADJUSTMENT_RIGHT_ARM)) break $1;
-            if (!this.tryApplyPoseIncrements(this.lastSyncedPose.getLeftArmPose(), pose.getLeftArmPose(), POSE_ADJUSTMENT_LEFT_ARM)) break $1;
-            if (!this.tryApplyPoseIncrements(this.lastSyncedPose.getRightLegPose(), pose.getRightLegPose(), POSE_ADJUSTMENT_RIGHT_LEG)) break $1;
-            if (!this.tryApplyPoseIncrements(this.lastSyncedPose.getLeftLegPose(), pose.getLeftLegPose(), POSE_ADJUSTMENT_LEFT_LEG)) break $1;
+            if (!this.tryApplyPoseIncrements(this.lastSyncedPose.getHeadPose(), pose.getNullableHeadPose(), POSE_ADJUSTMENT_HEAD)) break $1;
+            if (!this.tryApplyPoseIncrements(this.lastSyncedPose.getBodyPose(), pose.getNullableBodyPose(), POSE_ADJUSTMENT_BODY)) break $1;
+            if (!this.tryApplyPoseIncrements(this.lastSyncedPose.getRightArmPose(), pose.getNullableRightArmPose(), POSE_ADJUSTMENT_RIGHT_ARM)) break $1;
+            if (!this.tryApplyPoseIncrements(this.lastSyncedPose.getLeftArmPose(), pose.getNullableLeftArmPose(), POSE_ADJUSTMENT_LEFT_ARM)) break $1;
+            if (!this.tryApplyPoseIncrements(this.lastSyncedPose.getRightLegPose(), pose.getNullableRightLegPose(), POSE_ADJUSTMENT_RIGHT_LEG)) break $1;
+            if (!this.tryApplyPoseIncrements(this.lastSyncedPose.getLeftLegPose(), pose.getNullableLeftLegPose(), POSE_ADJUSTMENT_LEFT_LEG)) break $1;
         }
+        this.lastSyncedPose = pose.copyAndFillFrom(this.lastSyncedPose);
         if (finalize) this.finalizeCurrentOperation();
     }
 
-    private boolean tryApplyPoseIncrements(Rotations oldPose, Rotations newPose, int[] poseAdjustment) {
-        if (oldPose.equals(newPose)) return true;
+    private boolean tryApplyPoseIncrements(Rotations oldPose, @Nullable Rotations newPose, int[] poseAdjustment) {
+        if (newPose == null || oldPose.equals(newPose)) return true;
         if (!this.applyIncrementsFromSteps(oldPose.getX(), newPose.getX(), poseAdjustment[0], poseAdjustment[1])) return false;
         if (!this.applyIncrementsFromSteps(oldPose.getY(), newPose.getY(), poseAdjustment[2], poseAdjustment[3])) return false;
         if (!this.applyIncrementsFromSteps(oldPose.getZ(), newPose.getZ(), poseAdjustment[4], poseAdjustment[5])) return false;

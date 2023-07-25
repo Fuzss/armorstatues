@@ -14,10 +14,12 @@ import java.util.Locale;
 public class ArmorStandPose {
     private static final String MINECRAFT_SOURCE = "Minecraft";
     private static final String VANILLA_TWEAKS_SOURCE = "Vanilla Tweaks";
+    public static final Rotations ZERO_ROTATIONS = new Rotations(0.0F, 0.0F, 0.0F);
     public static final double DEGREES_SNAP_INTERVAL = 0.125;
     public static final DecimalFormat ROTATION_FORMAT = Util.make(new DecimalFormat("#.##"), (decimalFormat) -> {
         decimalFormat.setDecimalFormatSymbols(DecimalFormatSymbols.getInstance(Locale.ROOT));
     });
+    public static final ArmorStandPose EMPTY = new ArmorStandPose(null, null);
     public static final ArmorStandPose ATHENA = new ArmorStandPose("athena", MINECRAFT_SOURCE).withBodyPose(new Rotations(0.0F, 0.0F, 2.0F)).withHeadPose(new Rotations(-5.0F, 0.0F, 0.0F)).withLeftArmPose(new Rotations(10.0F, 0.0F, -5.0F)).withLeftLegPose(new Rotations(-3.0F, -3.0F, -3.0F)).withRightArmPose(new Rotations(-60.0F, 20.0F, -10.0F)).withRightLegPose(new Rotations(3.0F, 3.0F, 3.0F));
     public static final ArmorStandPose BRANDISH = new ArmorStandPose("brandish", MINECRAFT_SOURCE).withBodyPose(new Rotations(0.0F, 0.0F, -2.0F)).withHeadPose(new Rotations(-15.0F, 0.0F, 0.0F)).withLeftArmPose(new Rotations(20.0F, 0.0F, -10.0F)).withLeftLegPose(new Rotations(5.0F, -3.0F, -3.0F)).withRightArmPose(new Rotations(-110.0F, 50.0F, 0.0F)).withRightLegPose(new Rotations(-5.0F, 3.0F, 3.0F));
     public static final ArmorStandPose CANCAN = new ArmorStandPose("cancan", MINECRAFT_SOURCE).withBodyPose(new Rotations(0.0F, 22.0F, 0.0F)).withHeadPose(new Rotations(-5.0F, 18.0F, 0.0F)).withLeftArmPose(new Rotations(8.0F, 0.0F, -114.0F)).withLeftLegPose(new Rotations(-111.0F, 55.0F, 0.0F)).withRightArmPose(new Rotations(0.0F, 84.0F, 111.0F)).withRightLegPose(new Rotations(0.0F, 23.0F, -13.0F));
@@ -47,23 +49,30 @@ public class ArmorStandPose {
     public static final ArmorStandPose SAD = new ArmorStandPose("sad", VANILLA_TWEAKS_SOURCE).withHeadPose(new Rotations(63.0f,0.0f,0.0f)).withBodyPose(new Rotations(10.0f,0.0f,0.0f)).withRightArmPose(new Rotations(-5.0f,0.0f,5.0f)).withLeftArmPose(new Rotations(-5.0f,0.0f,-5.0f)).withRightLegPose(new Rotations(-5.0f,-10.0f,5.0f)).withLeftLegPose(new Rotations(-5.0f,16.0f,-5.0f));
     public static final ArmorStandPose JOYOUS = new ArmorStandPose("joyous", VANILLA_TWEAKS_SOURCE).withHeadPose(new Rotations(-11.0f,0.0f,0.0f)).withBodyPose(new Rotations(-4.0f,0.0f,0.0f)).withRightArmPose(new Rotations(0.0f,0.0f,100.0f)).withLeftArmPose(new Rotations(0.0f,0.0f,-100.0f)).withRightLegPose(new Rotations(-8.0f,0.0f,60.0f)).withLeftLegPose(new Rotations(-8.0f,0.0f,-60.0f));
     public static final ArmorStandPose STARGAZING = new ArmorStandPose("stargazing", VANILLA_TWEAKS_SOURCE).withHeadPose(new Rotations(-22.0f,25.0f,0.0f)).withBodyPose(new Rotations(-4.0f,10.0f,0.0f)).withRightArmPose(new Rotations(-153.0f,34.0f,-3.0f)).withLeftArmPose(new Rotations(4.0f,18.0f,0.0f)).withRightLegPose(new Rotations(-4.0f,17.0f,2.0f)).withLeftLegPose(new Rotations(6.0f,24.0f,0.0f));
+    private static final ArmorStandPose[] VALUES = {DEFAULT, SOLEMN, ATHENA, BRANDISH, HONOR, ENTERTAIN, SALUTE, HERO, RIPOSTE, ZOMBIE, CANCAN, WALKING, RUNNING, POINTING, BLOCKING, LUNGEING, WINNING, SITTING, ARABESQUE, CUPID, CONFIDENT, DEATH, FACEPALM, LAZING, CONFUSED, FORMAL, SAD, JOYOUS, STARGAZING};
 
     @Nullable
     private final String name;
     @Nullable
     private final String source;
+    @Nullable
     private final Rotations headPose;
+    @Nullable
     private final Rotations bodyPose;
+    @Nullable
     private final Rotations leftArmPose;
+    @Nullable
     private final Rotations rightArmPose;
+    @Nullable
     private final Rotations leftLegPose;
+    @Nullable
     private final Rotations rightLegPose;
 
     private ArmorStandPose(@Nullable String name, @Nullable String source) {
-        this(name, source, new Rotations(0.0F, 0.0F, 0.0F), new Rotations(0.0F, 0.0F, 0.0F), new Rotations(0.0F, 0.0F, 0.0F), new Rotations(0.0F, 0.0F, 0.0F), new Rotations(0.0F, 0.0F, 0.0F), new Rotations(0.0F, 0.0F, 0.0F));
+        this(name, source, ZERO_ROTATIONS, ZERO_ROTATIONS, ZERO_ROTATIONS, ZERO_ROTATIONS, ZERO_ROTATIONS, ZERO_ROTATIONS);
     }
 
-    private ArmorStandPose(@Nullable String name, @Nullable String source, Rotations headPose, Rotations bodyPose, Rotations leftArmPose, Rotations rightArmPose, Rotations leftLegPose, Rotations rightLegPose) {
+    private ArmorStandPose(@Nullable String name, @Nullable String source, @Nullable Rotations headPose, @Nullable Rotations bodyPose, @Nullable Rotations leftArmPose, @Nullable Rotations rightArmPose, @Nullable Rotations leftLegPose, @Nullable Rotations rightLegPose) {
         this.name = name;
         this.source = source;
         this.headPose = headPose;
@@ -75,7 +84,7 @@ public class ArmorStandPose {
     }
     
     public static ArmorStandPose empty() {
-        return new ArmorStandPose(null, null);
+        return new ArmorStandPose(null, null, null, null, null, null, null, null);
     }
 
     @Override
@@ -93,26 +102,56 @@ public class ArmorStandPose {
     }
 
     public Rotations getHeadPose() {
-        return this.headPose;
+        return this.headPose != null ? this.headPose : ZERO_ROTATIONS;
     }
 
     public Rotations getBodyPose() {
-        return this.bodyPose;
+        return this.bodyPose != null ? this.bodyPose : ZERO_ROTATIONS;
     }
 
     public Rotations getLeftArmPose() {
-        return this.leftArmPose;
+        return this.leftArmPose != null ? this.leftArmPose : ZERO_ROTATIONS;
     }
 
     public Rotations getRightArmPose() {
-        return this.rightArmPose;
+        return this.rightArmPose != null ? this.rightArmPose : ZERO_ROTATIONS;
     }
 
     public Rotations getLeftLegPose() {
-        return this.leftLegPose;
+        return this.leftLegPose != null ? this.leftLegPose : ZERO_ROTATIONS;
     }
 
     public Rotations getRightLegPose() {
+        return this.rightLegPose != null ? this.rightLegPose : ZERO_ROTATIONS;
+    }
+
+    @Nullable
+    public Rotations getNullableHeadPose() {
+        return this.headPose;
+    }
+
+    @Nullable
+    public Rotations getNullableBodyPose() {
+        return this.bodyPose;
+    }
+
+    @Nullable
+    public Rotations getNullableLeftArmPose() {
+        return this.leftArmPose;
+    }
+
+    @Nullable
+    public Rotations getNullableRightArmPose() {
+        return this.rightArmPose;
+    }
+
+    @Nullable
+    public Rotations getNullableLeftLegPose() {
+        return this.leftLegPose;
+    }
+
+    @Nullable
+    public Rotations getNullableRightLegPose() {
         return this.rightLegPose;
     }
 
@@ -141,20 +180,25 @@ public class ArmorStandPose {
     }
 
     public ArmorStandPose mirror() {
-        return new ArmorStandPose(this.name, this.source, mirrorRotation(this.headPose), mirrorRotation(this.bodyPose), mirrorRotation(this.rightArmPose), mirrorRotation(this.leftArmPose), mirrorRotation(this.rightLegPose), mirrorRotation(this.leftLegPose));
+        return new ArmorStandPose(this.name, this.source, mirrorRotations(this.headPose), mirrorRotations(this.bodyPose), mirrorRotations(this.rightArmPose), mirrorRotations(this.leftArmPose), mirrorRotations(this.rightLegPose), mirrorRotations(this.leftLegPose));
     }
 
-    private static Rotations mirrorRotation(Rotations rotations) {
-        return new Rotations(rotations.getX(), -rotations.getY(), -rotations.getZ());
+    @Nullable
+    private static Rotations mirrorRotations(@Nullable Rotations rotations) {
+        return rotations != null ? new Rotations(rotations.getX(), -rotations.getY(), -rotations.getZ()) : null;
+    }
+
+    public ArmorStandPose copyAndFillFrom(ArmorStandPose fillFrom) {
+        return new ArmorStandPose(this.name, this.source, this.headPose != null ? this.headPose : fillFrom.headPose, this.bodyPose != null ? this.bodyPose : fillFrom.bodyPose, this.leftArmPose != null ? this.leftArmPose : fillFrom.leftArmPose, this.rightArmPose != null ? this.rightArmPose : fillFrom.rightArmPose, this.leftLegPose != null ? this.leftLegPose : fillFrom.leftLegPose, this.rightLegPose != null ? this.rightLegPose : fillFrom.rightLegPose);
     }
 
     public void applyToEntity(ArmorStand armorStand) {
-        armorStand.setHeadPose(this.headPose);
-        armorStand.setBodyPose(this.bodyPose);
-        armorStand.setLeftArmPose(this.leftArmPose);
-        armorStand.setRightArmPose(this.rightArmPose);
-        armorStand.setLeftLegPose(this.leftLegPose);
-        armorStand.setRightLegPose(this.rightLegPose);
+        armorStand.setHeadPose(this.getHeadPose());
+        armorStand.setBodyPose(this.getBodyPose());
+        armorStand.setLeftArmPose(this.getLeftArmPose());
+        armorStand.setRightArmPose(this.getRightArmPose());
+        armorStand.setLeftLegPose(this.getLeftLegPose());
+        armorStand.setRightLegPose(this.getRightLegPose());
     }
 
     public void serializeAllPoses(CompoundTag tag) {
@@ -164,30 +208,42 @@ public class ArmorStandPose {
     }
 
     public boolean serializeBodyPoses(CompoundTag tag, @Nullable ArmorStandPose lastSentPose) {
-        if (lastSentPose == null || !this.headPose.equals(lastSentPose.headPose) || !this.bodyPose.equals(lastSentPose.bodyPose)) {
+        boolean hasChanged = false;
+        if (this.headPose != null && (lastSentPose == null || !this.headPose.equals(lastSentPose.headPose))) {
             tag.put("Head", this.headPose.save());
-            tag.put("Body", this.bodyPose.save());
-            return true;
+            hasChanged = true;
         }
-        return false;
+        if (this.bodyPose != null && (lastSentPose == null || !this.bodyPose.equals(lastSentPose.bodyPose))) {
+            tag.put("Body", this.bodyPose.save());
+            hasChanged = true;
+        }
+        return hasChanged;
     }
 
     public boolean serializeArmPoses(CompoundTag tag, @Nullable ArmorStandPose lastSentPose) {
-        if (lastSentPose == null || !this.leftArmPose.equals(lastSentPose.leftArmPose) || !this.rightArmPose.equals(lastSentPose.rightArmPose)) {
+        boolean hasChanged = false;
+        if (this.leftArmPose != null && (lastSentPose == null || !this.leftArmPose.equals(lastSentPose.leftArmPose))) {
             tag.put("LeftArm", this.leftArmPose.save());
-            tag.put("RightArm", this.rightArmPose.save());
-            return true;
+            hasChanged = true;
         }
-        return false;
+        if (this.rightArmPose != null && (lastSentPose == null || !this.rightArmPose.equals(lastSentPose.rightArmPose))) {
+            tag.put("RightArm", this.rightArmPose.save());
+            hasChanged = true;
+        }
+        return hasChanged;
     }
 
     public boolean serializeLegPoses(CompoundTag tag, @Nullable ArmorStandPose lastSentPose) {
-        if (lastSentPose == null || !this.leftLegPose.equals(lastSentPose.leftLegPose) || !this.rightLegPose.equals(lastSentPose.rightLegPose)) {
+        boolean hasChanged = false;
+        if (this.leftLegPose != null && (lastSentPose == null || !this.leftLegPose.equals(lastSentPose.leftLegPose))) {
             tag.put("LeftLeg", this.leftLegPose.save());
-            tag.put("RightLeg", this.rightLegPose.save());
-            return true;
+            hasChanged = true;
         }
-        return false;
+        if (this.rightLegPose != null && (lastSentPose == null || !this.rightLegPose.equals(lastSentPose.rightLegPose))) {
+            tag.put("RightLeg", this.rightLegPose.save());
+            hasChanged = true;
+        }
+        return hasChanged;
     }
 
     public static ArmorStandPose fromEntity(ArmorStand armorStand) {
@@ -204,7 +260,11 @@ public class ArmorStandPose {
     }
 
     public static ArmorStandPose[] values() {
-        return new ArmorStandPose[]{DEFAULT, SOLEMN, ATHENA, BRANDISH, HONOR, ENTERTAIN, SALUTE, HERO, RIPOSTE, ZOMBIE, CANCAN, WALKING, RUNNING, POINTING, BLOCKING, LUNGEING, WINNING, SITTING, ARABESQUE, CUPID, CONFIDENT, DEATH, FACEPALM, LAZING, CONFUSED, FORMAL, SAD, JOYOUS, STARGAZING};
+        return VALUES.clone();
+    }
+
+    public static int valuesLength() {
+        return VALUES.length;
     }
 
     public static void checkMutatorsSize(PosePartMutator[] mutators) {
