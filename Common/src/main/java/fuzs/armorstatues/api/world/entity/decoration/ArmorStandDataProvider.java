@@ -17,7 +17,7 @@ public interface ArmorStandDataProvider {
     }
 
     default PosePartMutator[] getPosePartMutators() {
-        return new PosePartMutator[]{PosePartMutator.HEAD, PosePartMutator.BODY, PosePartMutator.LEFT_ARM, PosePartMutator.RIGHT_ARM, PosePartMutator.LEFT_LEG, PosePartMutator.RIGHT_LEG};
+        return new PosePartMutator[]{PosePartMutator.HEAD, PosePartMutator.BODY, PosePartMutator.RIGHT_ARM, PosePartMutator.LEFT_ARM, PosePartMutator.RIGHT_LEG, PosePartMutator.LEFT_LEG};
     }
 
     default ArmorStandPose getRandomPose(boolean clampRotations) {

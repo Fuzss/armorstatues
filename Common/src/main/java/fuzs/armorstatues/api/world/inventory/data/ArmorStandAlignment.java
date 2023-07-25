@@ -6,7 +6,7 @@ import net.minecraft.world.phys.Vec3;
 import java.util.Locale;
 
 /**
- * values copied from <a href="https://vanillatweaks.net/">Vanilla Tweaks</a> data pack
+ * Values copied from <a href="https://vanillatweaks.net/">Vanilla Tweaks</a> data pack.
  */
 public enum ArmorStandAlignment {
     BLOCK("block", new Rotations(-15.0f, 135.0f, 0.0f), new Vec3(0.5725, -0.655, 0.352), new Vec3(0.28625, -0.3275, 0.176)),
@@ -16,14 +16,14 @@ public enum ArmorStandAlignment {
 
     private final String name;
     private final ArmorStandPose pose;
-    private final Vec3 position;
-    private final Vec3 smallPosition;
+    private final Vec3 offset;
+    private final Vec3 offsetIfSmall;
 
-    ArmorStandAlignment(String name, Rotations rightArmRotations, Vec3 position, Vec3 smallPosition) {
+    ArmorStandAlignment(String name, Rotations rightArmRotations, Vec3 offset, Vec3 offsetIfSmall) {
         this.name = name;
         this.pose = ArmorStandPose.empty().withRightArmPose(rightArmRotations);
-        this.position = position;
-        this.smallPosition = smallPosition;
+        this.offset = offset;
+        this.offsetIfSmall = offsetIfSmall;
     }
 
     @Override
@@ -43,7 +43,7 @@ public enum ArmorStandAlignment {
         return this.pose;
     }
 
-    public Vec3 getPosition(boolean small) {
-        return small ? this.smallPosition : this.position;
+    public Vec3 getAlignmentOffset(boolean small) {
+        return small ? this.offsetIfSmall : this.offset;
     }
 }

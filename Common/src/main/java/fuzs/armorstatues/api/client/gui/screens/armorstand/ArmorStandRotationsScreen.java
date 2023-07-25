@@ -15,23 +15,23 @@ import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.components.ImageButton;
 import net.minecraft.client.gui.components.events.GuiEventListener;
 import net.minecraft.client.sounds.SoundManager;
+import net.minecraft.locale.Language;
 import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.network.chat.Component;
-import net.minecraft.util.FormattedCharSequence;
 import net.minecraft.world.entity.decoration.ArmorStand;
 import net.minecraft.world.entity.player.Inventory;
 import org.apache.commons.compress.utils.Lists;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
-import java.util.Random;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 public class ArmorStandRotationsScreen extends AbstractArmorStandScreen {
+    private static final String TIP_TRANSLATION_KEY = "armorstatues.screen.rotations.tip";
     private static final Map<PosePartMutator, Predicate<ArmorStand>> POSE_PART_MUTATOR_FILTERS = Maps.newHashMap();
-    private static final Random RANDOM = new Random();
 
     private static boolean clampRotations = true;
     @Nullable
@@ -66,16 +66,18 @@ public class ArmorStandRotationsScreen extends AbstractArmorStandScreen {
         }, (button, poseStack, mouseX, mouseY) -> {
             this.renderTooltip(poseStack, Component.translatable("armorstatues.screen.rotations.limited"), mouseX, mouseY);
         }, Component.translatable("armorstatues.screen.rotations.limited")));
-        List<FormattedCharSequence> tipComponent = this.font.split(this.getTipComponent(), 175);
-        this.addRenderableWidget(new ImageButton(this.leftPos + 107, this.topPos + 10, 20, 20, 136, 64, 20, getArmorStandWidgetsLocation(), 256, 256, button -> {}, (button, poseStack, mouseX, mouseY) -> {
-            this.renderTooltip(poseStack, tipComponent, mouseX, mouseY);
-        }, CommonComponents.EMPTY) {
+        Component tipComponent = this.getTipComponent();
+        if (tipComponent != null) {
+            this.addRenderableWidget(new ImageButton(this.leftPos + 107, this.topPos + 10, 20, 20, 136, 64, 20, getArmorStandWidgetsLocation(), 256, 256, button -> {}, (button, poseStack, mouseX, mouseY) -> {
+                this.renderTooltip(poseStack, this.font.split(tipComponent, 175), mouseX, mouseY);
+            }, CommonComponents.EMPTY) {
 
-            @Override
-            public void playDownSound(SoundManager handler) {
+                @Override
+                public void playDownSound(SoundManager handler) {
 
-            }
-        });
+                }
+            });
+        }
         this.addRenderableWidget(new NewTextureTickButton(this.leftPos + 107, this.topPos + 34, 20, 20, 240, 124, getArmorStandWidgetsLocation(), button -> {
             this.setCurrentPose(ArmorStandPose.empty());
         }, (button, poseStack, mouseX, mouseY) -> {
@@ -173,12 +175,14 @@ public class ArmorStandRotationsScreen extends AbstractArmorStandScreen {
         }
     }
 
+    @Nullable
     private Component getTipComponent() {
-        Component[] components = {
-                Component.translatable("armorstatues.screen.rotations.tip1"),
-                Component.translatable("armorstatues.screen.rotations.tip2")
-        };
-        return components[RANDOM.nextInt(components.length)];
+        List<Component> components = Lists.newArrayList();
+        for (int i = 1; Language.getInstance().has(TIP_TRANSLATION_KEY + i); i++) {
+            components.add(Component.translatable(TIP_TRANSLATION_KEY + i));
+        }
+        Collections.shuffle(components);
+        return components.stream().findAny().orElse(null);
     }
 
     private void toggleLockButtons() {

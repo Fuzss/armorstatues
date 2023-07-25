@@ -5,12 +5,18 @@ The format is based on [Keep a Changelog].
 
 ## [v4.0.5-1.19.2] - 2023-07-25
 ### Added
+- Added support for the Vanilla Tweaks Armor Statues data pack
+- This means when Armor Statues as a mod is **NOT** installed on the server you are playing on, it is now enough to install said data pack on the server to be able to use almost all features in the statue configuration screen
+- Some actions such as switching poses take a couple of seconds to apply due to the nature of how data packs work unfortunately
+- Alternatively players with operator permissions on the server are still able to configure armor stands from the screen without any data pack requirement
 - Added a button to the rotations screen for mirroring the current pose
+- Added many new poses from the Vanilla Tweaks Armor Statues data pack 
 ### Changed
-- Text fields now show description tooltips when hovered to make it more clear which field is for setting a new display name and which one changes the statue skin
 - Opening the statue menu no longer requires a stick to be held, instead shift + right-click with an empty hand is the way to go, which the statue item tooltip reflects
 ### Fixed
-- Fixed opening the armor stand configuration screen with a Fabric client on a server without the mod interacting with the armor stand server-side (e.g. removing equipment) 
+- Fixed opening the armor stand configuration screen with a Fabric client on a server without the mod interacting with the armor stand server-side (e.g. removing equipment)
+- Fixed alignments on the alignment screen not working correctly if the armor stand was rotated at certain angles
+- Fixed left and right arm and leg parts being swapped on the rotations screen
 - Fixed a rare network issue on servers when both Armor Statues and Straw Statues are installed
 
 ## [v4.0.4-1.19.2] - 2023-01-17

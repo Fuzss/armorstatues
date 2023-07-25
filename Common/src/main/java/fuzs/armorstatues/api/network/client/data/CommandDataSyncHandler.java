@@ -26,7 +26,8 @@ public class CommandDataSyncHandler implements DataSyncHandler {
 
     @Nullable
     static ArmorStandScreenType lastType;
-    private static boolean queueLocked;
+    @Nullable
+    private static ArmorStand queueArmorStand;
     private static int itemDequeuedTicks;
 
     private final ArmorStand armorStand;
@@ -149,15 +150,19 @@ public class CommandDataSyncHandler implements DataSyncHandler {
     @Override
     public void tick() {
         if (itemDequeuedTicks > 0) itemDequeuedTicks--;
-        if (itemDequeuedTicks == 0 && !CLIENT_COMMAND_QUEUE.isEmpty()) {
-            this.player.commandSigned(CLIENT_COMMAND_QUEUE.poll(), null);
-            itemDequeuedTicks = this.getDefaultDequeuedTicks();
+        if (itemDequeuedTicks == 0 && queueArmorStand != null && !CLIENT_COMMAND_QUEUE.isEmpty()) {
+            if (queueArmorStand.isAlive()) {
+                this.player.commandSigned(CLIENT_COMMAND_QUEUE.poll(), null);
+            } else {
+                CLIENT_COMMAND_QUEUE.clear();
+            }
+            itemDequeuedTicks = this.getDequeueDelayTicks();
         } else if (itemDequeuedTicks == 1 && CLIENT_COMMAND_QUEUE.isEmpty()) {
             this.sendDisplayMessage(FINISHED_COMPONENT, false);
         }
     }
 
-    protected int getDefaultDequeuedTicks() {
+    protected int getDequeueDelayTicks() {
         return 5;
     }
 
@@ -176,8 +181,8 @@ public class CommandDataSyncHandler implements DataSyncHandler {
 
     protected boolean enqueueClientCommand(String clientCommand) {
         if (CLIENT_COMMAND_QUEUE.isEmpty()) {
-            queueLocked = false;
-        } else if (queueLocked) {
+            queueArmorStand = null;
+        } else if (queueArmorStand != null) {
             this.sendFailureMessage(NOT_FINISHED_COMPONENT);
             return false;
         }
@@ -188,7 +193,7 @@ public class CommandDataSyncHandler implements DataSyncHandler {
     @Override
     public void finalizeCurrentOperation() {
         if (!CLIENT_COMMAND_QUEUE.isEmpty()) {
-            queueLocked = true;
+            queueArmorStand = this.getArmorStand();
         }
     }
 

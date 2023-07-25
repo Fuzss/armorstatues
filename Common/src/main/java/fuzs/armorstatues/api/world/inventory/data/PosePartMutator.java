@@ -13,10 +13,10 @@ import java.util.function.Function;
 public final class PosePartMutator {
     public static final PosePartMutator HEAD = new PosePartMutator("head", ArmorStandPose::getHeadPose, ArmorStandPose::withHeadPose, PosePartAxisRange.range(-60.0F, 60.0F), PosePartAxisRange.range(-60.0F, 60.0F), PosePartAxisRange.range(-120.0, 120.0));
     public static final PosePartMutator BODY = new PosePartMutator("body", ArmorStandPose::getBodyPose, ArmorStandPose::withBodyPose, PosePartAxisRange.range(-30.0F, 30.0F), PosePartAxisRange.range(-30.0F, 30.0F), PosePartAxisRange.range(-120.0, 120.0));
-    public static final PosePartMutator LEFT_ARM = new PosePartMutator("leftArm", ArmorStandPose::getRightArmPose, ArmorStandPose::withRightArmPose, PosePartAxisRange.range(-180.0, 0.0), PosePartAxisRange.range(-90.0, 45.0), PosePartAxisRange.range(-120.0, 120.0));
-    public static final PosePartMutator RIGHT_ARM = new PosePartMutator("rightArm", ArmorStandPose::getLeftArmPose, ArmorStandPose::withLeftArmPose, PosePartAxisRange.range(-180.0, 0.0), PosePartAxisRange.range(-45.0, 90.0), PosePartAxisRange.range(-120.0, 120.0));
-    public static final PosePartMutator LEFT_LEG = new PosePartMutator("leftLeg", ArmorStandPose::getRightLegPose, ArmorStandPose::withRightLegPose, PosePartAxisRange.range(-120.0, 120.0), PosePartAxisRange.range(-90.0, 0.0), PosePartAxisRange.range(-120.0, 120.0));
-    public static final PosePartMutator RIGHT_LEG = new PosePartMutator("rightLeg", ArmorStandPose::getLeftLegPose, ArmorStandPose::withLeftLegPose, PosePartAxisRange.range(-120.0, 120.0), PosePartAxisRange.range(0.0, 90.0), PosePartAxisRange.range(-120.0, 120.0));
+    public static final PosePartMutator RIGHT_ARM = new PosePartMutator("rightArm", ArmorStandPose::getRightArmPose, ArmorStandPose::withRightArmPose, PosePartAxisRange.range(-180.0, 0.0), PosePartAxisRange.range(-90.0, 45.0), PosePartAxisRange.range(-120.0, 120.0));
+    public static final PosePartMutator LEFT_ARM = new PosePartMutator("leftArm", ArmorStandPose::getLeftArmPose, ArmorStandPose::withLeftArmPose, PosePartAxisRange.range(-180.0, 0.0), PosePartAxisRange.range(-45.0, 90.0), PosePartAxisRange.range(-120.0, 120.0));
+    public static final PosePartMutator RIGHT_LEG = new PosePartMutator("rightLeg", ArmorStandPose::getRightLegPose, ArmorStandPose::withRightLegPose, PosePartAxisRange.range(-120.0, 120.0), PosePartAxisRange.range(-90.0, 0.0), PosePartAxisRange.range(-120.0, 120.0));
+    public static final PosePartMutator LEFT_LEG = new PosePartMutator("leftLeg", ArmorStandPose::getLeftLegPose, ArmorStandPose::withLeftLegPose, PosePartAxisRange.range(-120.0, 120.0), PosePartAxisRange.range(0.0, 90.0), PosePartAxisRange.range(-120.0, 120.0));
 
     private final String name;
     private final Function<ArmorStandPose, Rotations> getRotations;
