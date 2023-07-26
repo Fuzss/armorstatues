@@ -2,30 +2,22 @@ package fuzs.armorstatues.api.network.client.data;
 
 import fuzs.armorstatues.api.ArmorStatuesApi;
 import fuzs.armorstatues.api.network.client.*;
+import fuzs.armorstatues.api.world.inventory.ArmorStandHolder;
 import fuzs.armorstatues.api.world.inventory.data.ArmorStandPose;
 import fuzs.armorstatues.api.world.inventory.data.ArmorStandScreenType;
 import fuzs.armorstatues.api.world.inventory.data.ArmorStandStyleOption;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.world.entity.decoration.ArmorStand;
-import org.jetbrains.annotations.Nullable;
-
-import java.util.Arrays;
-import java.util.List;
-import java.util.Optional;
 
 public class NetworkDataSyncHandler implements DataSyncHandler {
-    @Nullable
-    private static ArmorStandScreenType lastType;
+    private final ArmorStandHolder holder;
 
-    private final ArmorStand armorStand;
-
-    public NetworkDataSyncHandler(ArmorStand armorStand) {
-        this.armorStand = armorStand;
+    public NetworkDataSyncHandler(ArmorStandHolder holder) {
+        this.holder = holder;
     }
 
     @Override
-    public ArmorStand getArmorStand() {
-        return this.armorStand;
+    public ArmorStandHolder getArmorStandHolder() {
+        return this.holder;
     }
 
     @Override
@@ -60,17 +52,6 @@ public class NetworkDataSyncHandler implements DataSyncHandler {
 
     @Override
     public ArmorStandScreenType[] tabs() {
-        return this.getDataProvider().getScreenTypes();
-    }
-
-    @Override
-    public Optional<ArmorStandScreenType> getLastType() {
-        List<ArmorStandScreenType> screenTypes = Arrays.asList(this.getDataProvider().getScreenTypes());
-        return Optional.ofNullable(lastType).filter(screenTypes::contains);
-    }
-
-    @Override
-    public void setLastType(ArmorStandScreenType lastType) {
-        NetworkDataSyncHandler.lastType = CommandDataSyncHandler.lastType = lastType;
+        return this.getArmorStandHolder().getDataProvider().getScreenTypes();
     }
 }

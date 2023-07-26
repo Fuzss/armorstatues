@@ -1,12 +1,12 @@
-package fuzs.armorstatues.api.network.client.data;
+package fuzs.armorstatues.network.client.data;
 
 import com.google.common.collect.ImmutableSortedMap;
+import fuzs.armorstatues.api.world.inventory.ArmorStandHolder;
 import fuzs.armorstatues.api.world.inventory.data.ArmorStandPose;
 import fuzs.armorstatues.api.world.inventory.data.ArmorStandStyleOption;
 import fuzs.armorstatues.api.world.inventory.data.ArmorStandStyleOptions;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.core.Rotations;
-import net.minecraft.world.entity.decoration.ArmorStand;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Map;
@@ -100,8 +100,8 @@ public class VanillaTweaksDataSyncHandler extends CommandDataSyncHandler {
     private static final NavigableMap<Double, Integer> NUDGE_POSITIONS_Z_POSITIVE = ImmutableSortedMap.of(1.0 / 16.0, NUDGE_POSITION_Z1_POSITIVE, 3.0 / 16.0, NUDGE_POSITION_Z3_POSITIVE, 8.0 / 16.0, NUDGE_POSITION_Z8_POSITIVE);
     private static final NavigableMap<Float, Integer> ADJUST_ROTATION_ANGLE_STEPS = ImmutableSortedMap.of(1.0F, ADJUST_ROTATION_ANGLE_STEP_1, 5.0F, ADJUST_ROTATION_ANGLE_STEP_5, 15.0F, ADJUST_ROTATION_ANGLE_STEP_15, 45.0F, ADJUST_ROTATION_ANGLE_STEP_45);
 
-    public VanillaTweaksDataSyncHandler(ArmorStand armorStand, LocalPlayer player) {
-        super(armorStand, player);
+    public VanillaTweaksDataSyncHandler(ArmorStandHolder holder, LocalPlayer player) {
+        super(holder, player);
     }
 
     @Override

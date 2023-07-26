@@ -2,6 +2,7 @@ package fuzs.armorstatues.api.client.gui.screens.armorstand;
 
 import com.google.common.collect.Lists;
 import com.mojang.blaze3d.vertex.PoseStack;
+import fuzs.armorstatues.api.ArmorStatuesApi;
 import fuzs.armorstatues.api.client.gui.components.NewTextureButton;
 import fuzs.armorstatues.api.client.gui.components.NewTextureSliderButton;
 import fuzs.armorstatues.api.network.client.data.DataSyncHandler;
@@ -31,7 +32,17 @@ import java.util.function.DoubleConsumer;
 import java.util.function.DoubleSupplier;
 import java.util.stream.Collectors;
 
-public class ArmorStandPositionScreen extends ArmorStandWidgetsScreen {
+public class ArmorStandPositionScreen extends AbstractArmorStandPositionScreen {
+    public static final String ROTATION_TRANSLATION_KEY = ArmorStatuesApi.MOD_ID + ".screen.position.rotation";
+    public static final String POSITION_X_TRANSLATION_KEY = ArmorStatuesApi.MOD_ID + ".screen.position.x";
+    public static final String POSITION_Y_TRANSLATION_KEY = ArmorStatuesApi.MOD_ID + ".screen.position.y";
+    public static final String POSITION_Z_TRANSLATION_KEY = ArmorStatuesApi.MOD_ID + ".screen.position.z";
+    public static final String INCREMENT_TRANSLATION_KEY = ArmorStatuesApi.MOD_ID + ".screen.position.increment";
+    public static final String DECREMENT_TRANSLATION_KEY = ArmorStatuesApi.MOD_ID + ".screen.position.decrement";
+    public static final String PIXELS_TRANSLATION_KEY = ArmorStatuesApi.MOD_ID + ".screen.position.pixels";
+    public static final String BLOCKS_TRANSLATION_KEY = ArmorStatuesApi.MOD_ID + ".screen.position.blocks";
+    public static final String DEGREES_TRANSLATION_KEY = ArmorStatuesApi.MOD_ID + ".screen.position.degrees";
+    public static final String MOVE_BY_TRANSLATION_KEY = ArmorStatuesApi.MOD_ID + ".screen.position.moveBy";
     private static final DecimalFormat BLOCK_INCREMENT_FORMAT = Util.make(new DecimalFormat("#.####"), (decimalFormat) -> {
         decimalFormat.setDecimalFormatSymbols(DecimalFormatSymbols.getInstance(Locale.ROOT));
     });
@@ -59,15 +70,15 @@ public class ArmorStandPositionScreen extends ArmorStandWidgetsScreen {
     protected List<PositionScreenWidget> buildWidgets(ArmorStand armorStand) {
         // only move server-side to prevent rubber banding
         return Lists.newArrayList(
-                new RotationWidget(Component.translatable("armorstatues.screen.position.rotation"), armorStand::getYRot, this.dataSyncHandler::sendRotation),
+                new RotationWidget(Component.translatable(ROTATION_TRANSLATION_KEY), armorStand::getYRot, this.dataSyncHandler::sendRotation),
                 new PositionIncrementWidget(),
-                new PositionComponentWidget("x", armorStand::getX, x -> {
+                new PositionComponentWidget(POSITION_X_TRANSLATION_KEY, armorStand::getX, x -> {
                     this.dataSyncHandler.sendPosition(x, armorStand.getY(), armorStand.getZ());
                 }),
-                new PositionComponentWidget("y", armorStand::getY, y -> {
+                new PositionComponentWidget(POSITION_Y_TRANSLATION_KEY, armorStand::getY, y -> {
                     this.dataSyncHandler.sendPosition(armorStand.getX(), y, armorStand.getZ());
                 }),
-                new PositionComponentWidget("z", armorStand::getZ, z -> {
+                new PositionComponentWidget(POSITION_Z_TRANSLATION_KEY, armorStand::getZ, z -> {
                     this.dataSyncHandler.sendPosition(armorStand.getX(), armorStand.getY(), z);
                 })
         );
@@ -79,11 +90,11 @@ public class ArmorStandPositionScreen extends ArmorStandWidgetsScreen {
     }
 
     private static Component getPixelIncrementComponent(double increment) {
-        return Component.translatable("armorstatues.screen.position.pixels", getBlockPixelIncrement(increment));
+        return Component.translatable(PIXELS_TRANSLATION_KEY, getBlockPixelIncrement(increment));
     }
 
     private static Component getBlockIncrementComponent(double increment) {
-        return Component.translatable("armorstatues.screen.position.blocks", BLOCK_INCREMENT_FORMAT.format(increment));
+        return Component.translatable(BLOCKS_TRANSLATION_KEY, BLOCK_INCREMENT_FORMAT.format(increment));
     }
 
     private static int getBlockPixelIncrement(double increment) {
@@ -117,7 +128,7 @@ public class ArmorStandPositionScreen extends ArmorStandWidgetsScreen {
         }
 
         protected Component getTooltipComponent(double mouseValue) {
-            return Component.translatable("armorstatues.screen.position.degrees", ArmorStandPose.ROTATION_FORMAT.format(toWrappedDegrees(mouseValue)));
+            return Component.translatable(DEGREES_TRANSLATION_KEY, ArmorStandPose.ROTATION_FORMAT.format(toWrappedDegrees(mouseValue)));
         }
 
         protected static double fromWrappedDegrees(double value) {
@@ -164,16 +175,21 @@ public class ArmorStandPositionScreen extends ArmorStandWidgetsScreen {
                 @Override
                 public void onRelease(double mouseX, double mouseY) {
                     super.onRelease(mouseX, mouseY);
-                    // we use #onRelease instead of directly applying in #applyValue as the armor stand will otherwise glitch out visually since the server constantly sends outdated values
-                    if (this.isDirty()) {
-                        this.dirty = false;
-                        RotationWidget.this.setNewValue(this.value);
-                    }
+                    this.clearDirty();
                 }
 
                 @Override
                 public boolean isDirty() {
                     return this.dirty;
+                }
+
+                @Override
+                public void clearDirty() {
+                    // we use #onRelease instead of directly applying in #applyValue as the armor stand will otherwise glitch out visually since the server constantly sends outdated values
+                    if (this.isDirty()) {
+                        this.dirty = false;
+                        RotationWidget.this.setNewValue(this.value);
+                    }
                 }
             });
             sliderButton.snapInterval = this.snapInterval;
@@ -188,7 +204,7 @@ public class ArmorStandPositionScreen extends ArmorStandWidgetsScreen {
     private class PositionIncrementWidget extends AbstractPositionScreenWidget {
 
         public PositionIncrementWidget() {
-            super(Component.translatable("armorstatues.screen.position.moveBy"));
+            super(Component.translatable(MOVE_BY_TRANSLATION_KEY));
         }
 
         @Override
@@ -232,8 +248,8 @@ public class ArmorStandPositionScreen extends ArmorStandWidgetsScreen {
         private EditBox editBox;
         private int ticks;
 
-        public PositionComponentWidget(String translationId, DoubleSupplier currentValue, DoubleConsumer newValue) {
-            super(Component.translatable("armorstatues.screen.position." + translationId));
+        public PositionComponentWidget(String translationKey, DoubleSupplier currentValue, DoubleConsumer newValue) {
+            super(Component.translatable(translationKey));
             this.currentValue = currentValue;
             this.newValue = newValue;
         }
@@ -261,12 +277,12 @@ public class ArmorStandPositionScreen extends ArmorStandWidgetsScreen {
             this.children.add(ArmorStandPositionScreen.this.addRenderableWidget(new ImageButton(posX + 149, posY + 1, 20, 10, 196, 64, 20, getArmorStandWidgetsLocation(), 256, 256, button -> {
                 this.setPositionValue(this.getPositionValue() + currentIncrement);
             }, (Button button, PoseStack poseStack, int mouseX, int mouseY) -> {
-                ArmorStandPositionScreen.this.renderTooltip(poseStack, Component.translatable("armorstatues.screen.position.increment", getPixelIncrementComponent(currentIncrement)), mouseX, mouseY);
+                ArmorStandPositionScreen.this.renderTooltip(poseStack, Component.translatable(INCREMENT_TRANSLATION_KEY, getPixelIncrementComponent(currentIncrement)), mouseX, mouseY);
             }, CommonComponents.EMPTY)));
             this.children.add(ArmorStandPositionScreen.this.addRenderableWidget(new ImageButton(posX + 149, posY + 11, 20, 10, 216, 74, 20, getArmorStandWidgetsLocation(), 256, 256, button -> {
                 this.setPositionValue(this.getPositionValue() - currentIncrement);
             }, (Button button, PoseStack poseStack, int mouseX, int mouseY) -> {
-                ArmorStandPositionScreen.this.renderTooltip(poseStack, Component.translatable("armorstatues.screen.position.decrement", getPixelIncrementComponent(currentIncrement)), mouseX, mouseY);
+                ArmorStandPositionScreen.this.renderTooltip(poseStack, Component.translatable(DECREMENT_TRANSLATION_KEY, getPixelIncrementComponent(currentIncrement)), mouseX, mouseY);
             }, CommonComponents.EMPTY)));
             this.children.add(ArmorStandPositionScreen.this.addRenderableWidget(new ImageButton(posX + 174, posY + 1, 20, 20, 236, 64, getArmorStandWidgetsLocation(), button -> {
                 ArmorStandPositionScreen.this.setActiveWidget(this);

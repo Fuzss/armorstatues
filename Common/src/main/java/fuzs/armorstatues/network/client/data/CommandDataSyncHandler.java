@@ -1,5 +1,8 @@
-package fuzs.armorstatues.api.network.client.data;
+package fuzs.armorstatues.network.client.data;
 
+import fuzs.armorstatues.api.ArmorStatuesApi;
+import fuzs.armorstatues.api.network.client.data.DataSyncHandler;
+import fuzs.armorstatues.api.world.inventory.ArmorStandHolder;
 import fuzs.armorstatues.api.world.inventory.data.ArmorStandPose;
 import fuzs.armorstatues.api.world.inventory.data.ArmorStandScreenType;
 import fuzs.armorstatues.api.world.inventory.data.ArmorStandStyleOption;
@@ -13,36 +16,36 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.decoration.ArmorStand;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.*;
+import java.util.ArrayDeque;
+import java.util.Queue;
 import java.util.function.BiPredicate;
 import java.util.function.Predicate;
 import java.util.stream.Stream;
 
 public class CommandDataSyncHandler implements DataSyncHandler {
-    private static final Component NO_PERMISSION_COMPONENT = Component.translatable("armorstatues.screen.failure.noPermission");
-    private static final Component NOT_FINISHED_COMPONENT = Component.translatable("armorstatues.screen.failure.notFinished");
-    private static final Component FINISHED_COMPONENT = Component.translatable("armorstatues.screen.finished");
+    public static final String NO_PERMISSION_TRANSLATION_KEY = ArmorStatuesApi.MOD_ID + ".dataSync.failure.noPermission";
+    public static final String NOT_FINISHED_TRANSLATION_KEY = ArmorStatuesApi.MOD_ID + ".dataSync.failure.notFinished";
+    public static final String FINISHED_TRANSLATION_KEY = ArmorStatuesApi.MOD_ID + ".dataSync.finished";
+    public static final String FAILURE_TRANSLATION_KEY = ArmorStatuesApi.MOD_ID + ".dataSync.failure";
     private static final Queue<String> CLIENT_COMMAND_QUEUE = new ArrayDeque<>();
 
-    @Nullable
-    static ArmorStandScreenType lastType;
     @Nullable
     private static ArmorStand queueArmorStand;
     private static int itemDequeuedTicks;
 
-    private final ArmorStand armorStand;
+    private final ArmorStandHolder holder;
     protected final LocalPlayer player;
     protected ArmorStandPose lastSyncedPose;
 
-    public CommandDataSyncHandler(ArmorStand armorStand, LocalPlayer player) {
-        this.armorStand = armorStand;
-        this.lastSyncedPose = ArmorStandPose.fromEntity(armorStand);
+    public CommandDataSyncHandler(ArmorStandHolder holder, LocalPlayer player) {
+        this.holder = holder;
+        this.lastSyncedPose = ArmorStandPose.fromEntity(this.holder.getArmorStand());
         this.player = player;
     }
 
     @Override
-    public ArmorStand getArmorStand() {
-        return this.armorStand;
+    public ArmorStandHolder getArmorStandHolder() {
+        return this.holder;
     }
 
     @Override
@@ -133,18 +136,12 @@ public class CommandDataSyncHandler implements DataSyncHandler {
 
     @Override
     public ArmorStandScreenType[] tabs() {
-        return Stream.of(this.getDataProvider().getScreenTypes()).filter(Predicate.not(ArmorStandScreenType::requiresServer)).toArray(ArmorStandScreenType[]::new);
+        return Stream.of(this.getArmorStandHolder().getDataProvider().getScreenTypes()).filter(Predicate.not(ArmorStandScreenType::requiresServer)).toArray(ArmorStandScreenType[]::new);
     }
 
     @Override
-    public Optional<ArmorStandScreenType> getLastType() {
-        List<ArmorStandScreenType> screenTypes = Arrays.asList(this.getDataProvider().getScreenTypes());
-        return Optional.ofNullable(lastType).filter(screenTypes::contains).filter(Predicate.not(ArmorStandScreenType::requiresServer));
-    }
-
-    @Override
-    public void setLastType(ArmorStandScreenType lastType) {
-        CommandDataSyncHandler.lastType = lastType;
+    public boolean supportsScreenType(ArmorStandScreenType screenType) {
+        return !screenType.requiresServer();
     }
 
     @Override
@@ -158,7 +155,7 @@ public class CommandDataSyncHandler implements DataSyncHandler {
             }
             itemDequeuedTicks = this.getDequeueDelayTicks();
         } else if (itemDequeuedTicks == 1 && CLIENT_COMMAND_QUEUE.isEmpty()) {
-            this.sendDisplayMessage(FINISHED_COMPONENT, false);
+            this.sendDisplayMessage(Component.translatable(FINISHED_TRANSLATION_KEY), false);
         }
     }
 
@@ -173,7 +170,7 @@ public class CommandDataSyncHandler implements DataSyncHandler {
 
     private boolean testPermissionLevel() {
         if (!this.player.hasPermissions(2)) {
-            this.sendFailureMessage(NO_PERMISSION_COMPONENT);
+            this.sendFailureMessage(Component.translatable(NO_PERMISSION_TRANSLATION_KEY));
             return false;
         }
         return true;
@@ -183,7 +180,7 @@ public class CommandDataSyncHandler implements DataSyncHandler {
         if (CLIENT_COMMAND_QUEUE.isEmpty()) {
             queueArmorStand = null;
         } else if (queueArmorStand != null) {
-            this.sendFailureMessage(NOT_FINISHED_COMPONENT);
+            this.sendFailureMessage(Component.translatable(NOT_FINISHED_TRANSLATION_KEY));
             return false;
         }
         CLIENT_COMMAND_QUEUE.offer(clientCommand);
@@ -198,7 +195,7 @@ public class CommandDataSyncHandler implements DataSyncHandler {
     }
 
     protected void sendFailureMessage(Component component) {
-        this.sendDisplayMessage(Component.translatable("armorstatues.screen.failure", component), true);
+        this.sendDisplayMessage(Component.translatable(FAILURE_TRANSLATION_KEY, component), true);
     }
 
     protected void sendDisplayMessage(Component component, boolean failure) {

@@ -9,9 +9,13 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.decoration.ArmorStand;
 
-import java.util.Optional;
+public interface DataSyncHandler {
 
-public interface DataSyncHandler extends ArmorStandHolder {
+    ArmorStandHolder getArmorStandHolder();
+
+    default ArmorStand getArmorStand() {
+        return this.getArmorStandHolder().getArmorStand();
+    }
 
     void sendName(String name);
 
@@ -41,9 +45,9 @@ public interface DataSyncHandler extends ArmorStandHolder {
 
     ArmorStandScreenType[] tabs();
 
-    Optional<ArmorStandScreenType> getLastType();
-
-    void setLastType(ArmorStandScreenType lastType);
+    default boolean supportsScreenType(ArmorStandScreenType screenType) {
+        return true;
+    }
 
     default void tick() {
 

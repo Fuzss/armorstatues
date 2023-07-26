@@ -1,5 +1,6 @@
 package fuzs.armorstatues.client;
 
+import fuzs.armorstatues.client.gui.screens.armorstand.ArmorStandAlignmentsScreen;
 import fuzs.armorstatues.api.client.gui.screens.armorstand.ArmorStandScreenFactory;
 import fuzs.armorstatues.api.world.inventory.ArmorStandMenu;
 import fuzs.armorstatues.init.ModRegistry;
@@ -8,6 +9,11 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
 
 public class ArmorStatuesClient implements ClientModConstructor {
+
+    @Override
+    public void onClientSetup() {
+        ArmorStandScreenFactory.register(ModRegistry.ALIGNMENTS, ArmorStandAlignmentsScreen::new);
+    }
 
     @Override
     public void onRegisterMenuScreens(MenuScreensContext context) {

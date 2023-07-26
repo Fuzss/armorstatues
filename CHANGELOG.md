@@ -3,6 +3,10 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog].
 
+## [v4.0.6-1.19.2] - 2023-07-26
+### Fixed
+- Fixed an issue where new rotations set on the rotations screen wouldn't save if the sliders were moved using the arrow keys
+
 ## [v4.0.5-1.19.2] - 2023-07-25
 ### Added
 - Added support for the Vanilla Tweaks Armor Statues data pack

@@ -2,8 +2,11 @@ package fuzs.armorstatues.api.world.inventory;
 
 import com.mojang.datafixers.util.Pair;
 import fuzs.armorstatues.api.ArmorStatuesApi;
+import fuzs.armorstatues.api.world.entity.decoration.ArmorStandDataProvider;
+import fuzs.armorstatues.api.world.inventory.data.ArmorStandScreenType;
 import fuzs.armorstatues.api.world.inventory.data.ArmorStandStyleOption;
 import fuzs.armorstatues.core.ModServices;
+import fuzs.armorstatues.init.ModRegistry;
 import fuzs.armorstatues.mixin.accessor.ArmorStandAccessor;
 import fuzs.armorstatues.mixin.accessor.SimpleContainerAccessor;
 import net.minecraft.core.NonNullList;
@@ -27,6 +30,13 @@ public class ArmorStandMenu extends AbstractContainerMenu implements ArmorStandH
     public static final ResourceLocation EMPTY_ARMOR_SLOT_SWORD = ArmorStatuesApi.id("item/empty_armor_slot_sword");
     static final ResourceLocation[] TEXTURE_EMPTY_SLOTS = new ResourceLocation[]{InventoryMenu.EMPTY_ARMOR_SLOT_BOOTS, InventoryMenu.EMPTY_ARMOR_SLOT_LEGGINGS, InventoryMenu.EMPTY_ARMOR_SLOT_CHESTPLATE, InventoryMenu.EMPTY_ARMOR_SLOT_HELMET, InventoryMenu.EMPTY_ARMOR_SLOT_SHIELD, EMPTY_ARMOR_SLOT_SWORD};
     public static final EquipmentSlot[] SLOT_IDS = new EquipmentSlot[]{EquipmentSlot.HEAD, EquipmentSlot.CHEST, EquipmentSlot.LEGS, EquipmentSlot.FEET, EquipmentSlot.MAINHAND, EquipmentSlot.OFFHAND};
+    public static final ArmorStandDataProvider DATA_PROVIDER = new ArmorStandDataProvider() {
+
+        @Override
+        public ArmorStandScreenType[] getScreenTypes() {
+            return new ArmorStandScreenType[]{ArmorStandScreenType.ROTATIONS, ArmorStandScreenType.POSES, ArmorStandScreenType.STYLE, ArmorStandScreenType.POSITION, ModRegistry.ALIGNMENTS, ArmorStandScreenType.EQUIPMENT};
+        }
+    };
 
     private final Container armorStandInventory;
     private final ArmorStand armorStand;
@@ -229,5 +239,10 @@ public class ArmorStandMenu extends AbstractContainerMenu implements ArmorStandH
     @Override
     public ArmorStand getArmorStand() {
         return this.armorStand;
+    }
+
+    @Override
+    public ArmorStandDataProvider getDataProvider() {
+        return DATA_PROVIDER;
     }
 }

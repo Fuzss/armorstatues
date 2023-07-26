@@ -54,7 +54,7 @@ public class ArmorStandPosesScreen extends AbstractArmorStandScreen {
                         List<Component> lines = Lists.newArrayList(component);
                         String source = pose.getSource();
                         if (!StringUtil.isNullOrEmpty(source)) {
-                            lines.add(Component.translatable("armorstatues.entity.armor_stand.pose.by", source).withStyle(ChatFormatting.GRAY));
+                            lines.add(Component.translatable(ArmorStandPose.POSE_SOURCE_TRANSLATION_KEY, source).withStyle(ChatFormatting.GRAY));
                         }
                         this.renderTooltip(poseStack, lines, Optional.empty(), mouseX, mouseY);
                     }
@@ -62,7 +62,7 @@ public class ArmorStandPosesScreen extends AbstractArmorStandScreen {
             }, CommonComponents.EMPTY));
         }
         this.toggleCycleButtons(0);
-        this.addVanillaTweaksCreditButton();
+        this.addVanillaTweaksCreditsButton();
     }
 
     private void toggleCycleButtons(int increment) {

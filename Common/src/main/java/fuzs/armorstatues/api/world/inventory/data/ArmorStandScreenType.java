@@ -1,5 +1,6 @@
 package fuzs.armorstatues.api.world.inventory.data;
 
+import fuzs.armorstatues.api.ArmorStatuesApi;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 
@@ -11,7 +12,6 @@ public class ArmorStandScreenType {
     public static final ArmorStandScreenType STYLE = new ArmorStandScreenType("style", new ItemStack(Items.PAINTING));
     public static final ArmorStandScreenType POSES = new ArmorStandScreenType("poses", new ItemStack(Items.SPYGLASS));
     public static final ArmorStandScreenType POSITION = new ArmorStandScreenType("position", new ItemStack(Items.GRASS_BLOCK));
-    public static final ArmorStandScreenType ALIGNMENTS = new ArmorStandScreenType("alignments", new ItemStack(Items.DIAMOND_PICKAXE));
 
     private final String name;
     private final ItemStack icon;
@@ -33,7 +33,7 @@ public class ArmorStandScreenType {
     }
 
     public String getTranslationKey() {
-        return "armorstatues.screen.type." + this.name;
+        return ArmorStatuesApi.MOD_ID + ".screen.type." + this.name;
     }
 
     public ItemStack getIcon() {

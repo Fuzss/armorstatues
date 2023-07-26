@@ -1,5 +1,6 @@
 package fuzs.armorstatues.api.world.inventory.data;
 
+import fuzs.armorstatues.api.ArmorStatuesApi;
 import fuzs.armorstatues.mixin.accessor.ArmorStandAccessor;
 import net.minecraft.Util;
 import net.minecraft.core.Rotations;
@@ -12,9 +13,10 @@ import java.text.DecimalFormatSymbols;
 import java.util.Locale;
 
 public class ArmorStandPose {
+    public static final String POSE_SOURCE_TRANSLATION_KEY = ArmorStatuesApi.MOD_ID + ".screen.pose.by";
     private static final String MINECRAFT_SOURCE = "Minecraft";
     private static final String VANILLA_TWEAKS_SOURCE = "Vanilla Tweaks";
-    public static final Rotations ZERO_ROTATIONS = new Rotations(0.0F, 0.0F, 0.0F);
+    private static final Rotations ZERO_ROTATIONS = new Rotations(0.0F, 0.0F, 0.0F);
     public static final double DEGREES_SNAP_INTERVAL = 0.125;
     public static final DecimalFormat ROTATION_FORMAT = Util.make(new DecimalFormat("#.##"), (decimalFormat) -> {
         decimalFormat.setDecimalFormatSymbols(DecimalFormatSymbols.getInstance(Locale.ROOT));
@@ -93,7 +95,7 @@ public class ArmorStandPose {
     }
 
     public String getTranslationKey() {
-        return this.name != null ? "armorstatues.entity.armor_stand.pose." + this.name : null;
+        return this.name != null ? ArmorStatuesApi.MOD_ID + ".screen.pose." + this.name : null;
     }
 
     @Nullable

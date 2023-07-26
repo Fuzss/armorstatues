@@ -9,7 +9,7 @@ public interface ArmorStandDataProvider {
     ArmorStandDataProvider INSTANCE = new ArmorStandDataProvider() {};
 
     default ArmorStandScreenType[] getScreenTypes() {
-        return new ArmorStandScreenType[]{ArmorStandScreenType.ROTATIONS, ArmorStandScreenType.POSES, ArmorStandScreenType.STYLE, ArmorStandScreenType.POSITION, ArmorStandScreenType.ALIGNMENTS, ArmorStandScreenType.EQUIPMENT};
+        return new ArmorStandScreenType[]{ArmorStandScreenType.ROTATIONS, ArmorStandScreenType.POSES, ArmorStandScreenType.STYLE, ArmorStandScreenType.POSITION, ArmorStandScreenType.EQUIPMENT};
     }
 
     default ArmorStandScreenType getDefaultScreenType() {

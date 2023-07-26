@@ -10,8 +10,4 @@ public interface ArmorStandHolder {
     default ArmorStandDataProvider getDataProvider() {
         return this.getArmorStand() instanceof ArmorStandDataProvider dataProvider ? dataProvider : ArmorStandDataProvider.INSTANCE;
     }
-
-    static ArmorStandHolder simple(ArmorStand armorStand) {
-        return () -> armorStand;
-    }
 }

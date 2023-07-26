@@ -1,5 +1,6 @@
 package fuzs.armorstatues.api.world.inventory.data;
 
+import fuzs.armorstatues.api.ArmorStatuesApi;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Rotations;
 import net.minecraft.network.chat.Component;
@@ -17,6 +18,9 @@ public final class PosePartMutator {
     public static final PosePartMutator LEFT_ARM = new PosePartMutator("leftArm", ArmorStandPose::getLeftArmPose, ArmorStandPose::withLeftArmPose, PosePartAxisRange.range(-180.0, 0.0), PosePartAxisRange.range(-45.0, 90.0), PosePartAxisRange.range(-120.0, 120.0));
     public static final PosePartMutator RIGHT_LEG = new PosePartMutator("rightLeg", ArmorStandPose::getRightLegPose, ArmorStandPose::withRightLegPose, PosePartAxisRange.range(-120.0, 120.0), PosePartAxisRange.range(-90.0, 0.0), PosePartAxisRange.range(-120.0, 120.0));
     public static final PosePartMutator LEFT_LEG = new PosePartMutator("leftLeg", ArmorStandPose::getLeftLegPose, ArmorStandPose::withLeftLegPose, PosePartAxisRange.range(-120.0, 120.0), PosePartAxisRange.range(0.0, 90.0), PosePartAxisRange.range(-120.0, 120.0));
+    public static final String AXIS_X_TRANSLATION_KEY = ArmorStatuesApi.MOD_ID + ".screen.rotations.x";
+    public static final String AXIS_Y_TRANSLATION_KEY = ArmorStatuesApi.MOD_ID + ".screen.rotations.y";
+    public static final String AXIS_Z_TRANSLATION_KEY = ArmorStatuesApi.MOD_ID + ".screen.rotations.z";
 
     private final String name;
     private final Function<ArmorStandPose, Rotations> getRotations;
@@ -52,12 +56,20 @@ public final class PosePartMutator {
     }
 
     public String getTranslationKey() {
-        return "armorstatues.screen.rotations.pose." + this.name;
+        return ArmorStatuesApi.MOD_ID + ".screen.rotations.pose." + this.name;
     }
 
     public Component getAxisComponent(ArmorStandPose pose, int index) {
         double value = ArmorStandPose.snapValue(this.getRotationsAtAxis(index, pose), ArmorStandPose.DEGREES_SNAP_INTERVAL);
-        return Component.translatable("armorstatues.screen.rotations." + this.getAxisAt(index), ArmorStandPose.ROTATION_FORMAT.format(value));
+        return Component.translatable(this.getAxisTranslationKey(this.getAxisAt(index)), ArmorStandPose.ROTATION_FORMAT.format(value));
+    }
+
+    private String getAxisTranslationKey(Direction.Axis axis) {
+        return switch (axis) {
+            case X -> AXIS_X_TRANSLATION_KEY;
+            case Y -> AXIS_Y_TRANSLATION_KEY;
+            case Z -> AXIS_Z_TRANSLATION_KEY;
+        };
     }
 
     public double getRotationsAtAxis(int index, ArmorStandPose pose) {

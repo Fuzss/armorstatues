@@ -36,11 +36,6 @@ public abstract class NewTextureSliderButton extends AbstractSliderButton implem
     }
 
     @Override
-    public boolean isDirty() {
-        return false;
-    }
-
-    @Override
     public void renderButton(PoseStack poseStack, int mouseX, int mouseY, float partialTick) {
         Minecraft minecraft = Minecraft.getInstance();
         Font font = minecraft.font;

@@ -4,6 +4,7 @@ import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
 import com.mojang.blaze3d.vertex.PoseStack;
 import fuzs.armorstatues.api.client.gui.components.NewTextureButton;
+import fuzs.armorstatues.api.client.gui.components.TickingButton;
 import fuzs.armorstatues.api.network.client.data.DataSyncHandler;
 import fuzs.armorstatues.api.world.inventory.ArmorStandHolder;
 import net.minecraft.client.gui.components.AbstractWidget;
@@ -120,7 +121,15 @@ public abstract class ArmorStandWidgetsScreen extends AbstractArmorStandScreen {
 
         @Override
         public void tick() {
-
+            if (this.shouldTick()) {
+                for (AbstractWidget widget : this.children) {
+                    if (widget instanceof TickingButton tickButton) tickButton.tick();
+                }
+            }
+        }
+        
+        protected boolean shouldTick() {
+            return false;
         }
 
         @Override

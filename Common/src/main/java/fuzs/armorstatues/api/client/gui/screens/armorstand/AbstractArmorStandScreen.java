@@ -37,10 +37,15 @@ import java.util.Optional;
 
 public abstract class AbstractArmorStandScreen extends Screen implements MenuAccess<ArmorStandMenu>, ArmorStandScreen {
     public static final String VANILLA_TWEAKS_HOMEPAGE = "https://vanillatweaks.net/";
+    public static final String CREDITS_TRANSLATION_KEY = ArmorStatuesApi.MOD_ID + ".screen.credits";
+    public static final String APPLIED_TRANSLATION_KEY = ArmorStatuesApi.MOD_ID + ".screen.applied";
+    public static final String ALIGNED_TRANSLATION_KEY = ArmorStatuesApi.MOD_ID + ".screen.aligned";
     private static final ResourceLocation ARMOR_STAND_BACKGROUND_LOCATION = ArmorStatuesApi.id("textures/gui/container/armor_stand/background.png");
     private static final ResourceLocation ARMOR_STAND_WIDGETS_LOCATION = ArmorStatuesApi.id("textures/gui/container/armor_stand/widgets.png");
     private static final ResourceLocation ARMOR_STAND_EQUIPMENT_LOCATION = ArmorStatuesApi.id("textures/gui/container/armor_stand/equipment.png");
 
+    @Nullable
+    static ArmorStandScreenType lastScreenType;
     static ArmorStandInInventoryRenderer armorStandRenderer = ArmorStandInInventoryRenderer.SIMPLE;
 
     protected final int imageWidth = 210;
@@ -146,14 +151,14 @@ public abstract class AbstractArmorStandScreen extends Screen implements MenuAcc
         }
     }
 
-    protected void addVanillaTweaksCreditButton() {
+    protected void addVanillaTweaksCreditsButton() {
         this.addRenderableWidget(new ImageButton(this.leftPos + 6, this.topPos + 6, 20, 20, 136, 64, 20, getArmorStandWidgetsLocation(), 256, 256, button -> {
             this.minecraft.setScreen(new ConfirmLinkScreen((bl) -> {
                 if (bl) Util.getPlatform().openUri(VANILLA_TWEAKS_HOMEPAGE);
                 this.minecraft.setScreen(this);
             }, VANILLA_TWEAKS_HOMEPAGE, true));
         }, (button, poseStack, mouseX, mouseY) -> {
-            this.renderTooltip(poseStack, this.font.split(Component.translatable("armorstatues.screen.vanillaTweaksCredit"), 175), mouseX, mouseY);
+            this.renderTooltip(poseStack, this.font.split(Component.translatable(CREDITS_TRANSLATION_KEY), 175), mouseX, mouseY);
         }, CommonComponents.EMPTY));
     }
 
@@ -334,6 +339,15 @@ public abstract class AbstractArmorStandScreen extends Screen implements MenuAcc
     @Override
     public boolean isPauseScreen() {
         return false;
+    }
+
+    @Override
+    public void removed() {
+        for (GuiEventListener child : this.children()) {
+            if (child instanceof UnboundedSliderButton sliderButton) {
+                sliderButton.clearDirty();
+            }
+        }
     }
 
     @Override
