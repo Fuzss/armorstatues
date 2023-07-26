@@ -21,6 +21,10 @@ public class ModLanguageProvider extends LanguageProvider {
     @Override
     protected void addTranslations() {
         // Armor Statues
+        this.add(CommandDataSyncHandler.FAILURE_TRANSLATION_KEY, "Unable to modify armor stand data: %s");
+        this.add(CommandDataSyncHandler.NO_PERMISSION_TRANSLATION_KEY, "No Permission");
+        this.add(CommandDataSyncHandler.NOT_FINISHED_TRANSLATION_KEY, "Queue Not Empty");
+        this.add(CommandDataSyncHandler.FINISHED_TRANSLATION_KEY, "Finished sending queued armor stand data");
         this.add(ModRegistry.ALIGNMENTS_SCREEN_TYPE.getTranslationKey(), "Alignments");
         this.add(ArmorStandAlignment.BLOCK.getTranslationKey(), "Align Block on Surface");
         this.add(ArmorStandAlignment.BLOCK.getDescriptionsKey(), "Align an armor stand placed on a surface so that a block held by it appears on the surface.");
@@ -117,9 +121,5 @@ public class ModLanguageProvider extends LanguageProvider {
         this.add(AbstractArmorStandScreen.APPLIED_TRANSLATION_KEY, "Applied!");
         this.add(AbstractArmorStandScreen.ALIGNED_TRANSLATION_KEY, "Aligned!");
         this.add(AbstractArmorStandScreen.CREDITS_TRANSLATION_KEY, "Some content on this page originates from the Vanilla Tweaks \"Armor Statues\" data pack. Click this button to go to their website!");
-        this.add(CommandDataSyncHandler.FAILURE_TRANSLATION_KEY, "Unable to modify armor stand data: %s");
-        this.add(CommandDataSyncHandler.NO_PERMISSION_TRANSLATION_KEY, "No Permission");
-        this.add(CommandDataSyncHandler.NOT_FINISHED_TRANSLATION_KEY, "Queue Not Empty");
-        this.add(CommandDataSyncHandler.FINISHED_TRANSLATION_KEY, "Finished sending queued armor stand data");
     }
 }

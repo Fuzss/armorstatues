@@ -1,6 +1,6 @@
 package fuzs.armorstatues.network.client.data;
 
-import fuzs.armorstatues.api.StatuesApi;
+import fuzs.armorstatues.ArmorStatues;
 import fuzs.armorstatues.api.network.client.data.DataSyncHandler;
 import fuzs.armorstatues.api.world.inventory.ArmorStandHolder;
 import fuzs.armorstatues.api.world.inventory.data.ArmorStandPose;
@@ -23,10 +23,10 @@ import java.util.function.Predicate;
 import java.util.stream.Stream;
 
 public class CommandDataSyncHandler implements DataSyncHandler {
-    public static final String NO_PERMISSION_TRANSLATION_KEY = StatuesApi.MOD_ID + ".dataSync.failure.noPermission";
-    public static final String NOT_FINISHED_TRANSLATION_KEY = StatuesApi.MOD_ID + ".dataSync.failure.notFinished";
-    public static final String FINISHED_TRANSLATION_KEY = StatuesApi.MOD_ID + ".dataSync.finished";
-    public static final String FAILURE_TRANSLATION_KEY = StatuesApi.MOD_ID + ".dataSync.failure";
+    public static final String NO_PERMISSION_TRANSLATION_KEY = ArmorStatues.MOD_ID + ".dataSync.failure.noPermission";
+    public static final String NOT_FINISHED_TRANSLATION_KEY = ArmorStatues.MOD_ID + ".dataSync.failure.notFinished";
+    public static final String FINISHED_TRANSLATION_KEY = ArmorStatues.MOD_ID + ".dataSync.finished";
+    public static final String FAILURE_TRANSLATION_KEY = ArmorStatues.MOD_ID + ".dataSync.failure";
     private static final Queue<String> CLIENT_COMMAND_QUEUE = new ArrayDeque<>();
 
     @Nullable
