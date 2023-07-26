@@ -272,7 +272,7 @@ public class ArmorStandPose {
         return VALUES.length;
     }
 
-    public static ArmorStandPose random() {
+    public static ArmorStandPose randomValue() {
         List<ArmorStandPose> poses = Arrays.asList(VALUES);
         Collections.shuffle(poses);
         return poses.stream().findAny().orElseThrow();

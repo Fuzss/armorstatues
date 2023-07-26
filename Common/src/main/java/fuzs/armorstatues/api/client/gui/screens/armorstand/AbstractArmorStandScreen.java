@@ -40,9 +40,9 @@ public abstract class AbstractArmorStandScreen extends Screen implements MenuAcc
     public static final String CREDITS_TRANSLATION_KEY = StatuesApi.MOD_ID + ".screen.credits";
     public static final String APPLIED_TRANSLATION_KEY = StatuesApi.MOD_ID + ".screen.applied";
     public static final String ALIGNED_TRANSLATION_KEY = StatuesApi.MOD_ID + ".screen.aligned";
-    private static final ResourceLocation ARMOR_STAND_BACKGROUND_LOCATION = StatuesApi.id("textures/gui/container/armor_stand/background.png");
-    private static final ResourceLocation ARMOR_STAND_WIDGETS_LOCATION = StatuesApi.id("textures/gui/container/armor_stand/widgets.png");
-    private static final ResourceLocation ARMOR_STAND_EQUIPMENT_LOCATION = StatuesApi.id("textures/gui/container/armor_stand/equipment.png");
+    private static final ResourceLocation ARMOR_STAND_BACKGROUND_LOCATION = StatuesApi.id("textures/gui/container/statue/background.png");
+    private static final ResourceLocation ARMOR_STAND_WIDGETS_LOCATION = StatuesApi.id("textures/gui/container/statue/widgets.png");
+    private static final ResourceLocation ARMOR_STAND_EQUIPMENT_LOCATION = StatuesApi.id("textures/gui/container/statue/equipment.png");
 
     @Nullable
     static ArmorStandScreenType lastScreenType;
