@@ -1,6 +1,6 @@
 package fuzs.armorstatues;
 
-import fuzs.armorstatues.api.ArmorStatuesApi;
+import fuzs.armorstatues.api.StatuesApi;
 import fuzs.armorstatues.handler.ArmorStandInteractHandler;
 import fuzs.puzzleslib.core.CoreServices;
 import net.fabricmc.api.ModInitializer;
@@ -18,7 +18,7 @@ public class ArmorStatuesFabric implements ModInitializer {
 
     @Override
     public void onInitialize() {
-        CoreServices.FACTORIES.modConstructor(ArmorStatues.MOD_ID).accept(new ArmorStatuesApi());
+        CoreServices.FACTORIES.modConstructor(ArmorStatues.MOD_ID).accept(new StatuesApi());
         CoreServices.FACTORIES.modConstructor(ArmorStatues.MOD_ID).accept(new ArmorStatues());
         registerHandlers();
     }

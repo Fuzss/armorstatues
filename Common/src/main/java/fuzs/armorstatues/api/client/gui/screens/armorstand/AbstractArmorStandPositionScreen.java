@@ -1,6 +1,6 @@
 package fuzs.armorstatues.api.client.gui.screens.armorstand;
 
-import fuzs.armorstatues.api.ArmorStatuesApi;
+import fuzs.armorstatues.api.StatuesApi;
 import fuzs.armorstatues.api.client.gui.components.TickButton;
 import fuzs.armorstatues.api.network.client.data.DataSyncHandler;
 import fuzs.armorstatues.api.world.inventory.ArmorStandHolder;
@@ -12,10 +12,10 @@ import net.minecraft.world.phys.Vec3;
 import java.util.EnumSet;
 
 public abstract class AbstractArmorStandPositionScreen extends ArmorStandWidgetsScreen {
-    public static final String CENTERED_TRANSLATION_KEY = ArmorStatuesApi.MOD_ID + ".screen.centered";
-    public static final String CENTERED_DESCRIPTION_TRANSLATION_KEY = ArmorStatuesApi.MOD_ID + ".screen.centered.description";
-    public static final String CORNERED_TRANSLATION_KEY = ArmorStatuesApi.MOD_ID + ".screen.cornered";
-    public static final String CORNERED_DESCRIPTION_TRANSLATION_KEY = ArmorStatuesApi.MOD_ID + ".screen.cornered.description";
+    public static final String CENTERED_TRANSLATION_KEY = StatuesApi.MOD_ID + ".screen.centered";
+    public static final String CENTERED_DESCRIPTION_TRANSLATION_KEY = StatuesApi.MOD_ID + ".screen.centered.description";
+    public static final String CORNERED_TRANSLATION_KEY = StatuesApi.MOD_ID + ".screen.cornered";
+    public static final String CORNERED_DESCRIPTION_TRANSLATION_KEY = StatuesApi.MOD_ID + ".screen.cornered.description";
 
     public AbstractArmorStandPositionScreen(ArmorStandHolder holder, Inventory inventory, Component component, DataSyncHandler dataSyncHandler) {
         super(holder, inventory, component, dataSyncHandler);

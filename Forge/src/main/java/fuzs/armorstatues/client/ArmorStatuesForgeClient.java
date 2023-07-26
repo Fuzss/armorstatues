@@ -1,7 +1,7 @@
 package fuzs.armorstatues.client;
 
 import fuzs.armorstatues.ArmorStatues;
-import fuzs.armorstatues.api.client.ArmorStatuesApiClient;
+import fuzs.armorstatues.api.client.StatuesApiClient;
 import fuzs.armorstatues.client.handler.ArmorStandTooltipHandler;
 import fuzs.armorstatues.handler.ArmorStandInteractHandler;
 import fuzs.armorstatues.handler.DataSyncTickHandler;
@@ -30,7 +30,7 @@ public class ArmorStatuesForgeClient {
 
     @SubscribeEvent
     public static void onConstructMod(final FMLConstructModEvent evt) {
-        ClientCoreServices.FACTORIES.clientModConstructor(ArmorStatues.MOD_ID).accept(new ArmorStatuesApiClient());
+        ClientCoreServices.FACTORIES.clientModConstructor(ArmorStatues.MOD_ID).accept(new StatuesApiClient());
         ClientCoreServices.FACTORIES.clientModConstructor(ArmorStatues.MOD_ID).accept(new ArmorStatuesClient());
         registerHandlers();
     }

@@ -1,7 +1,7 @@
 package fuzs.armorstatues.client;
 
 import fuzs.armorstatues.ArmorStatues;
-import fuzs.armorstatues.api.client.ArmorStatuesApiClient;
+import fuzs.armorstatues.api.client.StatuesApiClient;
 import fuzs.armorstatues.api.client.gui.screens.armorstand.ArmorStandScreen;
 import fuzs.armorstatues.client.handler.ArmorStandTooltipHandler;
 import fuzs.armorstatues.handler.ArmorStandInteractHandler;
@@ -17,7 +17,7 @@ public class ArmorStatuesFabricClient implements ClientModInitializer {
 
     @Override
     public void onInitializeClient() {
-        ClientCoreServices.FACTORIES.clientModConstructor(ArmorStatues.MOD_ID).accept(new ArmorStatuesApiClient());
+        ClientCoreServices.FACTORIES.clientModConstructor(ArmorStatues.MOD_ID).accept(new StatuesApiClient());
         ClientCoreServices.FACTORIES.clientModConstructor(ArmorStatues.MOD_ID).accept(new ArmorStatuesClient());
         registerHandlers();
     }

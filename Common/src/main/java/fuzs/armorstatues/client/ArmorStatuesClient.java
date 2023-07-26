@@ -12,7 +12,7 @@ public class ArmorStatuesClient implements ClientModConstructor {
 
     @Override
     public void onClientSetup() {
-        ArmorStandScreenFactory.register(ModRegistry.ALIGNMENTS, ArmorStandAlignmentsScreen::new);
+        ArmorStandScreenFactory.register(ModRegistry.ALIGNMENTS_SCREEN_TYPE, ArmorStandAlignmentsScreen::new);
     }
 
     @Override

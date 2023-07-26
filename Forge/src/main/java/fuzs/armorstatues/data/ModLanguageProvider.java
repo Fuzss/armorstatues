@@ -21,7 +21,7 @@ public class ModLanguageProvider extends LanguageProvider {
     @Override
     protected void addTranslations() {
         // Armor Statues
-        this.add(ModRegistry.ALIGNMENTS.getTranslationKey(), "Alignments");
+        this.add(ModRegistry.ALIGNMENTS_SCREEN_TYPE.getTranslationKey(), "Alignments");
         this.add(ArmorStandAlignment.BLOCK.getTranslationKey(), "Align Block on Surface");
         this.add(ArmorStandAlignment.BLOCK.getDescriptionsKey(), "Align an armor stand placed on a surface so that a block held by it appears on the surface.");
         this.add(ArmorStandAlignment.FLOATING_ITEM.getTranslationKey(), "Align Item On Surface");
@@ -67,7 +67,7 @@ public class ModLanguageProvider extends LanguageProvider {
         this.add(ArmorStandScreenType.STYLE.getTranslationKey(), "Style");
         this.add(ArmorStandScreenType.POSES.getTranslationKey(), "Poses");
         this.add(ArmorStandScreenType.POSITION.getTranslationKey(), "Position");
-        this.add(ArmorStandStyleOption.STYLE_TEXT_BOX_TRANSLATION_KEY, "Set a name to display above the entity if enabled.");
+        this.add(ArmorStandStyleOption.TEXT_BOX_TRANSLATION_KEY, "Set a name to display above the entity if enabled.");
         this.add(ArmorStandStyleOptions.SHOW_ARMS.getTranslationKey(), "Show Arms");
         this.add(ArmorStandStyleOptions.SHOW_ARMS.getDescriptionKey(), "Shows the statue's arms, so it may hold items in both hands.");
         this.add(ArmorStandStyleOptions.SMALL.getTranslationKey(), "Small");

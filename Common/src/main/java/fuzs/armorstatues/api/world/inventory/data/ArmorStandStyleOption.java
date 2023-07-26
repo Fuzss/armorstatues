@@ -2,7 +2,7 @@ package fuzs.armorstatues.api.world.inventory.data;
 
 import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBiMap;
-import fuzs.armorstatues.api.ArmorStatuesApi;
+import fuzs.armorstatues.api.StatuesApi;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.decoration.ArmorStand;
@@ -11,14 +11,14 @@ import net.minecraft.world.entity.player.Player;
 import java.util.Objects;
 
 public interface ArmorStandStyleOption {
-    String STYLE_TEXT_BOX_TRANSLATION_KEY = ArmorStatuesApi.MOD_ID + ".screen.style.name";
+    String TEXT_BOX_TRANSLATION_KEY = StatuesApi.MOD_ID + ".screen.style.name";
     int ARMOR_STAND_ALL_SLOTS_DISABLED = 4144959;
     BiMap<ResourceLocation, ArmorStandStyleOption> OPTIONS_REGISTRY = HashBiMap.create();
 
     String getName();
 
     default String getTranslationKey() {
-        return ArmorStatuesApi.MOD_ID + ".screen.style." + this.getName();
+        return StatuesApi.MOD_ID + ".screen.style." + this.getName();
     }
 
     default String getDescriptionKey() {

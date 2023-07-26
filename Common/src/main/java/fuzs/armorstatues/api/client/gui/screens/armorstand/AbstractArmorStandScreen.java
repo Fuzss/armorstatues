@@ -2,7 +2,7 @@ package fuzs.armorstatues.api.client.gui.screens.armorstand;
 
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
-import fuzs.armorstatues.api.ArmorStatuesApi;
+import fuzs.armorstatues.api.StatuesApi;
 import fuzs.armorstatues.api.client.gui.components.TickingButton;
 import fuzs.armorstatues.api.client.gui.components.UnboundedSliderButton;
 import fuzs.armorstatues.api.network.client.data.DataSyncHandler;
@@ -37,12 +37,12 @@ import java.util.Optional;
 
 public abstract class AbstractArmorStandScreen extends Screen implements MenuAccess<ArmorStandMenu>, ArmorStandScreen {
     public static final String VANILLA_TWEAKS_HOMEPAGE = "https://vanillatweaks.net/";
-    public static final String CREDITS_TRANSLATION_KEY = ArmorStatuesApi.MOD_ID + ".screen.credits";
-    public static final String APPLIED_TRANSLATION_KEY = ArmorStatuesApi.MOD_ID + ".screen.applied";
-    public static final String ALIGNED_TRANSLATION_KEY = ArmorStatuesApi.MOD_ID + ".screen.aligned";
-    private static final ResourceLocation ARMOR_STAND_BACKGROUND_LOCATION = ArmorStatuesApi.id("textures/gui/container/armor_stand/background.png");
-    private static final ResourceLocation ARMOR_STAND_WIDGETS_LOCATION = ArmorStatuesApi.id("textures/gui/container/armor_stand/widgets.png");
-    private static final ResourceLocation ARMOR_STAND_EQUIPMENT_LOCATION = ArmorStatuesApi.id("textures/gui/container/armor_stand/equipment.png");
+    public static final String CREDITS_TRANSLATION_KEY = StatuesApi.MOD_ID + ".screen.credits";
+    public static final String APPLIED_TRANSLATION_KEY = StatuesApi.MOD_ID + ".screen.applied";
+    public static final String ALIGNED_TRANSLATION_KEY = StatuesApi.MOD_ID + ".screen.aligned";
+    private static final ResourceLocation ARMOR_STAND_BACKGROUND_LOCATION = StatuesApi.id("textures/gui/container/armor_stand/background.png");
+    private static final ResourceLocation ARMOR_STAND_WIDGETS_LOCATION = StatuesApi.id("textures/gui/container/armor_stand/widgets.png");
+    private static final ResourceLocation ARMOR_STAND_EQUIPMENT_LOCATION = StatuesApi.id("textures/gui/container/armor_stand/equipment.png");
 
     @Nullable
     static ArmorStandScreenType lastScreenType;

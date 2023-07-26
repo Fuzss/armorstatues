@@ -1,6 +1,6 @@
 package fuzs.armorstatues.api.world.inventory.data;
 
-import fuzs.armorstatues.api.ArmorStatuesApi;
+import fuzs.armorstatues.api.StatuesApi;
 import fuzs.armorstatues.mixin.accessor.ArmorStandAccessor;
 import net.minecraft.Util;
 import net.minecraft.core.Rotations;
@@ -10,10 +10,13 @@ import org.jetbrains.annotations.Nullable;
 
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
 import java.util.Locale;
 
 public class ArmorStandPose {
-    public static final String POSE_SOURCE_TRANSLATION_KEY = ArmorStatuesApi.MOD_ID + ".screen.pose.by";
+    public static final String POSE_SOURCE_TRANSLATION_KEY = StatuesApi.MOD_ID + ".screen.pose.by";
     private static final String MINECRAFT_SOURCE = "Minecraft";
     private static final String VANILLA_TWEAKS_SOURCE = "Vanilla Tweaks";
     private static final Rotations ZERO_ROTATIONS = new Rotations(0.0F, 0.0F, 0.0F);
@@ -95,7 +98,7 @@ public class ArmorStandPose {
     }
 
     public String getTranslationKey() {
-        return this.name != null ? ArmorStatuesApi.MOD_ID + ".screen.pose." + this.name : null;
+        return this.name != null ? StatuesApi.MOD_ID + ".screen.pose." + this.name : null;
     }
 
     @Nullable
@@ -267,6 +270,12 @@ public class ArmorStandPose {
 
     public static int valuesLength() {
         return VALUES.length;
+    }
+
+    public static ArmorStandPose random() {
+        List<ArmorStandPose> poses = Arrays.asList(VALUES);
+        Collections.shuffle(poses);
+        return poses.stream().findAny().orElseThrow();
     }
 
     public static void checkMutatorsSize(PosePartMutator[] mutators) {

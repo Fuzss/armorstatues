@@ -2,7 +2,7 @@ package fuzs.armorstatues.api.client.gui.screens.armorstand;
 
 import com.google.common.collect.Maps;
 import com.mojang.blaze3d.vertex.PoseStack;
-import fuzs.armorstatues.api.ArmorStatuesApi;
+import fuzs.armorstatues.api.StatuesApi;
 import fuzs.armorstatues.api.client.gui.components.BoxedSliderButton;
 import fuzs.armorstatues.api.client.gui.components.LiveSliderButton;
 import fuzs.armorstatues.api.client.gui.components.NewTextureTickButton;
@@ -31,14 +31,14 @@ import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 public class ArmorStandRotationsScreen extends AbstractArmorStandScreen {
-    public static final String TIP_TRANSLATION_KEY = ArmorStatuesApi.MOD_ID + ".screen.rotations.tip";
-    public static final String UNLIMITED_TRANSLATION_KEY = ArmorStatuesApi.MOD_ID + ".screen.rotations.unlimited";
-    public static final String LIMITED_TRANSLATION_KEY = ArmorStatuesApi.MOD_ID + ".screen.rotations.limited";
-    public static final String RESET_TRANSLATION_KEY = ArmorStatuesApi.MOD_ID + ".screen.rotations.reset";
-    public static final String RANDOMIZE_TRANSLATION_KEY = ArmorStatuesApi.MOD_ID + ".screen.rotations.randomize";
-    public static final String PASTE_TRANSLATION_KEY = ArmorStatuesApi.MOD_ID + ".screen.rotations.paste";
-    public static final String COPY_TRANSLATION_KEY = ArmorStatuesApi.MOD_ID + ".screen.rotations.copy";
-    public static final String MIRROR_TRANSLATION_KEY = ArmorStatuesApi.MOD_ID + ".screen.rotations.mirror";
+    public static final String TIP_TRANSLATION_KEY = StatuesApi.MOD_ID + ".screen.rotations.tip";
+    public static final String UNLIMITED_TRANSLATION_KEY = StatuesApi.MOD_ID + ".screen.rotations.unlimited";
+    public static final String LIMITED_TRANSLATION_KEY = StatuesApi.MOD_ID + ".screen.rotations.limited";
+    public static final String RESET_TRANSLATION_KEY = StatuesApi.MOD_ID + ".screen.rotations.reset";
+    public static final String RANDOMIZE_TRANSLATION_KEY = StatuesApi.MOD_ID + ".screen.rotations.randomize";
+    public static final String PASTE_TRANSLATION_KEY = StatuesApi.MOD_ID + ".screen.rotations.paste";
+    public static final String COPY_TRANSLATION_KEY = StatuesApi.MOD_ID + ".screen.rotations.copy";
+    public static final String MIRROR_TRANSLATION_KEY = StatuesApi.MOD_ID + ".screen.rotations.mirror";
     private static final Map<PosePartMutator, Predicate<ArmorStand>> POSE_PART_MUTATOR_FILTERS = Maps.newHashMap();
 
     private static boolean clampRotations = true;

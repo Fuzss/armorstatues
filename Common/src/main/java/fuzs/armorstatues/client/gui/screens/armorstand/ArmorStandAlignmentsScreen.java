@@ -44,7 +44,7 @@ public class ArmorStandAlignmentsScreen extends AbstractArmorStandPositionScreen
 
     @Override
     public ArmorStandScreenType getScreenType() {
-        return ModRegistry.ALIGNMENTS;
+        return ModRegistry.ALIGNMENTS_SCREEN_TYPE;
     }
 
     private class AlignmentWidget extends AbstractPositionScreenWidget {

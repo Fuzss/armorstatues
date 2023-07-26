@@ -1,6 +1,6 @@
 package fuzs.armorstatues.api.world.inventory.data;
 
-import fuzs.armorstatues.api.ArmorStatuesApi;
+import fuzs.armorstatues.api.StatuesApi;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 
@@ -33,7 +33,7 @@ public class ArmorStandScreenType {
     }
 
     public String getTranslationKey() {
-        return ArmorStatuesApi.MOD_ID + ".screen.type." + this.name;
+        return StatuesApi.MOD_ID + ".screen.type." + this.name;
     }
 
     public ItemStack getIcon() {

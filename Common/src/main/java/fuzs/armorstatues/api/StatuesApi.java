@@ -13,7 +13,7 @@ import org.slf4j.LoggerFactory;
 
 import java.util.Locale;
 
-public class ArmorStatuesApi implements ModConstructor {
+public class StatuesApi implements ModConstructor {
     public static final String MOD_ID = "statues";
     public static final String MOD_NAME = "Statues";
     public static final Logger LOGGER = LoggerFactory.getLogger(MOD_NAME);

@@ -4,12 +4,11 @@ import fuzs.armorstatues.api.client.gui.screens.armorstand.*;
 import fuzs.armorstatues.api.world.inventory.ArmorStandMenu;
 import fuzs.armorstatues.api.world.inventory.data.ArmorStandScreenType;
 import fuzs.armorstatues.api.world.inventory.data.PosePartMutator;
-import fuzs.armorstatues.init.ModRegistry;
 import fuzs.puzzleslib.client.core.ClientModConstructor;
 import net.minecraft.world.entity.decoration.ArmorStand;
 import net.minecraft.world.inventory.InventoryMenu;
 
-public class ArmorStatuesApiClient implements ClientModConstructor {
+public class StatuesApiClient implements ClientModConstructor {
 
     @Override
     public void onClientSetup() {

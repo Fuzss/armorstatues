@@ -54,7 +54,7 @@ public class ArmorStandStyleScreen extends ArmorStandTickBoxScreen<ArmorStandSty
 
     @Override
     protected Component getNameComponent() {
-        return Component.translatable(ArmorStandStyleOption.STYLE_TEXT_BOX_TRANSLATION_KEY);
+        return Component.translatable(ArmorStandStyleOption.TEXT_BOX_TRANSLATION_KEY);
     }
 
     @Override

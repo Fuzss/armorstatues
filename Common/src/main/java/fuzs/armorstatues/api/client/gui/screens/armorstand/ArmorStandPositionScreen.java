@@ -2,7 +2,7 @@ package fuzs.armorstatues.api.client.gui.screens.armorstand;
 
 import com.google.common.collect.Lists;
 import com.mojang.blaze3d.vertex.PoseStack;
-import fuzs.armorstatues.api.ArmorStatuesApi;
+import fuzs.armorstatues.api.StatuesApi;
 import fuzs.armorstatues.api.client.gui.components.NewTextureButton;
 import fuzs.armorstatues.api.client.gui.components.NewTextureSliderButton;
 import fuzs.armorstatues.api.network.client.data.DataSyncHandler;
@@ -33,16 +33,16 @@ import java.util.function.DoubleSupplier;
 import java.util.stream.Collectors;
 
 public class ArmorStandPositionScreen extends AbstractArmorStandPositionScreen {
-    public static final String ROTATION_TRANSLATION_KEY = ArmorStatuesApi.MOD_ID + ".screen.position.rotation";
-    public static final String POSITION_X_TRANSLATION_KEY = ArmorStatuesApi.MOD_ID + ".screen.position.x";
-    public static final String POSITION_Y_TRANSLATION_KEY = ArmorStatuesApi.MOD_ID + ".screen.position.y";
-    public static final String POSITION_Z_TRANSLATION_KEY = ArmorStatuesApi.MOD_ID + ".screen.position.z";
-    public static final String INCREMENT_TRANSLATION_KEY = ArmorStatuesApi.MOD_ID + ".screen.position.increment";
-    public static final String DECREMENT_TRANSLATION_KEY = ArmorStatuesApi.MOD_ID + ".screen.position.decrement";
-    public static final String PIXELS_TRANSLATION_KEY = ArmorStatuesApi.MOD_ID + ".screen.position.pixels";
-    public static final String BLOCKS_TRANSLATION_KEY = ArmorStatuesApi.MOD_ID + ".screen.position.blocks";
-    public static final String DEGREES_TRANSLATION_KEY = ArmorStatuesApi.MOD_ID + ".screen.position.degrees";
-    public static final String MOVE_BY_TRANSLATION_KEY = ArmorStatuesApi.MOD_ID + ".screen.position.moveBy";
+    public static final String ROTATION_TRANSLATION_KEY = StatuesApi.MOD_ID + ".screen.position.rotation";
+    public static final String POSITION_X_TRANSLATION_KEY = StatuesApi.MOD_ID + ".screen.position.x";
+    public static final String POSITION_Y_TRANSLATION_KEY = StatuesApi.MOD_ID + ".screen.position.y";
+    public static final String POSITION_Z_TRANSLATION_KEY = StatuesApi.MOD_ID + ".screen.position.z";
+    public static final String INCREMENT_TRANSLATION_KEY = StatuesApi.MOD_ID + ".screen.position.increment";
+    public static final String DECREMENT_TRANSLATION_KEY = StatuesApi.MOD_ID + ".screen.position.decrement";
+    public static final String PIXELS_TRANSLATION_KEY = StatuesApi.MOD_ID + ".screen.position.pixels";
+    public static final String BLOCKS_TRANSLATION_KEY = StatuesApi.MOD_ID + ".screen.position.blocks";
+    public static final String DEGREES_TRANSLATION_KEY = StatuesApi.MOD_ID + ".screen.position.degrees";
+    public static final String MOVE_BY_TRANSLATION_KEY = StatuesApi.MOD_ID + ".screen.position.moveBy";
     private static final DecimalFormat BLOCK_INCREMENT_FORMAT = Util.make(new DecimalFormat("#.####"), (decimalFormat) -> {
         decimalFormat.setDecimalFormatSymbols(DecimalFormatSymbols.getInstance(Locale.ROOT));
     });

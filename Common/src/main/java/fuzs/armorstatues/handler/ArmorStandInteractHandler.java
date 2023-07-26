@@ -24,7 +24,7 @@ public class ArmorStandInteractHandler {
 
     public static Optional<InteractionResult> onUseEntityAt(Player player, Level level, InteractionHand interactionHand, Entity target, Vec3 hitVector) {
         if (!player.isSpectator() && target.getType() == EntityType.ARMOR_STAND) {
-            Optional<InteractionResult> result = ArmorStandInteractHelper.tryOpenArmorStatueMenu(player, level, interactionHand, (ArmorStand) target, ModRegistry.ARMOR_STAND_MENU_TYPE.get());
+            Optional<InteractionResult> result = ArmorStandInteractHelper.tryOpenArmorStatueMenu(player, level, interactionHand, (ArmorStand) target, ModRegistry.ARMOR_STAND_MENU_TYPE.get(), ModRegistry.ARMOR_STAND_DATA_PROVIDER);
             if (result.isPresent() && level.isClientSide && !presentServerside) {
                 ArmorStatues.PROXY.openArmorStandScreen((ArmorStand) target, player);
                 // required so no packet is sent to server when only installed client-side, so the server doesn't change any equipment when we only want to open the screen

@@ -1,6 +1,6 @@
 package fuzs.armorstatues;
 
-import fuzs.armorstatues.api.ArmorStatuesApi;
+import fuzs.armorstatues.api.StatuesApi;
 import fuzs.armorstatues.data.ModLanguageProvider;
 import fuzs.armorstatues.handler.ArmorStandInteractHandler;
 import fuzs.puzzleslib.core.CoreServices;
@@ -22,7 +22,7 @@ public class ArmorStatuesForge {
 
     @SubscribeEvent
     public static void onConstructMod(final FMLConstructModEvent evt) {
-        CoreServices.FACTORIES.modConstructor(ArmorStatues.MOD_ID).accept(new ArmorStatuesApi());
+        CoreServices.FACTORIES.modConstructor(ArmorStatues.MOD_ID).accept(new StatuesApi());
         CoreServices.FACTORIES.modConstructor(ArmorStatues.MOD_ID).accept(new ArmorStatues());
         registerHandlers();
     }
@@ -44,6 +44,6 @@ public class ArmorStatuesForge {
     public static void onGatherData(final GatherDataEvent evt) {
         DataGenerator generator = evt.getGenerator();
         final ExistingFileHelper existingFileHelper = evt.getExistingFileHelper();
-        generator.addProvider(true, new ModLanguageProvider(generator, ArmorStatuesApi.MOD_ID));
+        generator.addProvider(true, new ModLanguageProvider(generator, StatuesApi.MOD_ID));
     }
 }

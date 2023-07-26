@@ -1,6 +1,6 @@
 package fuzs.armorstatues.api.network.client;
 
-import fuzs.armorstatues.api.ArmorStatuesApi;
+import fuzs.armorstatues.api.StatuesApi;
 import fuzs.armorstatues.api.world.inventory.ArmorStandMenu;
 import fuzs.puzzleslib.network.Message;
 import net.minecraft.network.FriendlyByteBuf;
@@ -44,7 +44,7 @@ public class C2SArmorStandPositionMessage implements Message<C2SArmorStandPositi
             public void handle(C2SArmorStandPositionMessage message, Player player, Object gameInstance) {
                 if (player.containerMenu instanceof ArmorStandMenu menu && menu.stillValid(player)) {
                     if (!tryMoveArmorStandTo(menu.getArmorStand(), message.posX, message.posY, message.posZ)) {
-                        ArmorStatuesApi.LOGGER.warn("Player {} attempted to move armor stand further than allowed", player);
+                        StatuesApi.LOGGER.warn("Player {} attempted to move armor stand further than allowed", player);
                     }
                 }
             }

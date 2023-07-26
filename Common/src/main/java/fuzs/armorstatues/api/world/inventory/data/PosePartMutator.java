@@ -1,6 +1,6 @@
 package fuzs.armorstatues.api.world.inventory.data;
 
-import fuzs.armorstatues.api.ArmorStatuesApi;
+import fuzs.armorstatues.api.StatuesApi;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Rotations;
 import net.minecraft.network.chat.Component;
@@ -18,9 +18,9 @@ public final class PosePartMutator {
     public static final PosePartMutator LEFT_ARM = new PosePartMutator("leftArm", ArmorStandPose::getLeftArmPose, ArmorStandPose::withLeftArmPose, PosePartAxisRange.range(-180.0, 0.0), PosePartAxisRange.range(-45.0, 90.0), PosePartAxisRange.range(-120.0, 120.0));
     public static final PosePartMutator RIGHT_LEG = new PosePartMutator("rightLeg", ArmorStandPose::getRightLegPose, ArmorStandPose::withRightLegPose, PosePartAxisRange.range(-120.0, 120.0), PosePartAxisRange.range(-90.0, 0.0), PosePartAxisRange.range(-120.0, 120.0));
     public static final PosePartMutator LEFT_LEG = new PosePartMutator("leftLeg", ArmorStandPose::getLeftLegPose, ArmorStandPose::withLeftLegPose, PosePartAxisRange.range(-120.0, 120.0), PosePartAxisRange.range(0.0, 90.0), PosePartAxisRange.range(-120.0, 120.0));
-    public static final String AXIS_X_TRANSLATION_KEY = ArmorStatuesApi.MOD_ID + ".screen.rotations.x";
-    public static final String AXIS_Y_TRANSLATION_KEY = ArmorStatuesApi.MOD_ID + ".screen.rotations.y";
-    public static final String AXIS_Z_TRANSLATION_KEY = ArmorStatuesApi.MOD_ID + ".screen.rotations.z";
+    public static final String AXIS_X_TRANSLATION_KEY = StatuesApi.MOD_ID + ".screen.rotations.x";
+    public static final String AXIS_Y_TRANSLATION_KEY = StatuesApi.MOD_ID + ".screen.rotations.y";
+    public static final String AXIS_Z_TRANSLATION_KEY = StatuesApi.MOD_ID + ".screen.rotations.z";
 
     private final String name;
     private final Function<ArmorStandPose, Rotations> getRotations;
@@ -56,7 +56,7 @@ public final class PosePartMutator {
     }
 
     public String getTranslationKey() {
-        return ArmorStatuesApi.MOD_ID + ".screen.rotations.pose." + this.name;
+        return StatuesApi.MOD_ID + ".screen.rotations.pose." + this.name;
     }
 
     public Component getAxisComponent(ArmorStandPose pose, int index) {

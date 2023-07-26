@@ -4,6 +4,7 @@ import fuzs.armorstatues.ArmorStatues;
 import fuzs.armorstatues.api.client.gui.screens.armorstand.ArmorStandScreenFactory;
 import fuzs.armorstatues.api.world.entity.decoration.ArmorStandDataProvider;
 import fuzs.armorstatues.api.world.inventory.ArmorStandMenu;
+import fuzs.armorstatues.init.ModRegistry;
 import fuzs.armorstatues.network.client.data.CommandDataSyncHandler;
 import fuzs.armorstatues.api.network.client.data.DataSyncHandler;
 import fuzs.armorstatues.network.client.data.VanillaTweaksDataSyncHandler;
@@ -28,7 +29,7 @@ public class ClientProxy extends ServerProxy {
 
             @Override
             public ArmorStandDataProvider getDataProvider() {
-                return ArmorStandMenu.DATA_PROVIDER;
+                return ModRegistry.ARMOR_STAND_DATA_PROVIDER;
             }
         };
         Screen screen = ArmorStandScreenFactory.createLastScreenType(holder, player.getInventory(), armorStand.getDisplayName(), createDataSyncHandler(holder, (LocalPlayer) player));
