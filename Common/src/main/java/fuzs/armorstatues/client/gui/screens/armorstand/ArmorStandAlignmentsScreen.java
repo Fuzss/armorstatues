@@ -5,7 +5,7 @@ import fuzs.armorstatues.api.client.gui.components.TickButton;
 import fuzs.armorstatues.api.client.gui.screens.armorstand.AbstractArmorStandPositionScreen;
 import fuzs.armorstatues.api.network.client.data.DataSyncHandler;
 import fuzs.armorstatues.api.world.inventory.ArmorStandHolder;
-import fuzs.armorstatues.world.inventory.data.ArmorStandAlignment;
+import fuzs.armorstatues.api.world.inventory.data.ArmorStandAlignment;
 import fuzs.armorstatues.api.world.inventory.data.ArmorStandScreenType;
 import fuzs.armorstatues.api.world.inventory.data.ArmorStandStyleOptions;
 import fuzs.armorstatues.init.ModRegistry;

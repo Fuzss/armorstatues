@@ -2,7 +2,6 @@ package fuzs.armorstatues.mixin.accessor;
 
 import net.minecraft.core.NonNullList;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.decoration.ArmorStand;
 import net.minecraft.world.item.ItemStack;
 import org.spongepowered.asm.mixin.Mixin;
@@ -26,10 +25,4 @@ public interface ArmorStandAccessor {
 
     @Invoker
     void callReadPose(CompoundTag compound);
-
-    @Invoker
-    void callBrokenByAnything(DamageSource damageSource);
-
-    @Invoker
-    void callCauseDamage(DamageSource damageSource, float amount);
 }

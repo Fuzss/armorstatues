@@ -8,7 +8,7 @@ import fuzs.armorstatues.api.proxy.ClientProxy;
 import fuzs.armorstatues.api.world.inventory.data.*;
 import fuzs.armorstatues.init.ModRegistry;
 import fuzs.armorstatues.network.client.data.CommandDataSyncHandler;
-import fuzs.armorstatues.world.inventory.data.ArmorStandAlignment;
+import fuzs.armorstatues.api.world.inventory.data.ArmorStandAlignment;
 import net.minecraft.data.DataGenerator;
 import net.minecraftforge.common.data.LanguageProvider;
 
@@ -26,14 +26,6 @@ public class ModLanguageProvider extends LanguageProvider {
         this.add(CommandDataSyncHandler.NOT_FINISHED_TRANSLATION_KEY, "Queue Not Empty");
         this.add(CommandDataSyncHandler.FINISHED_TRANSLATION_KEY, "Finished sending queued armor stand data");
         this.add(ModRegistry.ALIGNMENTS_SCREEN_TYPE.getTranslationKey(), "Alignments");
-        this.add(ArmorStandAlignment.BLOCK.getTranslationKey(), "Align Block on Surface");
-        this.add(ArmorStandAlignment.BLOCK.getDescriptionsKey(), "Align an armor stand placed on a surface so that a block held by it appears on the surface.");
-        this.add(ArmorStandAlignment.FLOATING_ITEM.getTranslationKey(), "Align Item On Surface");
-        this.add(ArmorStandAlignment.FLOATING_ITEM.getDescriptionsKey(), "Align an armor stand placed on a surface so that an item held by it appears upright on the surface.");
-        this.add(ArmorStandAlignment.FLAT_ITEM.getTranslationKey(), "Align Item Flat On Surface");
-        this.add(ArmorStandAlignment.FLAT_ITEM.getDescriptionsKey(), "Align an armor stand placed on a surface so that a non-tool item held by it appears flat on the surface.");
-        this.add(ArmorStandAlignment.TOOL.getTranslationKey(), "Align Tool Flat On Surface");
-        this.add(ArmorStandAlignment.TOOL.getDescriptionsKey(), "Align an armor stand placed on a surface so that a tool held by it appears flat on the surface.");
         // Statues Api
         this.add(ClientProxy.OPEN_SCREEN_TRANSLATION_KEY, "Use [%s] + [%s] with an empty hand to open configuration screen.");
         this.add(ArmorStandPose.POSE_SOURCE_TRANSLATION_KEY, "By %s");
@@ -105,8 +97,8 @@ public class ModLanguageProvider extends LanguageProvider {
         this.add(PosePartMutator.AXIS_X_TRANSLATION_KEY, "X: %s");
         this.add(PosePartMutator.AXIS_Y_TRANSLATION_KEY, "Y: %s");
         this.add(PosePartMutator.AXIS_Z_TRANSLATION_KEY, "Z: %s");
-        this.add(ArmorStandRotationsScreen.TIP_TRANSLATION_KEY + 1, "Hold the Shift or Alt key to lock sliders to a single axis!");
-        this.add(ArmorStandRotationsScreen.TIP_TRANSLATION_KEY + 2, "Use the arrow keys to move sliders more precisely! Focus a slider first by clicking.");
+        this.add(ArmorStandRotationsScreen.TIP_TRANSLATION_KEY + 1, "Hold any [§dShift§r] or [§dAlt§r] key to lock sliders to a single axis!");
+        this.add(ArmorStandRotationsScreen.TIP_TRANSLATION_KEY + 2, "Use arrow keys to move sliders more precisely! Focus a slider first by clicking.");
         this.add(ArmorStandRotationsScreen.RESET_TRANSLATION_KEY, "Reset");
         this.add(ArmorStandRotationsScreen.RANDOMIZE_TRANSLATION_KEY, "Randomize");
         this.add(ArmorStandRotationsScreen.LIMITED_TRANSLATION_KEY, "Limited Rotations");
@@ -118,6 +110,14 @@ public class ModLanguageProvider extends LanguageProvider {
         this.add(AbstractArmorStandPositionScreen.CENTERED_DESCRIPTION_TRANSLATION_KEY, "Align an armor stand in the center of the block position it is placed on.");
         this.add(AbstractArmorStandPositionScreen.CORNERED_TRANSLATION_KEY, "Align Cornered");
         this.add(AbstractArmorStandPositionScreen.CORNERED_DESCRIPTION_TRANSLATION_KEY, "Align an armor stand at the corner of the block position it is placed on.");
+        this.add(ArmorStandAlignment.BLOCK.getTranslationKey(), "Align Block on Surface");
+        this.add(ArmorStandAlignment.BLOCK.getDescriptionsKey(), "Align an armor stand placed on a surface so that a block held by it appears on the surface.");
+        this.add(ArmorStandAlignment.FLOATING_ITEM.getTranslationKey(), "Align Item On Surface");
+        this.add(ArmorStandAlignment.FLOATING_ITEM.getDescriptionsKey(), "Align an armor stand placed on a surface so that an item held by it appears upright on the surface.");
+        this.add(ArmorStandAlignment.FLAT_ITEM.getTranslationKey(), "Align Item Flat On Surface");
+        this.add(ArmorStandAlignment.FLAT_ITEM.getDescriptionsKey(), "Align an armor stand placed on a surface so that a non-tool item held by it appears flat on the surface.");
+        this.add(ArmorStandAlignment.TOOL.getTranslationKey(), "Align Tool Flat On Surface");
+        this.add(ArmorStandAlignment.TOOL.getDescriptionsKey(), "Align an armor stand placed on a surface so that a tool held by it appears flat on the surface.");
         this.add(AbstractArmorStandScreen.APPLIED_TRANSLATION_KEY, "Applied!");
         this.add(AbstractArmorStandScreen.ALIGNED_TRANSLATION_KEY, "Aligned!");
         this.add(AbstractArmorStandScreen.CREDITS_TRANSLATION_KEY, "Some content on this page originates from the Vanilla Tweaks \"Armor Statues\" data pack. Click this button to go to their website!");

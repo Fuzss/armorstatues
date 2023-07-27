@@ -1,7 +1,6 @@
-package fuzs.armorstatues.world.inventory.data;
+package fuzs.armorstatues.api.world.inventory.data;
 
-import fuzs.armorstatues.ArmorStatues;
-import fuzs.armorstatues.api.world.inventory.data.ArmorStandPose;
+import fuzs.armorstatues.api.StatuesApi;
 import net.minecraft.core.Rotations;
 import net.minecraft.world.phys.Vec3;
 
@@ -34,7 +33,7 @@ public enum ArmorStandAlignment {
     }
 
     public String getTranslationKey() {
-        return ArmorStatues.MOD_ID + ".screen.alignments." + this.name;
+        return StatuesApi.MOD_ID + ".screen.alignments." + this.name;
     }
 
     public String getDescriptionsKey() {
