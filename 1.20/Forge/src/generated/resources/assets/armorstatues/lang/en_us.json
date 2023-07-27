@@ -1,0 +1,7 @@
+{
+  "armorstatues.dataSync.failure": "Unable to modify armor stand data: %s",
+  "armorstatues.dataSync.failure.noPermission": "No Permission",
+  "armorstatues.dataSync.failure.notFinished": "Queue Not Empty",
+  "armorstatues.dataSync.finished": "Finished sending queued armor stand data",
+  "puzzlesapi.screen.type.alignments": "Alignments"
+}

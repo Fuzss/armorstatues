@@ -3,6 +3,11 @@ apply from: 'https://raw.githubusercontent.com/Fuzss/modresources/main/gradle/co
 dependencies {
     // Puzzles Lib
     modApi libs.puzzleslib.common
+
+    // Puzzles Api
+    api(libs.puzzlesapi.common) {
+        exclude group: "fuzs.puzzleslib"
+    }
 }
 
 // @see https://github.com/jaredlll08/MultiLoader-Template/issues/17#issuecomment-1221598082

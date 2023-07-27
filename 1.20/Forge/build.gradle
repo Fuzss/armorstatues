@@ -6,10 +6,20 @@ dependencies {
     // Puzzles Lib
     api fg.deobf(libs.puzzleslib.forge.get())
 
+    // Puzzles Api
+    api(fg.deobf(libs.puzzlesapi.forge.get())) {
+        transitive = false
+    }
+    jarJar(fg.deobf(libs.puzzlesapi.forge.get()) {
+        jarJar.ranged(it, "[${libs.versions.puzzlesapi.get()},)")
+        transitive = false
+    })
+
     // Quality of Life Mods
     versionCatalog.findLibrary("bettermodsbutton.forge").ifPresent {
         runtimeOnly fg.deobf(it.get())
     }
+//    runtimeOnly fg.deobf("fuzs.bettermodsbutton:bettermodsbutton-forge:${libs.versions.bettermodsbutton.get()}")
     versionCatalog.findLibrary("forgeconfigscreens.forge").ifPresent {
         runtimeOnly fg.deobf(it.get())
     }

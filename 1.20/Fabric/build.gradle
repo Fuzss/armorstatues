@@ -9,6 +9,11 @@ dependencies {
     // Puzzles Lib
     modApi libs.puzzleslib.fabric
 
+    // Puzzles Api
+    modApi(include(libs.puzzlesapi.fabric.get())) {
+        exclude group: "fuzs.puzzleslib"
+    }
+
     // Cardinal Components
 //    modApi(include(libs.cardinalcomponentsbase.fabric.get()))
 //    modApi(include(libs.cardinalcomponentsentity.fabric.get()))
