@@ -18,8 +18,10 @@ public enum ArmorStandStyleOptions implements ArmorStandStyleOption {
     NO_GRAVITY("noGravity", Entity::setNoGravity, Entity::isNoGravity),
     SEALED("sealed", (armorStand, setting) -> {
         armorStand.setInvulnerable(setting);
-        ((ArmorStandAccessor) armorStand).setDisabledSlots(setting ? ArmorStandStyleOption.ARMOR_STAND_ALL_SLOTS_DISABLED : 0);
+        ((ArmorStandAccessor) armorStand).setDisabledSlots(setting ? ArmorStandStyleOptions.ARMOR_STAND_ALL_SLOTS_DISABLED : 0);
     }, Entity::isInvulnerable);
+
+    public static final int ARMOR_STAND_ALL_SLOTS_DISABLED = 4144959;
 
     private final String name;
     private final BiConsumer<ArmorStand, Boolean> newValue;
@@ -59,7 +61,7 @@ public enum ArmorStandStyleOptions implements ArmorStandStyleOption {
         };
         tag.putBoolean(dataKey, currentValue);
         if (this == ArmorStandStyleOptions.SEALED) {
-            tag.putInt("DisabledSlots", currentValue ? ArmorStandStyleOption.ARMOR_STAND_ALL_SLOTS_DISABLED : 0);
+            tag.putInt("DisabledSlots", currentValue ? ARMOR_STAND_ALL_SLOTS_DISABLED : 0);
         }
     }
 

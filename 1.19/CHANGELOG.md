@@ -3,6 +3,12 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog].
 
+## [v4.0.7-1.19.2] - 2023-07-28
+### Added
+- Added a new tab that only shows when Armor Statues is being used in conjunction with the Vanilla Tweaks data pack offering Vanilla Tweaks exclusive toggles
+### Changed
+- Optimized some actions during editing to be performed much quicker when Armor Statues is being used in conjunction with the Vanilla Tweaks data pack
+
 ## [v4.0.6-1.19.2] - 2023-07-26
 ### Fixed
 - Fixed an issue where new rotations set on the rotations screen wouldn't save if the sliders were moved using the arrow keys

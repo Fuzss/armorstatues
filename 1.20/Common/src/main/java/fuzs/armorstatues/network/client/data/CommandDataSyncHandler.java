@@ -3,6 +3,7 @@ package fuzs.armorstatues.network.client.data;
 import fuzs.armorstatues.ArmorStatues;
 import fuzs.puzzlesapi.api.statues.v1.network.client.data.DataSyncHandler;
 import fuzs.puzzlesapi.api.statues.v1.world.inventory.ArmorStandHolder;
+import fuzs.puzzlesapi.api.statues.v1.world.inventory.data.ArmorStandAlignment;
 import fuzs.puzzlesapi.api.statues.v1.world.inventory.data.ArmorStandPose;
 import fuzs.puzzlesapi.api.statues.v1.world.inventory.data.ArmorStandScreenType;
 import fuzs.puzzlesapi.api.statues.v1.world.inventory.data.ArmorStandStyleOption;
@@ -19,11 +20,10 @@ import org.jetbrains.annotations.Nullable;
 import java.util.ArrayDeque;
 import java.util.Queue;
 import java.util.function.BiPredicate;
-import java.util.function.Predicate;
-import java.util.stream.Stream;
 
 public class CommandDataSyncHandler implements DataSyncHandler {
     public static final String NO_PERMISSION_TRANSLATION_KEY = ArmorStatues.MOD_ID + ".dataSync.failure.noPermission";
+    public static final String NO_ARMOR_STAND_TRANSLATION_KEY = ArmorStatues.MOD_ID + ".dataSync.failure.noArmorStand";
     public static final String NOT_FINISHED_TRANSLATION_KEY = ArmorStatues.MOD_ID + ".dataSync.failure.notFinished";
     public static final String FINISHED_TRANSLATION_KEY = ArmorStatues.MOD_ID + ".dataSync.finished";
     public static final String FAILURE_TRANSLATION_KEY = ArmorStatues.MOD_ID + ".dataSync.failure";
@@ -32,8 +32,9 @@ public class CommandDataSyncHandler implements DataSyncHandler {
     @Nullable
     private static ArmorStand queueArmorStand;
     private static int itemDequeuedTicks;
-    protected final LocalPlayer player;
+
     private final ArmorStandHolder holder;
+    protected final LocalPlayer player;
     protected ArmorStandPose lastSyncedPose;
 
     public CommandDataSyncHandler(ArmorStandHolder holder, LocalPlayer player) {
@@ -49,7 +50,7 @@ public class CommandDataSyncHandler implements DataSyncHandler {
 
     @Override
     public void sendName(String name) {
-        if (!this.testPermissionLevel()) return;
+        if (!this.isEditingAllowed()) return;
         DataSyncHandler.setCustomArmorStandName(this.getArmorStand(), name);
         CompoundTag tag = new CompoundTag();
         tag.putString("CustomName", Component.Serializer.toJson(Component.literal(name)));
@@ -64,12 +65,12 @@ public class CommandDataSyncHandler implements DataSyncHandler {
 
     @Override
     public void sendPose(ArmorStandPose pose, boolean finalize) {
-        if (!this.testPermissionLevel()) return;
-        pose.applyToEntity(this.getArmorStand());
+        if (!this.isEditingAllowed()) return;
         // split this into multiple chat messages as the client chat field has a very low character limit
         this.sendPosePart(pose::serializeBodyPoses, this.lastSyncedPose);
         this.sendPosePart(pose::serializeArmPoses, this.lastSyncedPose);
         this.sendPosePart(pose::serializeLegPoses, this.lastSyncedPose);
+        pose.applyToEntity(this.getArmorStand());
         this.lastSyncedPose = pose.copyAndFillFrom(this.lastSyncedPose);
         if (finalize) this.finalizeCurrentOperation();
     }
@@ -84,6 +85,11 @@ public class CommandDataSyncHandler implements DataSyncHandler {
     }
 
     @Override
+    public @Nullable ArmorStandPose getLastSyncedPose() {
+        return this.lastSyncedPose;
+    }
+
+    @Override
     public final void sendPosition(double posX, double posY, double posZ) {
         this.sendPosition(posX, posY, posZ, true);
 
@@ -91,7 +97,7 @@ public class CommandDataSyncHandler implements DataSyncHandler {
 
     @Override
     public void sendPosition(double posX, double posY, double posZ, boolean finalize) {
-        if (!this.testPermissionLevel()) return;
+        if (!this.isEditingAllowed()) return;
         ListTag listTag = new ListTag();
         listTag.add(DoubleTag.valueOf(posX));
         listTag.add(DoubleTag.valueOf(posY));
@@ -109,7 +115,7 @@ public class CommandDataSyncHandler implements DataSyncHandler {
 
     @Override
     public void sendRotation(float rotation, boolean finalize) {
-        if (!this.testPermissionLevel()) return;
+        if (!this.isEditingAllowed()) return;
         ListTag listTag = new ListTag();
         listTag.add(FloatTag.valueOf(rotation));
         CompoundTag tag = new CompoundTag();
@@ -125,17 +131,18 @@ public class CommandDataSyncHandler implements DataSyncHandler {
 
     @Override
     public void sendStyleOption(ArmorStandStyleOption styleOption, boolean value, boolean finalize) {
-        if (!this.testPermissionLevel()) return;
-        styleOption.setOption(this.getArmorStand(), value);
+        if (!this.isEditingAllowed()) return;
         CompoundTag tag = new CompoundTag();
         styleOption.toTag(tag, value);
         this.enqueueEntityData(tag);
+        styleOption.setOption(this.getArmorStand(), value);
         if (finalize) this.finalizeCurrentOperation();
     }
 
     @Override
-    public ArmorStandScreenType[] tabs() {
-        return Stream.of(this.getArmorStandHolder().getDataProvider().getScreenTypes()).filter(Predicate.not(ArmorStandScreenType::requiresServer)).toArray(ArmorStandScreenType[]::new);
+    public void sendAlignment(ArmorStandAlignment alignment) {
+        if (!this.isEditingAllowed()) return;
+        DataSyncHandler.super.sendAlignment(alignment);
     }
 
     @Override
@@ -147,7 +154,7 @@ public class CommandDataSyncHandler implements DataSyncHandler {
     public void tick() {
         if (itemDequeuedTicks > 0) itemDequeuedTicks--;
         if (itemDequeuedTicks == 0 && queueArmorStand != null && !CLIENT_COMMAND_QUEUE.isEmpty()) {
-            if (queueArmorStand.isAlive()) {
+            if (this.testArmorStand(queueArmorStand)) {
                 this.player.connection.sendCommand(CLIENT_COMMAND_QUEUE.poll());
             } else {
                 CLIENT_COMMAND_QUEUE.clear();
@@ -167,12 +174,23 @@ public class CommandDataSyncHandler implements DataSyncHandler {
         return !CLIENT_COMMAND_QUEUE.isEmpty() || itemDequeuedTicks != 0;
     }
 
-    private boolean testPermissionLevel() {
-        if (!this.player.hasPermissions(2)) {
+    protected boolean isEditingAllowed() {
+        return this.isEditingAllowed(true);
+    }
+
+    protected final boolean isEditingAllowed(boolean testPermissionLevel) {
+        if (testPermissionLevel && !this.player.hasPermissions(2)) {
             this.sendFailureMessage(Component.translatable(NO_PERMISSION_TRANSLATION_KEY));
+            return false;
+        } else if (queueArmorStand != null && !this.testArmorStand(queueArmorStand)) {
+            this.sendFailureMessage(Component.translatable(NO_ARMOR_STAND_TRANSLATION_KEY));
             return false;
         }
         return true;
+    }
+
+    protected boolean testArmorStand(ArmorStand armorStand) {
+        return armorStand.isAlive();
     }
 
     protected boolean enqueueClientCommand(String clientCommand) {

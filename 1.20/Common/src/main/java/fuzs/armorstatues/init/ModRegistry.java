@@ -17,6 +17,7 @@ public class ModRegistry {
     });
 
     public static final ArmorStandScreenType ALIGNMENTS_SCREEN_TYPE = new ArmorStandScreenType("alignments", new ItemStack(Items.DIAMOND_PICKAXE));
+    public static final ArmorStandScreenType VANILLA_TWEAKS_SCREEN_TYPE = new ArmorStandScreenType("vanillaTweaks", new ItemStack(Items.WRITTEN_BOOK));
     public static final ArmorStandDataProvider ARMOR_STAND_DATA_PROVIDER = new ArmorStandDataProvider() {
 
         @Override

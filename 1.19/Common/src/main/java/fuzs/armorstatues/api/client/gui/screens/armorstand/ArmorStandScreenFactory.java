@@ -36,7 +36,7 @@ public interface ArmorStandScreenFactory<T extends Screen & MenuAccess<ArmorStan
     }
 
     static <T extends Screen & MenuAccess<ArmorStandMenu> & ArmorStandScreen> T createLastScreenType(ArmorStandHolder holder, Inventory inventory, Component component, DataSyncHandler dataSyncHandler) {
-        Set<ArmorStandScreenType> screenTypes = Sets.newHashSet(dataSyncHandler.getArmorStandHolder().getDataProvider().getScreenTypes());
+        Set<ArmorStandScreenType> screenTypes = Sets.newHashSet(dataSyncHandler.getScreenTypes());
         Optional<ArmorStandScreenType> lastScreenType = Optional.ofNullable(AbstractArmorStandScreen.lastScreenType).filter(screenTypes::contains).filter(dataSyncHandler::supportsScreenType);
         ArmorStandScreenType screenType = lastScreenType.orElse(dataSyncHandler.getArmorStandHolder().getDataProvider().getDefaultScreenType());
         return createScreenType(screenType, holder, inventory, component, dataSyncHandler);

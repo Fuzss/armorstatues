@@ -1,4 +1,4 @@
-package fuzs.armorstatues.handler;
+package fuzs.armorstatues.client.handler;
 
 import fuzs.armorstatues.api.client.gui.screens.armorstand.ArmorStandScreen;
 import fuzs.armorstatues.api.network.client.data.DataSyncHandler;
@@ -17,7 +17,7 @@ public class DataSyncTickHandler {
     }
 
     public static void onClientTickEnd(Minecraft minecraft) {
-        if (!(minecraft.screen instanceof ArmorStandScreen) && dataSyncHandler != null) {
+        if (minecraft.player != null && !(minecraft.screen instanceof ArmorStandScreen) && dataSyncHandler != null) {
             if (dataSyncHandler.shouldContinueTicking()) {
                 dataSyncHandler.tick();
             } else {

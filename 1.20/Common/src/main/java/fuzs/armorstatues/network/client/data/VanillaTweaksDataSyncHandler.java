@@ -1,18 +1,33 @@
 package fuzs.armorstatues.network.client.data;
 
 import com.google.common.collect.ImmutableSortedMap;
+import fuzs.armorstatues.ArmorStatues;
+import fuzs.armorstatues.config.ClientConfig;
+import fuzs.armorstatues.init.ModRegistry;
 import fuzs.puzzlesapi.api.statues.v1.world.inventory.ArmorStandHolder;
-import fuzs.puzzlesapi.api.statues.v1.world.inventory.data.ArmorStandPose;
-import fuzs.puzzlesapi.api.statues.v1.world.inventory.data.ArmorStandStyleOption;
-import fuzs.puzzlesapi.api.statues.v1.world.inventory.data.ArmorStandStyleOptions;
+import fuzs.puzzlesapi.api.statues.v1.world.inventory.data.*;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.core.Rotations;
+import net.minecraft.world.entity.decoration.ArmorStand;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Map;
 import java.util.NavigableMap;
+import java.util.function.Function;
+import java.util.stream.Stream;
 
 public class VanillaTweaksDataSyncHandler extends CommandDataSyncHandler {
+    private static final int MAX_INCREMENTAL_OPERATIONS = 12;
+    public static final int CHECK_TARGET = 999;
+    public static final int SWAP_SLOTS_MAINHAND_AND_OFFHAND = 161;
+    public static final int SWAP_SLOTS_MAINHAND_AND_HEAD = 162;
+    public static final int MIRROR_ARMS_LEFT_TO_RIGHT = 131;
+    public static final int MIRROR_ARMS_RIGHT_TO_LEFT = 132;
+    public static final int MIRROR_LEGS_LEFT_TO_RIGHT = 133;
+    public static final int MIRROR_LEGS_RIGHT_TO_LEFT = 134;
+    public static final int UTILITIES_LOCK = 1000;
+    public static final int UTILITIES_UNLOCK = 1001;
+    public static final int MIRROR_AND_FLIP_FLIP = 135;
     public static final int SHOW_BASE_PLATE_YES = 1;
     public static final int SHOW_BASE_PLATE_NO = 2;
     public static final int SHOW_ARMS_YES = 3;
@@ -49,6 +64,31 @@ public class VanillaTweaksDataSyncHandler extends CommandDataSyncHandler {
     public static final int ADJUST_ROTATION_ANGLE_STEP_1 = 123;
     public static final int ADJUST_ROTATION_ROTATE_RIGHT = 56;
     public static final int ADJUST_ROTATION_ROTATE_LEFT = 57;
+    public static final int POSE_PRESETS_ATTENTION = 20;
+    public static final int POSE_PRESETS_WALKING = 21;
+    public static final int POSE_PRESETS_RUNNING = 22;
+    public static final int POSE_PRESETS_POINTING = 23;
+    public static final int POSE_PRESETS_BLOCKING = 24;
+    public static final int POSE_PRESETS_LUNGEING = 25;
+    public static final int POSE_PRESETS_WINNING = 26;
+    public static final int POSE_PRESETS_SITTING = 27;
+    public static final int POSE_PRESETS_ARABESQUE = 28;
+    public static final int POSE_PRESETS_CUPID = 29;
+    public static final int POSE_PRESETS_CONFIDENT = 30;
+    public static final int POSE_PRESETS_SALUTE = 31;
+    public static final int POSE_PRESETS_DEATH = 32;
+    public static final int POSE_PRESETS_FACEPALM = 33;
+    public static final int POSE_PRESETS_LAZING = 34;
+    public static final int POSE_PRESETS_CONFUSED = 35;
+    public static final int POSE_PRESETS_FORMAL = 36;
+    public static final int POSE_PRESETS_SAD = 37;
+    public static final int POSE_PRESETS_JOYOUS = 38;
+    public static final int POSE_PRESETS_STARGAZING = 39;
+    public static final int AUTO_ALIGNMENT_BLOCK_ON_SURFACE = 151;
+    public static final int AUTO_ALIGNMENT_ITEM_ON_SURFACE = 152;
+    public static final int AUTO_ALIGNMENT_ITEM_FLAT_ON_SURFACE = 153;
+    public static final int AUTO_ALIGNMENT_TOOL_FLAT_ON_SURFACE = 154;
+    public static final int AUTO_ALIGNMENT_TOOL_RACK = 155;
     public static final int POSE_ADJUSTMENT_HEAD_X_NEGATIVE = 60;
     public static final int POSE_ADJUSTMENT_HEAD_X_POSITIVE = 61;
     public static final int POSE_ADJUSTMENT_HEAD_Y_NEGATIVE = 62;
@@ -85,7 +125,6 @@ public class VanillaTweaksDataSyncHandler extends CommandDataSyncHandler {
     public static final int POSE_ADJUSTMENT_LEFT_LEG_Y_POSITIVE = 93;
     public static final int POSE_ADJUSTMENT_LEFT_LEG_Z_NEGATIVE = 94;
     public static final int POSE_ADJUSTMENT_LEFT_LEG_Z_POSITIVE = 95;
-    private static final int MAX_INCREMENTAL_OPERATIONS = 12;
     private static final int[] POSE_ADJUSTMENT_HEAD = new int[]{POSE_ADJUSTMENT_HEAD_X_NEGATIVE, POSE_ADJUSTMENT_HEAD_X_POSITIVE, POSE_ADJUSTMENT_HEAD_Y_NEGATIVE, POSE_ADJUSTMENT_HEAD_Y_POSITIVE, POSE_ADJUSTMENT_HEAD_Z_NEGATIVE, POSE_ADJUSTMENT_HEAD_Z_POSITIVE};
     private static final int[] POSE_ADJUSTMENT_BODY = new int[]{POSE_ADJUSTMENT_BODY_X_POSITIVE, POSE_ADJUSTMENT_BODY_X_NEGATIVE, POSE_ADJUSTMENT_BODY_Y_NEGATIVE, POSE_ADJUSTMENT_BODY_Y_POSITIVE, POSE_ADJUSTMENT_BODY_Z_NEGATIVE, POSE_ADJUSTMENT_BODY_Z_POSITIVE};
     private static final int[] POSE_ADJUSTMENT_RIGHT_ARM = new int[]{POSE_ADJUSTMENT_RIGHT_ARM_X_NEGATIVE, POSE_ADJUSTMENT_RIGHT_ARM_X_POSITIVE, POSE_ADJUSTMENT_RIGHT_ARM_Y_NEGATIVE, POSE_ADJUSTMENT_RIGHT_ARM_Y_POSITIVE, POSE_ADJUSTMENT_RIGHT_ARM_Z_POSITIVE, POSE_ADJUSTMENT_RIGHT_ARM_Z_NEGATIVE};
@@ -106,38 +145,79 @@ public class VanillaTweaksDataSyncHandler extends CommandDataSyncHandler {
 
     @Override
     public void sendPose(ArmorStandPose pose, boolean finalize) {
-        $1:
-        {
-            if (!this.tryApplyPoseIncrements(this.lastSyncedPose.getHeadPose(), pose.getNullableHeadPose(), POSE_ADJUSTMENT_HEAD))
-                break $1;
-            if (!this.tryApplyPoseIncrements(this.lastSyncedPose.getBodyPose(), pose.getNullableBodyPose(), POSE_ADJUSTMENT_BODY))
-                break $1;
-            if (!this.tryApplyPoseIncrements(this.lastSyncedPose.getRightArmPose(), pose.getNullableRightArmPose(), POSE_ADJUSTMENT_RIGHT_ARM))
-                break $1;
-            if (!this.tryApplyPoseIncrements(this.lastSyncedPose.getLeftArmPose(), pose.getNullableLeftArmPose(), POSE_ADJUSTMENT_LEFT_ARM))
-                break $1;
-            if (!this.tryApplyPoseIncrements(this.lastSyncedPose.getRightLegPose(), pose.getNullableRightLegPose(), POSE_ADJUSTMENT_RIGHT_LEG))
-                break $1;
-            if (!this.tryApplyPoseIncrements(this.lastSyncedPose.getLeftLegPose(), pose.getNullableLeftLegPose(), POSE_ADJUSTMENT_LEFT_LEG))
-                break $1;
+        if (!this.isEditingAllowed()) return;
+        int triggerValue = this.getTriggerValueFromPose(pose);
+        if (triggerValue != -1) {
+            if (this.enqueueTriggerValue(triggerValue)) {
+                this.lastSyncedPose = pose.copyAndFillFrom(this.lastSyncedPose);
+            }
+        } else {
+            this.tryApplyAllPoseParts(pose);
         }
-        this.lastSyncedPose = pose.copyAndFillFrom(this.lastSyncedPose);
         if (finalize) this.finalizeCurrentOperation();
     }
 
-    private boolean tryApplyPoseIncrements(Rotations oldPose, @Nullable Rotations newPose, int[] poseAdjustment) {
+    private int getTriggerValueFromPose(ArmorStandPose pose) {
+        if (pose.getSourceType() == ArmorStandPose.SourceType.EMPTY) return POSE_PRESETS_ATTENTION;
+        if (pose.getSourceType() == ArmorStandPose.SourceType.MIRRORED) return MIRROR_AND_FLIP_FLIP;
+        if (pose.getSourceType() != ArmorStandPose.SourceType.VANILLA_TWEAKS) return -1;
+        if (pose == ArmorStandPose.WALKING) return POSE_PRESETS_WALKING;
+        if (pose == ArmorStandPose.RUNNING) return POSE_PRESETS_RUNNING;
+        if (pose == ArmorStandPose.POINTING) return POSE_PRESETS_POINTING;
+        if (pose == ArmorStandPose.BLOCKING) return POSE_PRESETS_BLOCKING;
+        if (pose == ArmorStandPose.LUNGEING) return POSE_PRESETS_LUNGEING;
+        if (pose == ArmorStandPose.WINNING) return POSE_PRESETS_WINNING;
+        if (pose == ArmorStandPose.SITTING) return POSE_PRESETS_SITTING;
+        if (pose == ArmorStandPose.ARABESQUE) return POSE_PRESETS_ARABESQUE;
+        if (pose == ArmorStandPose.CUPID) return POSE_PRESETS_CUPID;
+        if (pose == ArmorStandPose.CONFIDENT) return POSE_PRESETS_CONFIDENT;
+        if (pose == ArmorStandPose.SALUTE) return POSE_PRESETS_SALUTE;
+        if (pose == ArmorStandPose.DEATH) return POSE_PRESETS_DEATH;
+        if (pose == ArmorStandPose.FACEPALM) return POSE_PRESETS_FACEPALM;
+        if (pose == ArmorStandPose.LAZING) return POSE_PRESETS_LAZING;
+        if (pose == ArmorStandPose.CONFUSED) return POSE_PRESETS_CONFUSED;
+        if (pose == ArmorStandPose.FORMAL) return POSE_PRESETS_FORMAL;
+        if (pose == ArmorStandPose.SAD) return POSE_PRESETS_SAD;
+        if (pose == ArmorStandPose.JOYOUS) return POSE_PRESETS_JOYOUS;
+        if (pose == ArmorStandPose.STARGAZING) return POSE_PRESETS_STARGAZING;
+        return -1;
+    }
+
+    private void tryApplyAllPoseParts(ArmorStandPose pose) {
+        if (!this.tryApplyPosePart(this.lastSyncedPose.getHeadPose(), pose.getNullableHeadPose(), POSE_ADJUSTMENT_HEAD, this.lastSyncedPose::withHeadPose))
+            return;
+        if (!this.tryApplyPosePart(this.lastSyncedPose.getBodyPose(), pose.getNullableBodyPose(), POSE_ADJUSTMENT_BODY, this.lastSyncedPose::withBodyPose))
+            return;
+        if (!this.tryApplyPosePart(this.lastSyncedPose.getRightArmPose(), pose.getNullableRightArmPose(), POSE_ADJUSTMENT_RIGHT_ARM, this.lastSyncedPose::withRightArmPose))
+            return;
+        if (!this.tryApplyPosePart(this.lastSyncedPose.getLeftArmPose(), pose.getNullableLeftArmPose(), POSE_ADJUSTMENT_LEFT_ARM, this.lastSyncedPose::withLeftArmPose))
+            return;
+        if (!this.tryApplyPosePart(this.lastSyncedPose.getRightLegPose(), pose.getNullableRightLegPose(), POSE_ADJUSTMENT_RIGHT_LEG, this.lastSyncedPose::withRightLegPose))
+            return;
+        if (!this.tryApplyPosePart(this.lastSyncedPose.getLeftLegPose(), pose.getNullableLeftLegPose(), POSE_ADJUSTMENT_LEFT_LEG, this.lastSyncedPose::withLeftLegPose))
+            return;
+    }
+
+    private boolean tryApplyPosePart(Rotations oldPose, @Nullable Rotations newPose, int[] poseAdjustment, Function<Rotations, ArmorStandPose> function) {
+        if (this.tryApplyPoseAdjustment(oldPose, newPose, poseAdjustment)) {
+            this.lastSyncedPose = function.apply(newPose != null ? newPose : oldPose);
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    private boolean tryApplyPoseAdjustment(Rotations oldPose, @Nullable Rotations newPose, int[] poseAdjustment) {
         if (newPose == null || oldPose.equals(newPose)) return true;
-        if (!this.applyIncrementsFromSteps(oldPose.getX(), newPose.getX(), poseAdjustment[0], poseAdjustment[1]))
-            return false;
-        if (!this.applyIncrementsFromSteps(oldPose.getY(), newPose.getY(), poseAdjustment[2], poseAdjustment[3]))
-            return false;
-        if (!this.applyIncrementsFromSteps(oldPose.getZ(), newPose.getZ(), poseAdjustment[4], poseAdjustment[5]))
-            return false;
+        if (!this.applyIncrementsFromSteps(oldPose.getX(), newPose.getX(), poseAdjustment[0], poseAdjustment[1])) return false;
+        if (!this.applyIncrementsFromSteps(oldPose.getY(), newPose.getY(), poseAdjustment[2], poseAdjustment[3])) return false;
+        if (!this.applyIncrementsFromSteps(oldPose.getZ(), newPose.getZ(), poseAdjustment[4], poseAdjustment[5])) return false;
         return true;
     }
 
     @Override
     public void sendPosition(double posX, double posY, double posZ, boolean finalize) {
+        if (!this.isEditingAllowed()) return;
         this.applyPositionIncrements(this.getArmorStand().getX(), posX, NUDGE_POSITIONS_X_POSITIVE, NUDGE_POSITIONS_X_NEGATIVE);
         this.applyPositionIncrements(this.getArmorStand().getY(), posY, NUDGE_POSITIONS_Y_POSITIVE, NUDGE_POSITIONS_Y_NEGATIVE);
         this.applyPositionIncrements(this.getArmorStand().getZ(), posZ, NUDGE_POSITIONS_Z_POSITIVE, NUDGE_POSITIONS_Z_NEGATIVE);
@@ -163,6 +243,7 @@ public class VanillaTweaksDataSyncHandler extends CommandDataSyncHandler {
 
     @Override
     public void sendRotation(float rotation, boolean finalize) {
+        if (!this.isEditingAllowed()) return;
         this.applyIncrementsFromSteps(this.getArmorStand().getYRot(), rotation, ADJUST_ROTATION_ROTATE_RIGHT, ADJUST_ROTATION_ROTATE_LEFT);
         if (finalize) this.finalizeCurrentOperation();
     }
@@ -195,6 +276,7 @@ public class VanillaTweaksDataSyncHandler extends CommandDataSyncHandler {
 
     @Override
     public void sendStyleOption(ArmorStandStyleOption styleOption, boolean value, boolean finalize) {
+        if (!this.isEditingAllowed()) return;
         int triggerValue;
         if (styleOption == ArmorStandStyleOptions.SHOW_NAME) {
             triggerValue = value ? DISPLAY_NAME_YES : DISPLAY_NAME_NO;
@@ -212,13 +294,51 @@ public class VanillaTweaksDataSyncHandler extends CommandDataSyncHandler {
             super.sendStyleOption(styleOption, value, finalize);
             return;
         }
-        this.enqueueTriggerValue(triggerValue);
+        if (this.sendSingleTriggerValue(triggerValue, finalize)) {
+            styleOption.setOption(this.getArmorStand(), value);
+        }
+    }
+
+    @Override
+    public void sendAlignment(ArmorStandAlignment alignment) {
+        if (!this.isEditingAllowed()) return;
+        int triggerValue = switch (alignment) {
+            case BLOCK -> AUTO_ALIGNMENT_BLOCK_ON_SURFACE;
+            case FLOATING_ITEM -> AUTO_ALIGNMENT_ITEM_ON_SURFACE;
+            case FLAT_ITEM -> AUTO_ALIGNMENT_ITEM_FLAT_ON_SURFACE;
+            case TOOL -> AUTO_ALIGNMENT_TOOL_FLAT_ON_SURFACE;
+        };
+        this.sendSingleTriggerValue(triggerValue);
+    }
+
+    public boolean sendSingleTriggerValue(int triggerValue) {
+        return this.sendSingleTriggerValue(triggerValue, true);
+    }
+
+    private boolean sendSingleTriggerValue(int triggerValue, boolean finalize) {
+        boolean result = this.enqueueTriggerValue(triggerValue);
         if (finalize) this.finalizeCurrentOperation();
+        return result;
+    }
+
+    @Override
+    public ArmorStandScreenType[] getScreenTypes() {
+        return Stream.concat(Stream.of(super.getScreenTypes()), Stream.of(ModRegistry.VANILLA_TWEAKS_SCREEN_TYPE)).toArray(ArmorStandScreenType[]::new);
+    }
+
+    @Override
+    protected boolean isEditingAllowed() {
+        return this.isEditingAllowed(false);
+    }
+
+    @Override
+    protected boolean testArmorStand(ArmorStand armorStand) {
+        return super.testArmorStand(armorStand) && this.player.distanceToSqr(armorStand) <= 9.0;
     }
 
     @Override
     protected int getDequeueDelayTicks() {
-        return 20;
+        return ArmorStatues.CONFIG.get(ClientConfig.class).clientCommandDelay;
     }
 
     private boolean enqueueTriggerValue(int triggerValue) {

@@ -8,32 +8,19 @@ import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.components.Button;
-import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.Mth;
 
+import java.util.function.BooleanSupplier;
+
 public class TickBoxButton extends Button {
     private final int textMargin;
-    private boolean selected;
+    private final BooleanSupplier supplier;
 
-    public TickBoxButton(int posX, int posY, boolean selected, OnPress onPress, OnTooltip onTooltip) {
-        this(posX, posY, 0, 0, CommonComponents.EMPTY, selected, onPress, onTooltip);
-    }
-
-    public TickBoxButton(int posX, int posY, int textMargin, int textWidth, Component component, boolean selected, OnPress onPress, OnTooltip onTooltip) {
+    public TickBoxButton(int posX, int posY, int textMargin, int textWidth, Component component, BooleanSupplier supplier, OnPress onPress, OnTooltip onTooltip) {
         super(posX, posY, 20 + textMargin + textWidth, 20, component, onPress, onTooltip);
         this.textMargin = textMargin;
-        this.selected = selected;
-    }
-
-    @Override
-    public void onPress() {
-        this.selected = !this.selected;
-        super.onPress();
-    }
-
-    public boolean isSelected() {
-        return this.selected;
+        this.supplier = supplier;
     }
 
     @Override
@@ -47,7 +34,7 @@ public class TickBoxButton extends Button {
         RenderSystem.defaultBlendFunc();
         RenderSystem.blendFunc(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA);
         blit(poseStack, this.x + 2, this.y + 2, 196.0F, this.isHoveredOrFocused() ? 16.0F : 0.0F, 16, 16, 256, 256);
-        if (this.selected) {
+        if (this.supplier.getAsBoolean()) {
             blit(poseStack, this.x + 2, this.y + 2, 196.0F, 32.0F + (this.isHoveredOrFocused() ? 16.0F : 0.0F), 16, 16, 256, 256);
         }
         final int textColor = this.active ? (this.isHoveredOrFocused() ? ChatFormatting.YELLOW.getColor() : 16777215) : 10526880;

@@ -2,6 +2,7 @@ package fuzs.armorstatues.api.client.gui.screens.armorstand;
 
 import com.google.common.collect.Lists;
 import com.mojang.blaze3d.vertex.PoseStack;
+import fuzs.armorstatues.api.StatuesApi;
 import fuzs.armorstatues.api.network.client.data.DataSyncHandler;
 import fuzs.armorstatues.api.world.inventory.ArmorStandHolder;
 import fuzs.armorstatues.api.world.inventory.data.ArmorStandPose;
@@ -20,6 +21,7 @@ import java.util.List;
 import java.util.Optional;
 
 public class ArmorStandPosesScreen extends AbstractArmorStandScreen {
+    public static final String POSE_SOURCE_TRANSLATION_KEY = StatuesApi.MOD_ID + ".screen.pose.by";
     private static final int POSES_PER_PAGE = 4;
 
     private static int firstPoseIndex;
@@ -52,9 +54,9 @@ public class ArmorStandPosesScreen extends AbstractArmorStandScreen {
                     if (translationKey != null) {
                         Component component = Component.translatable(translationKey);
                         List<Component> lines = Lists.newArrayList(component);
-                        String source = pose.getSource();
-                        if (!StringUtil.isNullOrEmpty(source)) {
-                            lines.add(Component.translatable(ArmorStandPose.POSE_SOURCE_TRANSLATION_KEY, source).withStyle(ChatFormatting.GRAY));
+                        String sourceType = pose.getSourceType().getDisplayName();
+                        if (!StringUtil.isNullOrEmpty(sourceType)) {
+                            lines.add(Component.translatable(POSE_SOURCE_TRANSLATION_KEY, sourceType).withStyle(ChatFormatting.GRAY));
                         }
                         this.renderTooltip(poseStack, lines, Optional.empty(), mouseX, mouseY);
                     }

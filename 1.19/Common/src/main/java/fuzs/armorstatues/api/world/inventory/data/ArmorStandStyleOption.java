@@ -11,8 +11,6 @@ import net.minecraft.world.entity.player.Player;
 import java.util.Objects;
 
 public interface ArmorStandStyleOption {
-    String TEXT_BOX_TRANSLATION_KEY = StatuesApi.MOD_ID + ".screen.style.name";
-    int ARMOR_STAND_ALL_SLOTS_DISABLED = 4144959;
     BiMap<ResourceLocation, ArmorStandStyleOption> OPTIONS_REGISTRY = HashBiMap.create();
 
     String getName();

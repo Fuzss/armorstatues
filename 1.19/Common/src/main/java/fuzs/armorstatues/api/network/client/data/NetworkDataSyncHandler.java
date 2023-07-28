@@ -4,7 +4,6 @@ import fuzs.armorstatues.api.StatuesApi;
 import fuzs.armorstatues.api.network.client.*;
 import fuzs.armorstatues.api.world.inventory.ArmorStandHolder;
 import fuzs.armorstatues.api.world.inventory.data.ArmorStandPose;
-import fuzs.armorstatues.api.world.inventory.data.ArmorStandScreenType;
 import fuzs.armorstatues.api.world.inventory.data.ArmorStandStyleOption;
 import net.minecraft.nbt.CompoundTag;
 
@@ -48,10 +47,5 @@ public class NetworkDataSyncHandler implements DataSyncHandler {
     public void sendStyleOption(ArmorStandStyleOption styleOption, boolean value) {
         styleOption.setOption(this.getArmorStand(), value);
         StatuesApi.NETWORK.sendToServer(new C2SArmorStandStyleMessage(styleOption, value));
-    }
-
-    @Override
-    public ArmorStandScreenType[] tabs() {
-        return this.getArmorStandHolder().getDataProvider().getScreenTypes();
     }
 }

@@ -5,7 +5,7 @@ import fuzs.armorstatues.api.client.StatuesApiClient;
 import fuzs.armorstatues.api.client.gui.screens.armorstand.ArmorStandScreen;
 import fuzs.armorstatues.client.handler.ArmorStandTooltipHandler;
 import fuzs.armorstatues.handler.ArmorStandInteractHandler;
-import fuzs.armorstatues.handler.DataSyncTickHandler;
+import fuzs.armorstatues.client.handler.DataSyncTickHandler;
 import fuzs.puzzleslib.client.core.ClientCoreServices;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;

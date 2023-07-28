@@ -2,37 +2,41 @@ package fuzs.armorstatues.client.gui.screens.armorstand;
 
 import com.google.common.collect.Lists;
 import fuzs.armorstatues.init.ModRegistry;
-import fuzs.puzzlesapi.api.client.statues.v1.gui.components.TickButton;
-import fuzs.puzzlesapi.api.client.statues.v1.gui.screens.armorstand.AbstractArmorStandPositionScreen;
+import fuzs.puzzlesapi.api.client.statues.v1.gui.screens.armorstand.ArmorStandButtonsScreen;
+import fuzs.puzzlesapi.api.client.statues.v1.gui.screens.armorstand.ArmorStandPositionScreen;
 import fuzs.puzzlesapi.api.statues.v1.network.client.data.DataSyncHandler;
 import fuzs.puzzlesapi.api.statues.v1.world.inventory.ArmorStandHolder;
 import fuzs.puzzlesapi.api.statues.v1.world.inventory.data.ArmorStandAlignment;
 import fuzs.puzzlesapi.api.statues.v1.world.inventory.data.ArmorStandScreenType;
-import fuzs.puzzlesapi.api.statues.v1.world.inventory.data.ArmorStandStyleOptions;
-import net.minecraft.Util;
-import net.minecraft.client.gui.components.Tooltip;
-import net.minecraft.commands.CommandSourceStack;
+import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
-import net.minecraft.util.Mth;
-import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.decoration.ArmorStand;
 import net.minecraft.world.entity.player.Inventory;
-import net.minecraft.world.phys.Vec2;
 import net.minecraft.world.phys.Vec3;
 
+import java.util.EnumSet;
 import java.util.List;
 
-public class ArmorStandAlignmentsScreen extends AbstractArmorStandPositionScreen {
+public class ArmorStandAlignmentsScreen extends ArmorStandButtonsScreen {
 
     public ArmorStandAlignmentsScreen(ArmorStandHolder holder, Inventory inventory, Component component, DataSyncHandler dataSyncHandler) {
         super(holder, inventory, component, dataSyncHandler);
     }
 
     @Override
-    protected List<PositionScreenWidget> buildWidgets(ArmorStand armorStand) {
-        List<PositionScreenWidget> widgets = Lists.newArrayList(new PositionAlignWidget());
+    protected List<ArmorStandWidget> buildWidgets(ArmorStand armorStand) {
+        List<ArmorStandWidget> widgets = Lists.newArrayList();
+        widgets.add(new DoubleButtonWidget(Component.translatable(ArmorStandPositionScreen.CENTERED_TRANSLATION_KEY), Component.translatable(ArmorStandPositionScreen.CORNERED_TRANSLATION_KEY), Component.translatable(ArmorStandPositionScreen.CENTERED_DESCRIPTION_TRANSLATION_KEY), Component.translatable(ArmorStandPositionScreen.CORNERED_DESCRIPTION_TRANSLATION_KEY), Component.translatable(ArmorStandPositionScreen.ALIGNED_TRANSLATION_KEY), button -> {
+            Vec3 newPosition = this.holder.getArmorStand().position().align(EnumSet.allOf(Direction.Axis.class)).add(0.5, 0.0, 0.5);
+            this.dataSyncHandler.sendPosition(newPosition.x(), newPosition.y(), newPosition.z());
+        }, button -> {
+            Vec3 newPosition = this.holder.getArmorStand().position().align(EnumSet.allOf(Direction.Axis.class));
+            this.dataSyncHandler.sendPosition(newPosition.x(), newPosition.y(), newPosition.z());
+        }));
         for (ArmorStandAlignment alignment : ArmorStandAlignment.values()) {
-            widgets.add(new AlignmentWidget(alignment));
+            widgets.add(new SingleButtonWidget(Component.translatable(alignment.getTranslationKey()), Component.translatable(alignment.getDescriptionsKey()), Component.translatable(ArmorStandPositionScreen.ALIGNED_TRANSLATION_KEY), button -> {
+                ArmorStandAlignmentsScreen.this.dataSyncHandler.sendAlignment(alignment);
+            }));
         }
         return widgets;
     }
@@ -46,62 +50,5 @@ public class ArmorStandAlignmentsScreen extends AbstractArmorStandPositionScreen
     @Override
     public ArmorStandScreenType getScreenType() {
         return ModRegistry.ALIGNMENTS_SCREEN_TYPE;
-    }
-
-    private class AlignmentWidget extends AbstractPositionScreenWidget {
-        private final ArmorStandAlignment alignment;
-
-        public AlignmentWidget(ArmorStandAlignment alignment) {
-            super(Component.empty());
-            this.alignment = alignment;
-        }
-
-        @Override
-        protected boolean shouldTick() {
-            return true;
-        }
-
-        @Override
-        public void init(int posX, int posY) {
-            super.init(posX, posY);
-            this.children.add(Util.make(ArmorStandAlignmentsScreen.this.addRenderableWidget(new TickButton(posX, posY + 1, 194, 20, Component.translatable(this.alignment.getTranslationKey()), Component.translatable(ALIGNED_TRANSLATION_KEY), button -> {
-                ArmorStand armorStand = ArmorStandAlignmentsScreen.this.holder.getArmorStand();
-                DataSyncHandler dataSyncHandler = ArmorStandAlignmentsScreen.this.dataSyncHandler;
-                if (!armorStand.isInvisible()) {
-                    dataSyncHandler.sendStyleOption(ArmorStandStyleOptions.INVISIBLE, true, false);
-                }
-                if (!armorStand.isNoGravity()) {
-                    dataSyncHandler.sendStyleOption(ArmorStandStyleOptions.NO_GRAVITY, true, false);
-                }
-                dataSyncHandler.sendPose(this.alignment.getPose(), false);
-                Vec3 alignmentOffset = this.alignment.getAlignmentOffset(armorStand.isSmall());
-                Vec3 newPosition = getLocalPosition(armorStand, alignmentOffset);
-                dataSyncHandler.sendPosition(newPosition.x(), newPosition.y(), newPosition.z(), false);
-                dataSyncHandler.finalizeCurrentOperation();
-            })), widget -> {
-                widget.setTooltip(Tooltip.create(Component.translatable(this.alignment.getDescriptionsKey())));
-            }));
-        }
-
-        /**
-         * Copied from {@link net.minecraft.commands.arguments.coordinates.LocalCoordinates#getPosition(CommandSourceStack)}.
-         */
-        private static Vec3 getLocalPosition(Entity entity, Vec3 offset) {
-            Vec2 vec2 = entity.getRotationVector();
-            Vec3 vec3 = entity.position();
-            float f = Mth.cos((vec2.y + 90.0F) * 0.017453292F);
-            float g = Mth.sin((vec2.y + 90.0F) * 0.017453292F);
-            float h = Mth.cos(-vec2.x * 0.017453292F);
-            float i = Mth.sin(-vec2.x * 0.017453292F);
-            float j = Mth.cos((-vec2.x + 90.0F) * 0.017453292F);
-            float k = Mth.sin((-vec2.x + 90.0F) * 0.017453292F);
-            Vec3 vec32 = new Vec3(f * h, i, g * h);
-            Vec3 vec33 = new Vec3(f * j, k, g * j);
-            Vec3 vec34 = vec32.cross(vec33).scale(-1.0);
-            double d = vec32.x * offset.z() + vec33.x * offset.y() + vec34.x * offset.x();
-            double e = vec32.y * offset.z() + vec33.y * offset.y() + vec34.y * offset.x();
-            double l = vec32.z * offset.z() + vec33.z * offset.y() + vec34.z * offset.x();
-            return new Vec3(vec3.x + d, vec3.y + e, vec3.z + l);
-        }
     }
 }

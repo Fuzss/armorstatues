@@ -1,6 +1,7 @@
 package fuzs.armorstatues.api.client.gui.screens.armorstand;
 
 import com.mojang.blaze3d.vertex.PoseStack;
+import fuzs.armorstatues.api.StatuesApi;
 import fuzs.armorstatues.api.client.gui.components.TickBoxButton;
 import fuzs.armorstatues.api.network.client.data.DataSyncHandler;
 import fuzs.armorstatues.api.world.inventory.ArmorStandHolder;
@@ -16,6 +17,7 @@ import net.minecraft.world.entity.player.Inventory;
 import java.util.stream.Stream;
 
 public class ArmorStandStyleScreen extends ArmorStandTickBoxScreen<ArmorStandStyleOption> {
+    public static final String TEXT_BOX_TRANSLATION_KEY = StatuesApi.MOD_ID + ".screen.style.name";
 
     public ArmorStandStyleScreen(ArmorStandHolder holder, Inventory inventory, Component component, DataSyncHandler dataSyncHandler) {
         super(holder, inventory, component, dataSyncHandler);
@@ -30,8 +32,8 @@ public class ArmorStandStyleScreen extends ArmorStandTickBoxScreen<ArmorStandSty
 
     @Override
     protected AbstractWidget makeTickBoxWidget(ArmorStand armorStand, int buttonStartY, int index, ArmorStandStyleOption option) {
-        return new TickBoxButton(this.leftPos + 96, this.topPos + buttonStartY + index * 22, 6, 76, Component.translatable(option.getTranslationKey()), option.getOption(armorStand), (Button button) -> {
-            this.dataSyncHandler.sendStyleOption(option, ((TickBoxButton) button).isSelected());
+        return new TickBoxButton(this.leftPos + 96, this.topPos + buttonStartY + index * 22, 6, 76, Component.translatable(option.getTranslationKey()), () -> option.getOption(armorStand), (Button button) -> {
+            this.dataSyncHandler.sendStyleOption(option, !option.getOption(armorStand));
         }, (Button button, PoseStack poseStack, int mouseX, int mouseY) -> {
             this.renderTooltip(poseStack, this.minecraft.font.split(Component.translatable(option.getDescriptionKey()), 175), mouseX, mouseY);
         });
@@ -54,7 +56,7 @@ public class ArmorStandStyleScreen extends ArmorStandTickBoxScreen<ArmorStandSty
 
     @Override
     protected Component getNameComponent() {
-        return Component.translatable(ArmorStandStyleOption.TEXT_BOX_TRANSLATION_KEY);
+        return Component.translatable(TEXT_BOX_TRANSLATION_KEY);
     }
 
     @Override

@@ -17,7 +17,7 @@ public class DataSyncTickHandler {
     }
 
     public static void onEndClientTick(Minecraft minecraft) {
-        if (!(minecraft.screen instanceof ArmorStandScreen) && dataSyncHandler != null) {
+        if (minecraft.player != null && !(minecraft.screen instanceof ArmorStandScreen) && dataSyncHandler != null) {
             if (dataSyncHandler.shouldContinueTicking()) {
                 dataSyncHandler.tick();
             } else {

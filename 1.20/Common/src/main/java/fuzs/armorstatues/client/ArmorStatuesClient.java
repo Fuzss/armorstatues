@@ -1,6 +1,7 @@
 package fuzs.armorstatues.client;
 
 import fuzs.armorstatues.client.gui.screens.armorstand.ArmorStandAlignmentsScreen;
+import fuzs.armorstatues.client.gui.screens.armorstand.ArmorStandVanillaTweaksScreen;
 import fuzs.armorstatues.client.handler.ArmorStandTooltipHandler;
 import fuzs.armorstatues.client.handler.DataSyncTickHandler;
 import fuzs.armorstatues.handler.ArmorStandInteractHandler;
@@ -39,5 +40,6 @@ public class ArmorStatuesClient implements ClientModConstructor {
             return ArmorStandScreenFactory.createLastScreenType(menu, inventory, component);
         });
         ArmorStandScreenFactory.register(ModRegistry.ALIGNMENTS_SCREEN_TYPE, ArmorStandAlignmentsScreen::new);
+        ArmorStandScreenFactory.register(ModRegistry.VANILLA_TWEAKS_SCREEN_TYPE, ArmorStandVanillaTweaksScreen::new);
     }
 }

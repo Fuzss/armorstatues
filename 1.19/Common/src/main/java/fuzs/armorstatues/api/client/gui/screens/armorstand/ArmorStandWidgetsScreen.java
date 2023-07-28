@@ -8,6 +8,7 @@ import fuzs.armorstatues.api.client.gui.components.TickingButton;
 import fuzs.armorstatues.api.network.client.data.DataSyncHandler;
 import fuzs.armorstatues.api.world.inventory.ArmorStandHolder;
 import net.minecraft.client.gui.components.AbstractWidget;
+import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.decoration.ArmorStand;
 import net.minecraft.world.entity.player.Inventory;
@@ -17,21 +18,21 @@ import java.util.Collection;
 import java.util.List;
 
 public abstract class ArmorStandWidgetsScreen extends AbstractArmorStandScreen {
-    protected final List<PositionScreenWidget> widgets;
+    protected final List<ArmorStandWidget> widgets;
     @Nullable
-    private PositionScreenWidget activeWidget;
+    private ArmorStandWidgetsScreen.ArmorStandWidget activeWidget;
 
     public ArmorStandWidgetsScreen(ArmorStandHolder holder, Inventory inventory, Component component, DataSyncHandler dataSyncHandler) {
         super(holder, inventory, component, dataSyncHandler);
         this.widgets = ImmutableList.copyOf(this.buildWidgets(holder.getArmorStand()));
     }
 
-    protected abstract List<PositionScreenWidget> buildWidgets(ArmorStand armorStand);
+    protected abstract List<ArmorStandWidget> buildWidgets(ArmorStand armorStand);
 
-    private Collection<PositionScreenWidget> getActivePositionComponentWidgets() {
+    private Collection<ArmorStandWidget> getActivePositionComponentWidgets() {
         if (this.activeWidget != null) {
-            List<PositionScreenWidget> activeWidgets = Lists.newArrayList(this.activeWidget);
-            for (PositionScreenWidget widget : this.widgets) {
+            List<ArmorStandWidget> activeWidgets = Lists.newArrayList(this.activeWidget);
+            for (ArmorStandWidget widget : this.widgets) {
                 if (widget.alwaysVisible(this.activeWidget)) activeWidgets.add(widget);
             }
             return activeWidgets;
@@ -39,7 +40,7 @@ public abstract class ArmorStandWidgetsScreen extends AbstractArmorStandScreen {
         return this.widgets;
     }
 
-    protected void setActiveWidget(PositionScreenWidget widget) {
+    protected void setActiveWidget(ArmorStandWidget widget) {
         if (this.activeWidget == widget) {
             this.toggleMenuRendering(false);
             this.activeWidget = null;
@@ -62,7 +63,7 @@ public abstract class ArmorStandWidgetsScreen extends AbstractArmorStandScreen {
     @Override
     protected void toggleMenuRendering(boolean disableMenuRendering) {
         super.toggleMenuRendering(disableMenuRendering);
-        for (PositionScreenWidget widget : this.widgets) {
+        for (ArmorStandWidget widget : this.widgets) {
             widget.setVisible(!disableMenuRendering || widget.alwaysVisible(this.activeWidget));
         }
     }
@@ -70,7 +71,7 @@ public abstract class ArmorStandWidgetsScreen extends AbstractArmorStandScreen {
     @Override
     public void tick() {
         super.tick();
-        this.getActivePositionComponentWidgets().forEach(PositionScreenWidget::tick);
+        this.getActivePositionComponentWidgets().forEach(ArmorStandWidget::tick);
     }
 
     @Override
@@ -89,12 +90,12 @@ public abstract class ArmorStandWidgetsScreen extends AbstractArmorStandScreen {
     @Override
     protected void renderBg(PoseStack poseStack, float partialTick, int mouseX, int mouseY) {
         super.renderBg(poseStack, partialTick, mouseX, mouseY);
-        for (PositionScreenWidget widget : this.getActivePositionComponentWidgets()) {
+        for (ArmorStandWidget widget : this.getActivePositionComponentWidgets()) {
             widget.render(poseStack, mouseX, mouseY, partialTick);
         }
     }
 
-    protected interface PositionScreenWidget {
+    protected interface ArmorStandWidget {
 
         void tick();
 
@@ -106,16 +107,20 @@ public abstract class ArmorStandWidgetsScreen extends AbstractArmorStandScreen {
 
         void render(PoseStack poseStack, int mouseX, int mouseY, float partialTick);
 
-        boolean alwaysVisible(@Nullable PositionScreenWidget activeWidget);
+        boolean alwaysVisible(@Nullable ArmorStandWidgetsScreen.ArmorStandWidget activeWidget);
     }
 
-    protected abstract class AbstractPositionScreenWidget implements PositionScreenWidget {
+    protected abstract class AbstractArmorStandWidget implements ArmorStandWidget {
         protected final Component title;
         protected int posX;
         protected int posY;
         protected List<AbstractWidget> children;
 
-        protected AbstractPositionScreenWidget(Component title) {
+        protected AbstractArmorStandWidget() {
+            this(CommonComponents.EMPTY);
+        }
+
+        protected AbstractArmorStandWidget(Component title) {
             this.title = title;
         }
 
@@ -161,7 +166,7 @@ public abstract class ArmorStandWidgetsScreen extends AbstractArmorStandScreen {
         }
 
         @Override
-        public boolean alwaysVisible(@Nullable PositionScreenWidget activeWidget) {
+        public boolean alwaysVisible(@Nullable ArmorStandWidgetsScreen.ArmorStandWidget activeWidget) {
             return activeWidget == this;
         }
     }

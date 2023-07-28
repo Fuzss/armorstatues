@@ -72,7 +72,7 @@ public class ArmorStandEquipmentScreen extends AbstractContainerScreen<ArmorStan
     @Override
     public boolean mouseClicked(double mouseX, double mouseY, int button) {
         if (button == 0) {
-            if (AbstractArmorStandScreen.handleTabClicked((int) mouseX, (int) mouseY, this.leftPos, this.topPos, this.imageHeight, this, this.dataSyncHandler.tabs())) {
+            if (AbstractArmorStandScreen.handleTabClicked((int) mouseX, (int) mouseY, this.leftPos, this.topPos, this.imageHeight, this, this.dataSyncHandler.getScreenTypes())) {
                 return true;
             }
         }
@@ -84,7 +84,7 @@ public class ArmorStandEquipmentScreen extends AbstractContainerScreen<ArmorStan
         if (super.mouseScrolled(mouseX, mouseY, delta)) {
             return true;
         }
-        return AbstractArmorStandScreen.handleMouseScrolled((int) mouseX, (int) mouseY, delta, this.leftPos, this.topPos, this.imageHeight, this, this.dataSyncHandler.tabs());
+        return AbstractArmorStandScreen.handleMouseScrolled((int) mouseX, (int) mouseY, delta, this.leftPos, this.topPos, this.imageHeight, this, this.dataSyncHandler.getScreenTypes());
     }
 
     @Override
@@ -94,7 +94,7 @@ public class ArmorStandEquipmentScreen extends AbstractContainerScreen<ArmorStan
         super.render(poseStack, mouseX, mouseY, partialTick);
         this.renderTooltip(poseStack, mouseX, mouseY);
         if (this.menu.getCarried().isEmpty()) {
-            AbstractArmorStandScreen.findHoveredTab(this.leftPos, this.topPos, this.imageHeight, mouseX, mouseY, this.dataSyncHandler.tabs()).ifPresent(hoveredTab -> {
+            AbstractArmorStandScreen.findHoveredTab(this.leftPos, this.topPos, this.imageHeight, mouseX, mouseY, this.dataSyncHandler.getScreenTypes()).ifPresent(hoveredTab -> {
                 this.renderTooltip(poseStack, Component.translatable(hoveredTab.getTranslationKey()), mouseX, mouseY);
             });
         }
@@ -114,7 +114,7 @@ public class ArmorStandEquipmentScreen extends AbstractContainerScreen<ArmorStan
                 this.blit(poseStack, this.leftPos + slot.x - 1, this.topPos + slot.y - 1, 210, 0, 18, 18);
             }
         }
-        AbstractArmorStandScreen.drawTabs(poseStack, this.leftPos, this.topPos, this.imageHeight, this, this.dataSyncHandler.tabs());
+        AbstractArmorStandScreen.drawTabs(poseStack, this.leftPos, this.topPos, this.imageHeight, this, this.dataSyncHandler.getScreenTypes());
         this.renderArmorStandInInventory(this.leftPos + 104, this.topPos + 84, 30, (float) (this.leftPos + 104 - 10) - this.mouseX, (float) (this.topPos + 84 - 44) - this.mouseY);
     }
 
@@ -129,7 +129,7 @@ public class ArmorStandEquipmentScreen extends AbstractContainerScreen<ArmorStan
 
     @Override
     public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
-        ArmorStandScreenType[] tabs = this.dataSyncHandler.tabs();
+        ArmorStandScreenType[] tabs = this.dataSyncHandler.getScreenTypes();
         if (this.menu.getCarried().isEmpty() && this.hoveredSlot == null) {
             AbstractArmorStandScreen.handleHotbarKeyPressed(keyCode, scanCode, this, tabs);
         }
