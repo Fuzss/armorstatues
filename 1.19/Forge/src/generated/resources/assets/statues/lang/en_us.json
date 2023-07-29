@@ -1,8 +1,9 @@
 {
   "armorstatues.dataSync.failure": "Unable to modify armor stand data: %s",
-  "armorstatues.dataSync.failure.noArmorStand": "Out Of Range",
+  "armorstatues.dataSync.failure.noArmorStand": "No Valid Armor Stand",
   "armorstatues.dataSync.failure.noPermission": "No Permission",
   "armorstatues.dataSync.failure.notFinished": "Queue Not Empty",
+  "armorstatues.dataSync.failure.outOfRange": "Out Of Range",
   "armorstatues.dataSync.finished": "Finished sending queued armor stand data",
   "armorstatues.screen.vanillaTweaks.checkTarget": "Check Armor Stand Target",
   "armorstatues.screen.vanillaTweaks.checkTarget.description": "Highlights the closest armor stand within three blocks of the player which will be adjusted. Due to how data packs work, this isn't necessarily the armor stand which opened this menu.",

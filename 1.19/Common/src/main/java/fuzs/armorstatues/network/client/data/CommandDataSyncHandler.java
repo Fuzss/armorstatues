@@ -1,5 +1,7 @@
 package fuzs.armorstatues.network.client.data;
 
+import com.mojang.datafixers.util.Either;
+import com.mojang.datafixers.util.Unit;
 import fuzs.armorstatues.ArmorStatues;
 import fuzs.armorstatues.api.network.client.data.DataSyncHandler;
 import fuzs.armorstatues.api.world.inventory.ArmorStandHolder;
@@ -24,6 +26,7 @@ import java.util.function.BiPredicate;
 public class CommandDataSyncHandler implements DataSyncHandler {
     public static final String NO_PERMISSION_TRANSLATION_KEY = ArmorStatues.MOD_ID + ".dataSync.failure.noPermission";
     public static final String NO_ARMOR_STAND_TRANSLATION_KEY = ArmorStatues.MOD_ID + ".dataSync.failure.noArmorStand";
+    public static final String OUT_OF_RANGE_TRANSLATION_KEY = ArmorStatues.MOD_ID + ".dataSync.failure.outOfRange";
     public static final String NOT_FINISHED_TRANSLATION_KEY = ArmorStatues.MOD_ID + ".dataSync.failure.notFinished";
     public static final String FINISHED_TRANSLATION_KEY = ArmorStatues.MOD_ID + ".dataSync.finished";
     public static final String FAILURE_TRANSLATION_KEY = ArmorStatues.MOD_ID + ".dataSync.failure";
@@ -154,7 +157,7 @@ public class CommandDataSyncHandler implements DataSyncHandler {
     public void tick() {
         if (itemDequeuedTicks > 0) itemDequeuedTicks--;
         if (itemDequeuedTicks == 0 && queueArmorStand != null && !CLIENT_COMMAND_QUEUE.isEmpty()) {
-            if (this.testArmorStand(queueArmorStand)) {
+            if (this.testArmorStand(queueArmorStand).right().isPresent()) {
                 this.player.commandSigned(CLIENT_COMMAND_QUEUE.poll(), null);
             } else {
                 CLIENT_COMMAND_QUEUE.clear();
@@ -182,15 +185,12 @@ public class CommandDataSyncHandler implements DataSyncHandler {
         if (testPermissionLevel && !this.player.hasPermissions(2)) {
             this.sendFailureMessage(Component.translatable(NO_PERMISSION_TRANSLATION_KEY));
             return false;
-        } else if (queueArmorStand != null && !this.testArmorStand(queueArmorStand)) {
-            this.sendFailureMessage(Component.translatable(NO_ARMOR_STAND_TRANSLATION_KEY));
-            return false;
         }
-        return true;
+        return this.testArmorStand(this.getArmorStand()).ifLeft(this::sendFailureMessage).right().isPresent();
     }
 
-    protected boolean testArmorStand(ArmorStand armorStand) {
-        return armorStand.isAlive();
+    protected Either<Component, Unit> testArmorStand(ArmorStand armorStand) {
+        return !armorStand.isAlive() ? Either.left(Component.translatable(NO_ARMOR_STAND_TRANSLATION_KEY)) : Either.right(Unit.INSTANCE);
     }
 
     protected boolean enqueueClientCommand(String clientCommand) {

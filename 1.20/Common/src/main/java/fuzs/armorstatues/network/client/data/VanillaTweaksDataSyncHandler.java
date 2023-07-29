@@ -1,6 +1,8 @@
 package fuzs.armorstatues.network.client.data;
 
 import com.google.common.collect.ImmutableSortedMap;
+import com.mojang.datafixers.util.Either;
+import com.mojang.datafixers.util.Unit;
 import fuzs.armorstatues.ArmorStatues;
 import fuzs.armorstatues.config.ClientConfig;
 import fuzs.armorstatues.init.ModRegistry;
@@ -8,11 +10,13 @@ import fuzs.puzzlesapi.api.statues.v1.world.inventory.ArmorStandHolder;
 import fuzs.puzzlesapi.api.statues.v1.world.inventory.data.*;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.core.Rotations;
+import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.decoration.ArmorStand;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Map;
 import java.util.NavigableMap;
+import java.util.Optional;
 import java.util.function.Function;
 import java.util.stream.Stream;
 
@@ -150,6 +154,7 @@ public class VanillaTweaksDataSyncHandler extends CommandDataSyncHandler {
         if (triggerValue != -1) {
             if (this.enqueueTriggerValue(triggerValue)) {
                 this.lastSyncedPose = pose.copyAndFillFrom(this.lastSyncedPose);
+                pose.applyToEntity(this.getArmorStand());
             }
         } else {
             this.tryApplyAllPoseParts(pose);
@@ -308,11 +313,12 @@ public class VanillaTweaksDataSyncHandler extends CommandDataSyncHandler {
             case FLAT_ITEM -> AUTO_ALIGNMENT_ITEM_FLAT_ON_SURFACE;
             case TOOL -> AUTO_ALIGNMENT_TOOL_FLAT_ON_SURFACE;
         };
-        this.sendSingleTriggerValue(triggerValue);
+        this.sendSingleTriggerValue(triggerValue, true);
     }
 
-    public boolean sendSingleTriggerValue(int triggerValue) {
-        return this.sendSingleTriggerValue(triggerValue, true);
+    public void sendSingleTriggerValue(int triggerValue) {
+        if (!this.isEditingAllowed()) return;
+        this.sendSingleTriggerValue(triggerValue, true);
     }
 
     private boolean sendSingleTriggerValue(int triggerValue, boolean finalize) {
@@ -332,8 +338,14 @@ public class VanillaTweaksDataSyncHandler extends CommandDataSyncHandler {
     }
 
     @Override
-    protected boolean testArmorStand(ArmorStand armorStand) {
-        return super.testArmorStand(armorStand) && this.player.distanceToSqr(armorStand) <= 9.0;
+    protected Either<Component, Unit> testArmorStand(ArmorStand armorStand) {
+        return super.testArmorStand(armorStand).<Optional<Component>>map(Optional::of, $ -> {
+            if (this.player.distanceToSqr(armorStand) < 9.0) {
+                return Optional.empty();
+            } else {
+                return Optional.of(Component.translatable(OUT_OF_RANGE_TRANSLATION_KEY));
+            }
+        }).<Either<Component, Unit>>map(Either::left).orElse(Either.right(Unit.INSTANCE));
     }
 
     @Override

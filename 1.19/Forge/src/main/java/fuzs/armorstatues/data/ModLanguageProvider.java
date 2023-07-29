@@ -21,7 +21,8 @@ public class ModLanguageProvider extends LanguageProvider {
         // Armor Statues
         this.add(CommandDataSyncHandler.FAILURE_TRANSLATION_KEY, "Unable to modify armor stand data: %s");
         this.add(CommandDataSyncHandler.NO_PERMISSION_TRANSLATION_KEY, "No Permission");
-        this.add(CommandDataSyncHandler.NO_ARMOR_STAND_TRANSLATION_KEY, "Out Of Range");
+        this.add(CommandDataSyncHandler.NO_ARMOR_STAND_TRANSLATION_KEY, "No Valid Armor Stand");
+        this.add(CommandDataSyncHandler.OUT_OF_RANGE_TRANSLATION_KEY, "Out Of Range");
         this.add(CommandDataSyncHandler.NOT_FINISHED_TRANSLATION_KEY, "Queue Not Empty");
         this.add(CommandDataSyncHandler.FINISHED_TRANSLATION_KEY, "Finished sending queued armor stand data");
         this.add(ModRegistry.ALIGNMENTS_SCREEN_TYPE.getTranslationKey(), "Alignments");
