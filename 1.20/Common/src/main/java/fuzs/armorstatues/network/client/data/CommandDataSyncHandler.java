@@ -3,6 +3,7 @@ package fuzs.armorstatues.network.client.data;
 import com.mojang.datafixers.util.Either;
 import com.mojang.datafixers.util.Unit;
 import fuzs.armorstatues.ArmorStatues;
+import fuzs.armorstatues.config.ClientConfig;
 import fuzs.puzzlesapi.api.statues.v1.network.client.data.DataSyncHandler;
 import fuzs.puzzlesapi.api.statues.v1.world.inventory.ArmorStandHolder;
 import fuzs.puzzlesapi.api.statues.v1.world.inventory.data.ArmorStandAlignment;
@@ -178,7 +179,7 @@ public class CommandDataSyncHandler implements DataSyncHandler {
     }
 
     protected boolean isEditingAllowed() {
-        return this.isEditingAllowed(true);
+        return this.isEditingAllowed(!ArmorStatues.CONFIG.get(ClientConfig.class).overrideClientPermissionsCheck);
     }
 
     protected final boolean isEditingAllowed(boolean testPermissionLevel) {
@@ -186,7 +187,7 @@ public class CommandDataSyncHandler implements DataSyncHandler {
             this.sendFailureMessage(Component.translatable(NO_PERMISSION_TRANSLATION_KEY));
             return false;
         }
-        return this.testArmorStand(this.getArmorStand()).ifLeft(this::sendFailureMessage).right().isPresent();
+        return this.player.getAbilities().mayBuild && this.testArmorStand(this.getArmorStand()).ifLeft(this::sendFailureMessage).right().isPresent();
     }
 
     protected Either<Component, Unit> testArmorStand(ArmorStand armorStand) {

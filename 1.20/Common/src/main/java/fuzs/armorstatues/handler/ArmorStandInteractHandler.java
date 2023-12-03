@@ -24,7 +24,7 @@ public class ArmorStandInteractHandler {
     private static boolean presentServerside;
 
     public static EventResultHolder<InteractionResult> onUseEntityAt(Player player, Level level, InteractionHand interactionHand, Entity target, Vec3 hitVector) {
-        if (!player.isSpectator() && target.getType() == EntityType.ARMOR_STAND) {
+        if (player.getAbilities().mayBuild && target.getType() == EntityType.ARMOR_STAND) {
             boolean clientsideOnly = level.isClientSide && !presentServerside;
             // the menu won't exist in the registry if the mod is missing serverside since Forge syncs registries to clients
             MenuType<?> menuType = clientsideOnly ? null : ModRegistry.ARMOR_STAND_MENU_TYPE.get();

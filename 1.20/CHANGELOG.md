@@ -3,6 +3,12 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog].
 
+## [v8.0.5-1.20.1] - 2023-12-03
+### Changed
+- Client side permissions check can now be disabled in the config
+### Fixed
+- Armor stand menu can no longer open in adventure mode 
+
 ## [v8.0.4-1.20.1] - 2023-12-03
 ### Changed
 - Updated to Puzzles Api v8.1.4
