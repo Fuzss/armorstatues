@@ -36,5 +36,12 @@ versionRange = "[${minPuzzlesVersion},)"
 ordering = "NONE"
 side = "BOTH"
 
+[[dependencies.${ modId }]]
+modId = "puzzlesapi"
+mandatory = true
+versionRange = "*"
+ordering = "NONE"
+side = "BOTH"
+
 [modproperties.${ modId }]
 catalogueImageIcon = "mod_logo.png"

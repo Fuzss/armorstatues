@@ -3,6 +3,10 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog].
 
+## [v8.0.4-1.20.1] - 2023-12-03
+### Changed
+- Updated to Puzzles Api v8.1.4
+
 ## [v8.0.3-1.20.1] - 2023-08-16
 ### Fixed
 - Fixed a crash trying to interact with an armor stand when playing on a Forge server that does not have Armor Statues installed (Forge only)
