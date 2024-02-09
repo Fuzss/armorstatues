@@ -1,0 +1,23 @@
+{
+  "armorstatues.dataSync.failure": "Unable to modify armor stand data: %s",
+  "armorstatues.dataSync.failure.noArmorStand": "No Valid Armor Stand",
+  "armorstatues.dataSync.failure.noPermission": "No Permission",
+  "armorstatues.dataSync.failure.notFinished": "Queue Not Empty",
+  "armorstatues.dataSync.failure.outOfRange": "Out Of Range",
+  "armorstatues.dataSync.finished": "Finished sending queued armor stand data",
+  "armorstatues.screen.vanillaTweaks.checkTarget": "Check Armor Stand Target",
+  "armorstatues.screen.vanillaTweaks.checkTarget.description": "Highlights the closest armor stand within three blocks of the player which will be adjusted. Due to how data packs work, this isn't necessarily the armor stand which opened this menu.",
+  "armorstatues.screen.vanillaTweaks.lock": "Lock",
+  "armorstatues.screen.vanillaTweaks.lock.description": "Locking an armor stand prevents it from being changed using this menu and disables interaction with the equipment slots.",
+  "armorstatues.screen.vanillaTweaks.swapMainhandAndHead": "Swap Mainhand & Helmet",
+  "armorstatues.screen.vanillaTweaks.swapMainhandAndHead.description": "Swaps items between the main hand and helmet equipment slots.",
+  "armorstatues.screen.vanillaTweaks.swapMainhandAndOffhand": "Swap Mainhand & Offhand",
+  "armorstatues.screen.vanillaTweaks.swapMainhandAndOffhand.description": "Swaps items between the main hand and off hand equipment slots.",
+  "armorstatues.screen.vanillaTweaks.toolRack": "Align Tool As Tool Rack",
+  "armorstatues.screen.vanillaTweaks.toolRack.description": "Align an armor stand with a tripwire hook on the wall above it so that a tool held by it appears to be hanging up. Also locks the armor stand and disables all slots except the mainhand.",
+  "armorstatues.screen.vanillaTweaks.triggerSent": "Sent!",
+  "armorstatues.screen.vanillaTweaks.unlock": "Unlock",
+  "armorstatues.screen.vanillaTweaks.unlock.description": "Unlocking an armor stand reverts any adjustments made via a previous lock action.",
+  "puzzlesapi.screen.type.alignments": "Alignments",
+  "puzzlesapi.screen.type.vanillaTweaks": "Vanilla Tweaks"
+}
