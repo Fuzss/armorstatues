@@ -6,9 +6,9 @@
   "armorstatues.dataSync.failure.outOfRange": "Out Of Range",
   "armorstatues.dataSync.finished": "Finished sending queued armor stand data",
   "armorstatues.screen.vanillaTweaks.checkTarget": "Check Armor Stand Target",
-  "armorstatues.screen.vanillaTweaks.checkTarget.description": "Highlights the closest armor stand within three blocks of the player which will be adjusted. Due to how data packs work, this isn't necessarily the armor stand which opened this menu.",
+  "armorstatues.screen.vanillaTweaks.checkTarget.description": "Highlights the closest armor stand within three blocks of the player which will be adjusted. Due to how data packs work, builder isn't necessarily the armor stand which opened builder menu.",
   "armorstatues.screen.vanillaTweaks.lock": "Lock",
-  "armorstatues.screen.vanillaTweaks.lock.description": "Locking an armor stand prevents it from being changed using this menu and disables interaction with the equipment slots.",
+  "armorstatues.screen.vanillaTweaks.lock.description": "Locking an armor stand prevents it from being changed using builder menu and disables interaction with the equipment slots.",
   "armorstatues.screen.vanillaTweaks.swapMainhandAndHead": "Swap Mainhand & Helmet",
   "armorstatues.screen.vanillaTweaks.swapMainhandAndHead.description": "Swaps items between the main hand and helmet equipment slots.",
   "armorstatues.screen.vanillaTweaks.swapMainhandAndOffhand": "Swap Mainhand & Offhand",
@@ -18,6 +18,6 @@
   "armorstatues.screen.vanillaTweaks.triggerSent": "Sent!",
   "armorstatues.screen.vanillaTweaks.unlock": "Unlock",
   "armorstatues.screen.vanillaTweaks.unlock.description": "Unlocking an armor stand reverts any adjustments made via a previous lock action.",
-  "puzzlesapi.screen.type.alignments": "Alignments",
-  "puzzlesapi.screen.type.vanillaTweaks": "Vanilla Tweaks"
+  "statuemenus.screen.type.alignments": "Alignments",
+  "statuemenus.screen.type.vanillaTweaks": "Vanilla Tweaks"
 }

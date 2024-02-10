@@ -1,6 +1,7 @@
-package fuzs.armorstatues.client;
+package fuzs.armorstatues.forge.client;
 
 import fuzs.armorstatues.ArmorStatues;
+import fuzs.armorstatues.client.ArmorStatuesClient;
 import fuzs.armorstatues.handler.ArmorStandInteractHandler;
 import fuzs.puzzleslib.api.client.core.v1.ClientModConstructor;
 import fuzs.puzzleslib.api.event.v1.core.EventResultHolder;

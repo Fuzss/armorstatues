@@ -1,6 +1,7 @@
-package fuzs.armorstatues.client;
+package fuzs.armorstatues.fabric.client;
 
 import fuzs.armorstatues.ArmorStatues;
+import fuzs.armorstatues.client.ArmorStatuesClient;
 import fuzs.puzzleslib.api.client.core.v1.ClientModConstructor;
 import net.fabricmc.api.ClientModInitializer;
 

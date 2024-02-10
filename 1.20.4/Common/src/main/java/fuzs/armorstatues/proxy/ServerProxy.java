@@ -7,6 +7,6 @@ public class ServerProxy implements Proxy {
 
     @Override
     public void openArmorStandScreen(ArmorStand armorStand, Player player) {
-
+        // NO-OP
     }
 }

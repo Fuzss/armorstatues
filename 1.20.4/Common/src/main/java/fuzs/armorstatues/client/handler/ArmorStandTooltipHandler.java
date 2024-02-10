@@ -1,6 +1,7 @@
 package fuzs.armorstatues.client.handler;
 
-import fuzs.puzzlesapi.api.statues.v1.helper.ArmorStandInteractHelper;
+import fuzs.puzzleslib.api.core.v1.Proxy;
+import fuzs.statuemenus.api.v1.helper.ArmorStandInteractHelper;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
@@ -14,11 +15,11 @@ public class ArmorStandTooltipHandler {
 
     public static void onItemTooltip(ItemStack stack, @Nullable Player player, List<Component> lines, TooltipFlag context) {
         if (stack.is(Items.ARMOR_STAND)) {
-            Component component = ArmorStandInteractHelper.getArmorStandHoverText();
+            List<Component> components = Proxy.INSTANCE.splitTooltipLines(ArmorStandInteractHelper.getArmorStandHoverText());
             if (context.isAdvanced()) {
-                lines.add(lines.size() - (stack.hasTag() ? 2 : 1), component);
+                lines.addAll(lines.size() - (stack.hasTag() ? 2 : 1), components);
             } else {
-                lines.add(component);
+                lines.addAll(components);
             }
         }
     }

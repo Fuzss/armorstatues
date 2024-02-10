@@ -2,12 +2,12 @@ package fuzs.armorstatues.client.gui.screens.armorstand;
 
 import com.google.common.collect.Lists;
 import fuzs.armorstatues.init.ModRegistry;
-import fuzs.puzzlesapi.api.client.statues.v1.gui.screens.armorstand.ArmorStandButtonsScreen;
-import fuzs.puzzlesapi.api.client.statues.v1.gui.screens.armorstand.ArmorStandPositionScreen;
-import fuzs.puzzlesapi.api.statues.v1.network.client.data.DataSyncHandler;
-import fuzs.puzzlesapi.api.statues.v1.world.inventory.ArmorStandHolder;
-import fuzs.puzzlesapi.api.statues.v1.world.inventory.data.ArmorStandAlignment;
-import fuzs.puzzlesapi.api.statues.v1.world.inventory.data.ArmorStandScreenType;
+import fuzs.statuemenus.api.v1.client.gui.screens.ArmorStandButtonsScreen;
+import fuzs.statuemenus.api.v1.client.gui.screens.ArmorStandPositionScreen;
+import fuzs.statuemenus.api.v1.network.client.data.DataSyncHandler;
+import fuzs.statuemenus.api.v1.world.inventory.ArmorStandHolder;
+import fuzs.statuemenus.api.v1.world.inventory.data.ArmorStandAlignment;
+import fuzs.statuemenus.api.v1.world.inventory.data.ArmorStandScreenType;
 import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.decoration.ArmorStand;
