@@ -20,11 +20,12 @@ public class ArmorStatues implements ModConstructor {
     @Override
     public void onConstructMod() {
         ModRegistry.touch();
-        registerHandlers();
+        registerEventHandlers();
     }
 
-    private static void registerHandlers() {
-        // high priority so we run before the Quark mod
+    private static void registerEventHandlers() {
+        // high priority, so we run before other mods that add armor stand interactions
+        // we require empty hand + shift, so those other mods can still run their behaviors when those conditions are not met
         PlayerInteractEvents.USE_ENTITY_AT.register(EventPhase.BEFORE, ArmorStandInteractHandler::onUseEntityAt);
     }
 }
