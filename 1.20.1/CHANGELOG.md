@@ -3,6 +3,10 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog].
 
+## [v8.0.6-1.20.1] - 2024-04-07
+### Changed
+- Allow `override_client_permissions_check` config option to also force enabling of the Vanilla Tweaks triggers command handler
+
 ## [v8.0.5-1.20.1] - 2023-12-03
 ### Changed
 - Client side permissions check can now be disabled in the config

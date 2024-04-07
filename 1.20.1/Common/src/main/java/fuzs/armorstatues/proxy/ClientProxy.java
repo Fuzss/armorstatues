@@ -31,13 +31,18 @@ public class ClientProxy extends ServerProxy {
                 return ModRegistry.ARMOR_STAND_DATA_PROVIDER;
             }
         };
-        Screen screen = ArmorStandScreenFactory.createLastScreenType(holder, player.getInventory(), armorStand.getDisplayName(), createDataSyncHandler(holder, (LocalPlayer) player));
+        Screen screen = ArmorStandScreenFactory.createLastScreenType(holder,
+                player.getInventory(),
+                armorStand.getDisplayName(),
+                createDataSyncHandler(holder, (LocalPlayer) player)
+        );
         Minecraft minecraft = Minecraft.getInstance();
         minecraft.setScreen(screen);
     }
 
     private static DataSyncHandler createDataSyncHandler(ArmorStandHolder holder, LocalPlayer player) {
-        if (!player.hasPermissions(2) && ArmorStatues.CONFIG.get(ClientConfig.class).useVanillaTweaksTriggers) {
+        if ((!player.hasPermissions(2) || ArmorStatues.CONFIG.get(ClientConfig.class).overrideClientPermissionsCheck) &&
+                ArmorStatues.CONFIG.get(ClientConfig.class).useVanillaTweaksTriggers) {
             return new VanillaTweaksDataSyncHandler(holder, player);
         } else {
             return new CommandDataSyncHandler(holder, player);
