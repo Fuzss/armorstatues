@@ -3,6 +3,10 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog].
 
+## [v4.0.7-1.19.2] - 2024-04-07
+### Changed
+- Allow `override_client_permissions_check` config option to also force enabling of the Vanilla Tweaks triggers command handler
+
 ## [v4.0.6-1.19.2] - 2023-07-26
 ### Fixed
 - Fixed an issue where new rotations set on the rotations screen wouldn't save if the sliders were moved using the arrow keys
