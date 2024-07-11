@@ -57,7 +57,7 @@ public class CommandDataSyncHandler implements DataSyncHandler {
         if (!this.isEditingAllowed()) return;
         DataSyncHandler.setCustomArmorStandName(this.getArmorStand(), name);
         CompoundTag tag = new CompoundTag();
-        tag.putString("CustomName", Component.Serializer.toJson(Component.literal(name)));
+        tag.putString("CustomName", Component.Serializer.toJson(Component.literal(name), this.player.registryAccess()));
         this.enqueueEntityData(tag);
         this.finalizeCurrentOperation();
     }
