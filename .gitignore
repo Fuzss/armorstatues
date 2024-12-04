@@ -48,6 +48,9 @@ nbactions.xml
 build
 .gradle
 
+### VSCode ###
+.vscode
+
 # Ignore Gradle GUI config
 gradle-app.setting
 
