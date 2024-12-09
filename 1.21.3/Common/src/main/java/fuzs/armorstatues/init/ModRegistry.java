@@ -45,7 +45,7 @@ public class ModRegistry {
         }
     };
 
-    public static void touch() {
+    public static void bootstrap() {
         // NO-OP
     }
 }
