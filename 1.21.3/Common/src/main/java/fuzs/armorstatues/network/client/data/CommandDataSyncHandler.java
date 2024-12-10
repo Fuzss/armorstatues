@@ -63,11 +63,6 @@ public class CommandDataSyncHandler implements DataSyncHandler {
     }
 
     @Override
-    public final void sendPose(ArmorStandPose pose) {
-        this.sendPose(pose, true);
-    }
-
-    @Override
     public void sendPose(ArmorStandPose pose, boolean finalize) {
         if (!this.isEditingAllowed()) return;
         // split this into multiple chat messages as the client chat field has a very low character limit
@@ -94,12 +89,6 @@ public class CommandDataSyncHandler implements DataSyncHandler {
     }
 
     @Override
-    public final void sendPosition(double posX, double posY, double posZ) {
-        this.sendPosition(posX, posY, posZ, true);
-
-    }
-
-    @Override
     public void sendPosition(double posX, double posY, double posZ, boolean finalize) {
         if (!this.isEditingAllowed()) return;
         ListTag listTag = new ListTag();
@@ -113,11 +102,6 @@ public class CommandDataSyncHandler implements DataSyncHandler {
     }
 
     @Override
-    public final void sendRotation(float rotation) {
-        this.sendRotation(rotation, true);
-    }
-
-    @Override
     public void sendRotation(float rotation, boolean finalize) {
         if (!this.isEditingAllowed()) return;
         ListTag listTag = new ListTag();
@@ -126,11 +110,6 @@ public class CommandDataSyncHandler implements DataSyncHandler {
         tag.put("Rotation", listTag);
         this.enqueueEntityData(tag);
         if (finalize) this.finalizeCurrentOperation();
-    }
-
-    @Override
-    public final void sendStyleOption(ArmorStandStyleOption styleOption, boolean value) {
-        this.sendStyleOption(styleOption, value, true);
     }
 
     @Override
