@@ -4,6 +4,7 @@ import com.mojang.datafixers.util.Either;
 import com.mojang.datafixers.util.Unit;
 import fuzs.armorstatues.ArmorStatues;
 import fuzs.armorstatues.config.ClientConfig;
+import fuzs.statuemenus.api.v1.helper.ScaleAttributeHelper;
 import fuzs.statuemenus.api.v1.network.client.data.DataSyncHandler;
 import fuzs.statuemenus.api.v1.world.inventory.ArmorStandHolder;
 import fuzs.statuemenus.api.v1.world.inventory.data.ArmorStandAlignment;
@@ -17,6 +18,7 @@ import net.minecraft.nbt.DoubleTag;
 import net.minecraft.nbt.FloatTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.network.chat.Component;
+import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.decoration.ArmorStand;
 import org.jetbrains.annotations.Nullable;
 
@@ -102,6 +104,24 @@ public class CommandDataSyncHandler implements DataSyncHandler {
     }
 
     @Override
+    public void sendScale(float scale, boolean finalize) {
+        if (this.getArmorStand().getAttributes().hasModifier(Attributes.SCALE, ScaleAttributeHelper.SCALE_BONUS_ID)) {
+            this.enqueueClientCommand("attribute %s %s modifier remove %s".formatted(this.getArmorStand()
+                            .getStringUUID(),
+                    Attributes.SCALE.unwrapKey().orElseThrow().location(),
+                    ScaleAttributeHelper.SCALE_BONUS_ID));
+        }
+        if (scale != ScaleAttributeHelper.DEFAULT_SCALE) {
+            this.enqueueClientCommand("attribute %s %s modifier add %s %s add_value".formatted(this.getArmorStand()
+                            .getStringUUID(),
+                    Attributes.SCALE.unwrapKey().orElseThrow().location(),
+                    ScaleAttributeHelper.SCALE_BONUS_ID,
+                    scale - ScaleAttributeHelper.DEFAULT_SCALE));
+        }
+        if (finalize) this.finalizeCurrentOperation();
+    }
+
+    @Override
     public void sendRotation(float rotation, boolean finalize) {
         if (!this.isEditingAllowed()) return;
         ListTag listTag = new ListTag();
@@ -166,11 +186,13 @@ public class CommandDataSyncHandler implements DataSyncHandler {
             this.sendFailureMessage(Component.translatable(NO_PERMISSION_TRANSLATION_KEY));
             return false;
         }
-        return this.player.getAbilities().mayBuild && this.testArmorStand(this.getArmorStand()).ifLeft(this::sendFailureMessage).right().isPresent();
+        return this.player.getAbilities().mayBuild &&
+                this.testArmorStand(this.getArmorStand()).ifLeft(this::sendFailureMessage).right().isPresent();
     }
 
     protected Either<Component, Unit> testArmorStand(ArmorStand armorStand) {
-        return !armorStand.isAlive() ? Either.left(Component.translatable(NO_ARMOR_STAND_TRANSLATION_KEY)) : Either.right(Unit.INSTANCE);
+        return !armorStand.isAlive() ? Either.left(Component.translatable(NO_ARMOR_STAND_TRANSLATION_KEY)) :
+                Either.right(Unit.INSTANCE);
     }
 
     protected boolean enqueueClientCommand(String clientCommand) {
@@ -196,10 +218,13 @@ public class CommandDataSyncHandler implements DataSyncHandler {
     }
 
     protected void sendDisplayMessage(Component component, boolean failure) {
-        this.player.displayClientMessage(Component.empty().append(component).withStyle(failure ? ChatFormatting.RED : ChatFormatting.GREEN), false);
+        this.player.displayClientMessage(Component.empty()
+                .append(component)
+                .withStyle(failure ? ChatFormatting.RED : ChatFormatting.GREEN), false);
     }
 
     private void enqueueEntityData(CompoundTag tag) {
-        this.enqueueClientCommand("data merge entity %s %s".formatted(this.getArmorStand().getStringUUID(), tag.getAsString()));
+        this.enqueueClientCommand("data merge entity %s %s".formatted(this.getArmorStand().getStringUUID(),
+                tag.getAsString()));
     }
 }
