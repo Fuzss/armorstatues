@@ -19,5 +19,6 @@
   "armorstatues.screen.vanillaTweaks.unlock": "Unlock",
   "armorstatues.screen.vanillaTweaks.unlock.description": "Unlocking an armor stand reverts any adjustments made via a previous lock action.",
   "statuemenus.screen.type.alignments": "Alignments",
+  "statuemenus.screen.type.commandsCompatiblePosition": "Position",
   "statuemenus.screen.type.vanillaTweaks": "Vanilla Tweaks"
 }

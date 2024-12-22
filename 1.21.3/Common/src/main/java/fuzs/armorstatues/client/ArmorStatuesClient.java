@@ -2,6 +2,7 @@ package fuzs.armorstatues.client;
 
 import fuzs.armorstatues.client.gui.screens.armorstand.ArmorStandAlignmentsScreen;
 import fuzs.armorstatues.client.gui.screens.armorstand.ArmorStandVanillaTweaksScreen;
+import fuzs.armorstatues.client.gui.screens.armorstand.CommandsCompatiblePositionScreen;
 import fuzs.armorstatues.client.handler.ArmorStandTooltipHandler;
 import fuzs.armorstatues.client.handler.ClientInteractHandler;
 import fuzs.armorstatues.client.handler.DataSyncTickHandler;
@@ -36,6 +37,7 @@ public class ArmorStatuesClient implements ClientModConstructor {
 
     @Override
     public void onClientSetup() {
+        ArmorStandScreenFactory.register(ModRegistry.POSITION_SCREEN_TYPE, CommandsCompatiblePositionScreen::new);
         ArmorStandScreenFactory.register(ModRegistry.ALIGNMENTS_SCREEN_TYPE, ArmorStandAlignmentsScreen::new);
         ArmorStandScreenFactory.register(ModRegistry.VANILLA_TWEAKS_SCREEN_TYPE, ArmorStandVanillaTweaksScreen::new);
     }
@@ -44,8 +46,9 @@ public class ArmorStatuesClient implements ClientModConstructor {
     @Override
     public void onRegisterMenuScreens(MenuScreensContext context) {
         // compiler doesn't like method reference :(
-        context.registerMenuScreen(ModRegistry.ARMOR_STAND_MENU_TYPE.value(), (ArmorStandMenu menu, Inventory inventory, Component component) -> {
-            return ArmorStandScreenFactory.createLastScreenType(menu, inventory, component);
-        });
+        context.registerMenuScreen(ModRegistry.ARMOR_STAND_MENU_TYPE.value(),
+                (ArmorStandMenu menu, Inventory inventory, Component component) -> {
+                    return ArmorStandScreenFactory.createLastScreenType(menu, inventory, component);
+                });
     }
 }

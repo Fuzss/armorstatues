@@ -22,8 +22,7 @@ import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.decoration.ArmorStand;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.ArrayDeque;
-import java.util.Queue;
+import java.util.*;
 import java.util.function.BiPredicate;
 
 public class CommandDataSyncHandler implements DataSyncHandler {
@@ -33,7 +32,7 @@ public class CommandDataSyncHandler implements DataSyncHandler {
     public static final String NOT_FINISHED_TRANSLATION_KEY = ArmorStatues.MOD_ID + ".dataSync.failure.notFinished";
     public static final String FINISHED_TRANSLATION_KEY = ArmorStatues.MOD_ID + ".dataSync.finished";
     public static final String FAILURE_TRANSLATION_KEY = ArmorStatues.MOD_ID + ".dataSync.failure";
-    private static final Queue<String> CLIENT_COMMAND_QUEUE = new ArrayDeque<>();
+    private static final Queue<List<String>> CLIENT_COMMAND_QUEUE = new ArrayDeque<>();
 
     @Nullable
     private static ArmorStand queueArmorStand;
@@ -105,19 +104,26 @@ public class CommandDataSyncHandler implements DataSyncHandler {
 
     @Override
     public void sendScale(float scale, boolean finalize) {
-        if (this.getArmorStand().getAttributes().hasModifier(Attributes.SCALE, ScaleAttributeHelper.SCALE_BONUS_ID)) {
-            this.enqueueClientCommand("attribute %s %s modifier remove %s".formatted(this.getArmorStand()
-                            .getStringUUID(),
+        this.sendScale(true, scale, finalize);
+    }
+
+    public void sendScale(boolean hasModifier, float scale, boolean finalize) {
+        // track if our scale attribute modifier is already present, so we only try to remove it if necessary
+        // otherwise an error message from the remove command is displayed which would also be fine if this no longer works
+        List<String> clientCommands = new ArrayList<>();
+        if (hasModifier) {
+            clientCommands.add("attribute %s %s modifier remove %s".formatted(this.getArmorStand().getStringUUID(),
                     Attributes.SCALE.unwrapKey().orElseThrow().location(),
                     ScaleAttributeHelper.SCALE_BONUS_ID));
         }
         if (scale != ScaleAttributeHelper.DEFAULT_SCALE) {
-            this.enqueueClientCommand("attribute %s %s modifier add %s %s add_value".formatted(this.getArmorStand()
+            clientCommands.add("attribute %s %s modifier add %s %s add_value".formatted(this.getArmorStand()
                             .getStringUUID(),
                     Attributes.SCALE.unwrapKey().orElseThrow().location(),
                     ScaleAttributeHelper.SCALE_BONUS_ID,
                     scale - ScaleAttributeHelper.DEFAULT_SCALE));
         }
+        this.enqueueClientCommand(clientCommands);
         if (finalize) this.finalizeCurrentOperation();
     }
 
@@ -158,7 +164,9 @@ public class CommandDataSyncHandler implements DataSyncHandler {
         if (itemDequeuedTicks > 0) itemDequeuedTicks--;
         if (itemDequeuedTicks == 0 && queueArmorStand != null && !CLIENT_COMMAND_QUEUE.isEmpty()) {
             if (this.testArmorStand(queueArmorStand).right().isPresent()) {
-                this.player.connection.sendCommand(CLIENT_COMMAND_QUEUE.poll());
+                for (String clientCommand : CLIENT_COMMAND_QUEUE.poll()) {
+                    this.player.connection.sendCommand(clientCommand);
+                }
             } else {
                 CLIENT_COMMAND_QUEUE.clear();
             }
@@ -196,6 +204,10 @@ public class CommandDataSyncHandler implements DataSyncHandler {
     }
 
     protected boolean enqueueClientCommand(String clientCommand) {
+        return this.enqueueClientCommand(Collections.singletonList(clientCommand));
+    }
+
+    protected boolean enqueueClientCommand(List<String> clientCommand) {
         if (CLIENT_COMMAND_QUEUE.isEmpty()) {
             queueArmorStand = null;
         } else if (queueArmorStand != null) {
