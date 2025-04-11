@@ -129,19 +129,98 @@ public class VanillaTweaksDataSyncHandler extends CommandDataSyncHandler {
     public static final int POSE_ADJUSTMENT_LEFT_LEG_Y_POSITIVE = 93;
     public static final int POSE_ADJUSTMENT_LEFT_LEG_Z_NEGATIVE = 94;
     public static final int POSE_ADJUSTMENT_LEFT_LEG_Z_POSITIVE = 95;
-    private static final int[] POSE_ADJUSTMENT_HEAD = new int[]{POSE_ADJUSTMENT_HEAD_X_NEGATIVE, POSE_ADJUSTMENT_HEAD_X_POSITIVE, POSE_ADJUSTMENT_HEAD_Y_NEGATIVE, POSE_ADJUSTMENT_HEAD_Y_POSITIVE, POSE_ADJUSTMENT_HEAD_Z_NEGATIVE, POSE_ADJUSTMENT_HEAD_Z_POSITIVE};
-    private static final int[] POSE_ADJUSTMENT_BODY = new int[]{POSE_ADJUSTMENT_BODY_X_POSITIVE, POSE_ADJUSTMENT_BODY_X_NEGATIVE, POSE_ADJUSTMENT_BODY_Y_NEGATIVE, POSE_ADJUSTMENT_BODY_Y_POSITIVE, POSE_ADJUSTMENT_BODY_Z_NEGATIVE, POSE_ADJUSTMENT_BODY_Z_POSITIVE};
-    private static final int[] POSE_ADJUSTMENT_RIGHT_ARM = new int[]{POSE_ADJUSTMENT_RIGHT_ARM_X_NEGATIVE, POSE_ADJUSTMENT_RIGHT_ARM_X_POSITIVE, POSE_ADJUSTMENT_RIGHT_ARM_Y_NEGATIVE, POSE_ADJUSTMENT_RIGHT_ARM_Y_POSITIVE, POSE_ADJUSTMENT_RIGHT_ARM_Z_POSITIVE, POSE_ADJUSTMENT_RIGHT_ARM_Z_NEGATIVE};
-    private static final int[] POSE_ADJUSTMENT_LEFT_ARM = new int[]{POSE_ADJUSTMENT_LEFT_ARM_X_NEGATIVE, POSE_ADJUSTMENT_LEFT_ARM_X_POSITIVE, POSE_ADJUSTMENT_LEFT_ARM_Y_POSITIVE, POSE_ADJUSTMENT_LEFT_ARM_Y_NEGATIVE, POSE_ADJUSTMENT_LEFT_ARM_Z_NEGATIVE, POSE_ADJUSTMENT_LEFT_ARM_Z_POSITIVE};
-    private static final int[] POSE_ADJUSTMENT_RIGHT_LEG = new int[]{POSE_ADJUSTMENT_RIGHT_LEG_X_NEGATIVE, POSE_ADJUSTMENT_RIGHT_LEG_X_POSITIVE, POSE_ADJUSTMENT_RIGHT_LEG_Y_POSITIVE, POSE_ADJUSTMENT_RIGHT_LEG_Y_NEGATIVE, POSE_ADJUSTMENT_RIGHT_LEG_Z_POSITIVE, POSE_ADJUSTMENT_RIGHT_LEG_Z_NEGATIVE};
-    private static final int[] POSE_ADJUSTMENT_LEFT_LEG = new int[]{POSE_ADJUSTMENT_LEFT_LEG_X_NEGATIVE, POSE_ADJUSTMENT_LEFT_LEG_X_POSITIVE, POSE_ADJUSTMENT_LEFT_LEG_Y_NEGATIVE, POSE_ADJUSTMENT_LEFT_LEG_Y_POSITIVE, POSE_ADJUSTMENT_LEFT_LEG_Z_NEGATIVE, POSE_ADJUSTMENT_LEFT_LEG_Z_POSITIVE};
-    private static final NavigableMap<Double, Integer> NUDGE_POSITIONS_X_NEGATIVE = ImmutableSortedMap.of(1.0 / 16.0, NUDGE_POSITION_X1_NEGATIVE, 3.0 / 16.0, NUDGE_POSITION_X3_NEGATIVE, 8.0 / 16.0, NUDGE_POSITION_X8_NEGATIVE);
-    private static final NavigableMap<Double, Integer> NUDGE_POSITIONS_X_POSITIVE = ImmutableSortedMap.of(1.0 / 16.0, NUDGE_POSITION_X1_POSITIVE, 3.0 / 16.0, NUDGE_POSITION_X3_POSITIVE, 8.0 / 16.0, NUDGE_POSITION_X8_POSITIVE);
-    private static final NavigableMap<Double, Integer> NUDGE_POSITIONS_Y_NEGATIVE = ImmutableSortedMap.of(1.0 / 16.0, NUDGE_POSITION_Y1_NEGATIVE, 3.0 / 16.0, NUDGE_POSITION_Y3_NEGATIVE, 8.0 / 16.0, NUDGE_POSITION_Y8_NEGATIVE);
-    private static final NavigableMap<Double, Integer> NUDGE_POSITIONS_Y_POSITIVE = ImmutableSortedMap.of(1.0 / 16.0, NUDGE_POSITION_Y1_POSITIVE, 3.0 / 16.0, NUDGE_POSITION_Y3_POSITIVE, 8.0 / 16.0, NUDGE_POSITION_Y8_POSITIVE);
-    private static final NavigableMap<Double, Integer> NUDGE_POSITIONS_Z_NEGATIVE = ImmutableSortedMap.of(1.0 / 16.0, NUDGE_POSITION_Z1_NEGATIVE, 3.0 / 16.0, NUDGE_POSITION_Z3_NEGATIVE, 8.0 / 16.0, NUDGE_POSITION_Z8_NEGATIVE);
-    private static final NavigableMap<Double, Integer> NUDGE_POSITIONS_Z_POSITIVE = ImmutableSortedMap.of(1.0 / 16.0, NUDGE_POSITION_Z1_POSITIVE, 3.0 / 16.0, NUDGE_POSITION_Z3_POSITIVE, 8.0 / 16.0, NUDGE_POSITION_Z8_POSITIVE);
-    private static final NavigableMap<Float, Integer> ADJUST_ROTATION_ANGLE_STEPS = ImmutableSortedMap.of(1.0F, ADJUST_ROTATION_ANGLE_STEP_1, 5.0F, ADJUST_ROTATION_ANGLE_STEP_5, 15.0F, ADJUST_ROTATION_ANGLE_STEP_15, 45.0F, ADJUST_ROTATION_ANGLE_STEP_45);
+    private static final int[] POSE_ADJUSTMENT_HEAD = new int[]{
+            POSE_ADJUSTMENT_HEAD_X_NEGATIVE,
+            POSE_ADJUSTMENT_HEAD_X_POSITIVE,
+            POSE_ADJUSTMENT_HEAD_Y_NEGATIVE,
+            POSE_ADJUSTMENT_HEAD_Y_POSITIVE,
+            POSE_ADJUSTMENT_HEAD_Z_NEGATIVE,
+            POSE_ADJUSTMENT_HEAD_Z_POSITIVE
+    };
+    private static final int[] POSE_ADJUSTMENT_BODY = new int[]{
+            POSE_ADJUSTMENT_BODY_X_POSITIVE,
+            POSE_ADJUSTMENT_BODY_X_NEGATIVE,
+            POSE_ADJUSTMENT_BODY_Y_NEGATIVE,
+            POSE_ADJUSTMENT_BODY_Y_POSITIVE,
+            POSE_ADJUSTMENT_BODY_Z_NEGATIVE,
+            POSE_ADJUSTMENT_BODY_Z_POSITIVE
+    };
+    private static final int[] POSE_ADJUSTMENT_RIGHT_ARM = new int[]{
+            POSE_ADJUSTMENT_RIGHT_ARM_X_NEGATIVE,
+            POSE_ADJUSTMENT_RIGHT_ARM_X_POSITIVE,
+            POSE_ADJUSTMENT_RIGHT_ARM_Y_NEGATIVE,
+            POSE_ADJUSTMENT_RIGHT_ARM_Y_POSITIVE,
+            POSE_ADJUSTMENT_RIGHT_ARM_Z_POSITIVE,
+            POSE_ADJUSTMENT_RIGHT_ARM_Z_NEGATIVE
+    };
+    private static final int[] POSE_ADJUSTMENT_LEFT_ARM = new int[]{
+            POSE_ADJUSTMENT_LEFT_ARM_X_NEGATIVE,
+            POSE_ADJUSTMENT_LEFT_ARM_X_POSITIVE,
+            POSE_ADJUSTMENT_LEFT_ARM_Y_POSITIVE,
+            POSE_ADJUSTMENT_LEFT_ARM_Y_NEGATIVE,
+            POSE_ADJUSTMENT_LEFT_ARM_Z_NEGATIVE,
+            POSE_ADJUSTMENT_LEFT_ARM_Z_POSITIVE
+    };
+    private static final int[] POSE_ADJUSTMENT_RIGHT_LEG = new int[]{
+            POSE_ADJUSTMENT_RIGHT_LEG_X_NEGATIVE,
+            POSE_ADJUSTMENT_RIGHT_LEG_X_POSITIVE,
+            POSE_ADJUSTMENT_RIGHT_LEG_Y_POSITIVE,
+            POSE_ADJUSTMENT_RIGHT_LEG_Y_NEGATIVE,
+            POSE_ADJUSTMENT_RIGHT_LEG_Z_POSITIVE,
+            POSE_ADJUSTMENT_RIGHT_LEG_Z_NEGATIVE
+    };
+    private static final int[] POSE_ADJUSTMENT_LEFT_LEG = new int[]{
+            POSE_ADJUSTMENT_LEFT_LEG_X_NEGATIVE,
+            POSE_ADJUSTMENT_LEFT_LEG_X_POSITIVE,
+            POSE_ADJUSTMENT_LEFT_LEG_Y_NEGATIVE,
+            POSE_ADJUSTMENT_LEFT_LEG_Y_POSITIVE,
+            POSE_ADJUSTMENT_LEFT_LEG_Z_NEGATIVE,
+            POSE_ADJUSTMENT_LEFT_LEG_Z_POSITIVE
+    };
+    private static final NavigableMap<Double, Integer> NUDGE_POSITIONS_X_NEGATIVE = ImmutableSortedMap.of(1.0 / 16.0,
+            NUDGE_POSITION_X1_NEGATIVE,
+            3.0 / 16.0,
+            NUDGE_POSITION_X3_NEGATIVE,
+            8.0 / 16.0,
+            NUDGE_POSITION_X8_NEGATIVE);
+    private static final NavigableMap<Double, Integer> NUDGE_POSITIONS_X_POSITIVE = ImmutableSortedMap.of(1.0 / 16.0,
+            NUDGE_POSITION_X1_POSITIVE,
+            3.0 / 16.0,
+            NUDGE_POSITION_X3_POSITIVE,
+            8.0 / 16.0,
+            NUDGE_POSITION_X8_POSITIVE);
+    private static final NavigableMap<Double, Integer> NUDGE_POSITIONS_Y_NEGATIVE = ImmutableSortedMap.of(1.0 / 16.0,
+            NUDGE_POSITION_Y1_NEGATIVE,
+            3.0 / 16.0,
+            NUDGE_POSITION_Y3_NEGATIVE,
+            8.0 / 16.0,
+            NUDGE_POSITION_Y8_NEGATIVE);
+    private static final NavigableMap<Double, Integer> NUDGE_POSITIONS_Y_POSITIVE = ImmutableSortedMap.of(1.0 / 16.0,
+            NUDGE_POSITION_Y1_POSITIVE,
+            3.0 / 16.0,
+            NUDGE_POSITION_Y3_POSITIVE,
+            8.0 / 16.0,
+            NUDGE_POSITION_Y8_POSITIVE);
+    private static final NavigableMap<Double, Integer> NUDGE_POSITIONS_Z_NEGATIVE = ImmutableSortedMap.of(1.0 / 16.0,
+            NUDGE_POSITION_Z1_NEGATIVE,
+            3.0 / 16.0,
+            NUDGE_POSITION_Z3_NEGATIVE,
+            8.0 / 16.0,
+            NUDGE_POSITION_Z8_NEGATIVE);
+    private static final NavigableMap<Double, Integer> NUDGE_POSITIONS_Z_POSITIVE = ImmutableSortedMap.of(1.0 / 16.0,
+            NUDGE_POSITION_Z1_POSITIVE,
+            3.0 / 16.0,
+            NUDGE_POSITION_Z3_POSITIVE,
+            8.0 / 16.0,
+            NUDGE_POSITION_Z8_POSITIVE);
+    private static final NavigableMap<Float, Integer> ADJUST_ROTATION_ANGLE_STEPS = ImmutableSortedMap.of(1.0F,
+            ADJUST_ROTATION_ANGLE_STEP_1,
+            5.0F,
+            ADJUST_ROTATION_ANGLE_STEP_5,
+            15.0F,
+            ADJUST_ROTATION_ANGLE_STEP_15,
+            45.0F,
+            ADJUST_ROTATION_ANGLE_STEP_45);
 
     public VanillaTweaksDataSyncHandler(ArmorStandHolder holder, LocalPlayer player) {
         super(holder, player);
@@ -189,18 +268,42 @@ public class VanillaTweaksDataSyncHandler extends CommandDataSyncHandler {
     }
 
     private void tryApplyAllPoseParts(ArmorStandPose pose) {
-        if (!this.tryApplyPosePart(this.lastSyncedPose.getHeadPose(), pose.getNullableHeadPose(), POSE_ADJUSTMENT_HEAD, this.lastSyncedPose::withHeadPose))
+        if (!this.tryApplyPosePart(this.lastSyncedPose.getHeadPose(),
+                pose.getNullableHeadPose(),
+                POSE_ADJUSTMENT_HEAD,
+                this.lastSyncedPose::withHeadPose)) {
             return;
-        if (!this.tryApplyPosePart(this.lastSyncedPose.getBodyPose(), pose.getNullableBodyPose(), POSE_ADJUSTMENT_BODY, this.lastSyncedPose::withBodyPose))
+        }
+        if (!this.tryApplyPosePart(this.lastSyncedPose.getBodyPose(),
+                pose.getNullableBodyPose(),
+                POSE_ADJUSTMENT_BODY,
+                this.lastSyncedPose::withBodyPose)) {
             return;
-        if (!this.tryApplyPosePart(this.lastSyncedPose.getRightArmPose(), pose.getNullableRightArmPose(), POSE_ADJUSTMENT_RIGHT_ARM, this.lastSyncedPose::withRightArmPose))
+        }
+        if (!this.tryApplyPosePart(this.lastSyncedPose.getRightArmPose(),
+                pose.getNullableRightArmPose(),
+                POSE_ADJUSTMENT_RIGHT_ARM,
+                this.lastSyncedPose::withRightArmPose)) {
             return;
-        if (!this.tryApplyPosePart(this.lastSyncedPose.getLeftArmPose(), pose.getNullableLeftArmPose(), POSE_ADJUSTMENT_LEFT_ARM, this.lastSyncedPose::withLeftArmPose))
+        }
+        if (!this.tryApplyPosePart(this.lastSyncedPose.getLeftArmPose(),
+                pose.getNullableLeftArmPose(),
+                POSE_ADJUSTMENT_LEFT_ARM,
+                this.lastSyncedPose::withLeftArmPose)) {
             return;
-        if (!this.tryApplyPosePart(this.lastSyncedPose.getRightLegPose(), pose.getNullableRightLegPose(), POSE_ADJUSTMENT_RIGHT_LEG, this.lastSyncedPose::withRightLegPose))
+        }
+        if (!this.tryApplyPosePart(this.lastSyncedPose.getRightLegPose(),
+                pose.getNullableRightLegPose(),
+                POSE_ADJUSTMENT_RIGHT_LEG,
+                this.lastSyncedPose::withRightLegPose)) {
             return;
-        if (!this.tryApplyPosePart(this.lastSyncedPose.getLeftLegPose(), pose.getNullableLeftLegPose(), POSE_ADJUSTMENT_LEFT_LEG, this.lastSyncedPose::withLeftLegPose))
+        }
+        if (!this.tryApplyPosePart(this.lastSyncedPose.getLeftLegPose(),
+                pose.getNullableLeftLegPose(),
+                POSE_ADJUSTMENT_LEFT_LEG,
+                this.lastSyncedPose::withLeftLegPose)) {
             return;
+        }
     }
 
     private boolean tryApplyPosePart(Rotations oldPose, @Nullable Rotations newPose, int[] poseAdjustment, Function<Rotations, ArmorStandPose> function) {
@@ -213,19 +316,34 @@ public class VanillaTweaksDataSyncHandler extends CommandDataSyncHandler {
     }
 
     private boolean tryApplyPoseAdjustment(Rotations oldPose, @Nullable Rotations newPose, int[] poseAdjustment) {
-        if (newPose == null || oldPose.equals(newPose)) return true;
-        if (!this.applyIncrementsFromSteps(oldPose.getX(), newPose.getX(), poseAdjustment[0], poseAdjustment[1])) return false;
-        if (!this.applyIncrementsFromSteps(oldPose.getY(), newPose.getY(), poseAdjustment[2], poseAdjustment[3])) return false;
-        if (!this.applyIncrementsFromSteps(oldPose.getZ(), newPose.getZ(), poseAdjustment[4], poseAdjustment[5])) return false;
-        return true;
+        if (newPose == null || oldPose.equals(newPose)) {
+            return true;
+        } else if (!this.applyIncrementsFromSteps(oldPose.x(), newPose.x(), poseAdjustment[0], poseAdjustment[1])) {
+            return false;
+        } else if (!this.applyIncrementsFromSteps(oldPose.y(), newPose.y(), poseAdjustment[2], poseAdjustment[3])) {
+            return false;
+        } else if (!this.applyIncrementsFromSteps(oldPose.z(), newPose.z(), poseAdjustment[4], poseAdjustment[5])) {
+            return false;
+        } else {
+            return true;
+        }
     }
 
     @Override
     public void sendPosition(double posX, double posY, double posZ, boolean finalize) {
         if (!this.isEditingAllowed()) return;
-        this.applyPositionIncrements(this.getArmorStand().getX(), posX, NUDGE_POSITIONS_X_POSITIVE, NUDGE_POSITIONS_X_NEGATIVE);
-        this.applyPositionIncrements(this.getArmorStand().getY(), posY, NUDGE_POSITIONS_Y_POSITIVE, NUDGE_POSITIONS_Y_NEGATIVE);
-        this.applyPositionIncrements(this.getArmorStand().getZ(), posZ, NUDGE_POSITIONS_Z_POSITIVE, NUDGE_POSITIONS_Z_NEGATIVE);
+        this.applyPositionIncrements(this.getArmorStand().getX(),
+                posX,
+                NUDGE_POSITIONS_X_POSITIVE,
+                NUDGE_POSITIONS_X_NEGATIVE);
+        this.applyPositionIncrements(this.getArmorStand().getY(),
+                posY,
+                NUDGE_POSITIONS_Y_POSITIVE,
+                NUDGE_POSITIONS_Y_NEGATIVE);
+        this.applyPositionIncrements(this.getArmorStand().getZ(),
+                posZ,
+                NUDGE_POSITIONS_Z_POSITIVE,
+                NUDGE_POSITIONS_Z_NEGATIVE);
         if (finalize) this.finalizeCurrentOperation();
     }
 
@@ -234,7 +352,8 @@ public class VanillaTweaksDataSyncHandler extends CommandDataSyncHandler {
         double signum = Math.signum(value);
         value = Math.abs(value);
         for (int i = 0; i < MAX_INCREMENTAL_OPERATIONS; i++) {
-            Map.Entry<Double, Integer> entry = (signum == -1.0F ? negativeNudgePositions : positiveNudgePositions).floorEntry(value);
+            Map.Entry<Double, Integer> entry = (signum == -1.0F ? negativeNudgePositions :
+                    positiveNudgePositions).floorEntry(value);
             if (entry != null) {
                 value -= entry.getKey();
                 if (!this.enqueueTriggerValue(entry.getValue())) {
@@ -249,7 +368,10 @@ public class VanillaTweaksDataSyncHandler extends CommandDataSyncHandler {
     @Override
     public void sendRotation(float rotation, boolean finalize) {
         if (!this.isEditingAllowed()) return;
-        this.applyIncrementsFromSteps(this.getArmorStand().getYRot(), rotation, ADJUST_ROTATION_ROTATE_RIGHT, ADJUST_ROTATION_ROTATE_LEFT);
+        this.applyIncrementsFromSteps(this.getArmorStand().getYRot(),
+                rotation,
+                ADJUST_ROTATION_ROTATE_RIGHT,
+                ADJUST_ROTATION_ROTATE_LEFT);
         if (finalize) this.finalizeCurrentOperation();
     }
 
@@ -329,7 +451,8 @@ public class VanillaTweaksDataSyncHandler extends CommandDataSyncHandler {
 
     @Override
     public ArmorStandScreenType[] getScreenTypes() {
-        return Stream.concat(Stream.of(super.getScreenTypes()), Stream.of(ModRegistry.VANILLA_TWEAKS_SCREEN_TYPE)).toArray(ArmorStandScreenType[]::new);
+        return Stream.concat(Stream.of(super.getScreenTypes()), Stream.of(ModRegistry.VANILLA_TWEAKS_SCREEN_TYPE))
+                .toArray(ArmorStandScreenType[]::new);
     }
 
     @Override

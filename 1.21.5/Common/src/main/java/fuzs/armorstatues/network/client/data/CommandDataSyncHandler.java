@@ -236,7 +236,6 @@ public class CommandDataSyncHandler implements DataSyncHandler {
     }
 
     private void enqueueEntityData(CompoundTag tag) {
-        this.enqueueClientCommand("data merge entity %s %s".formatted(this.getArmorStand().getStringUUID(),
-                tag.getAsString()));
+        this.enqueueClientCommand("data merge entity %s %s".formatted(this.getArmorStand().getStringUUID(), tag));
     }
 }

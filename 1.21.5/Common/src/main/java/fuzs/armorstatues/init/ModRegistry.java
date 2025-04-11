@@ -15,7 +15,7 @@ public class ModRegistry {
     public static final Holder.Reference<MenuType<ArmorStandMenu>> ARMOR_STAND_MENU_TYPE = REGISTRIES.registerExtendedMenuType(
             "armor_stand",
             () -> (containerId, inventory, data) -> {
-                return ArmorStandMenu.create(ModRegistry.ARMOR_STAND_MENU_TYPE.value(),
+                return new ArmorStandMenu(ModRegistry.ARMOR_STAND_MENU_TYPE.value(),
                         containerId,
                         inventory,
                         data,
