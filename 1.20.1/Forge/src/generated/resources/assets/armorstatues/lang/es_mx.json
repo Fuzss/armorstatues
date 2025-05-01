@@ -1,0 +1,23 @@
+{
+  "armorstatues.dataSync.failure": "No se puede modificar los datos del soporte de armadura: %s",
+  "armorstatues.dataSync.failure.noArmorStand": "No hay soporte de armadura válido",
+  "armorstatues.dataSync.failure.noPermission": "Sin permiso",
+  "armorstatues.dataSync.failure.notFinished": "Cola no vacía",
+  "armorstatues.dataSync.failure.outOfRange": "Fuera de rango",
+  "armorstatues.dataSync.finished": "Terminó de enviar los datos en cola del soporte de armadura",
+  "armorstatues.screen.vanillaTweaks.checkTarget": "Verificar objetivo del soporte de armadura",
+  "armorstatues.screen.vanillaTweaks.checkTarget.description": "Resalta el soporte de armadura más cercano dentro de tres bloques del jugador que será ajustado. Debido a cómo funcionan los paquetes de datos, este no es necesariamente el soporte de armadura que abrió este menú.",
+  "armorstatues.screen.vanillaTweaks.lock": "Bloquear",
+  "armorstatues.screen.vanillaTweaks.lock.description": "Bloquear un soporte de armadura evita que se cambie usando este menú y deshabilita la interacción con las ranuras de equipo.",
+  "armorstatues.screen.vanillaTweaks.swapMainhandAndHead": "Intercambiar mano principal y casco",
+  "armorstatues.screen.vanillaTweaks.swapMainhandAndHead.description": "Intercambia objetos entre las ranuras de equipo de la mano principal y el casco.",
+  "armorstatues.screen.vanillaTweaks.swapMainhandAndOffhand": "Intercambiar mano principal y mano secundaria",
+  "armorstatues.screen.vanillaTweaks.swapMainhandAndOffhand.description": "Intercambia objetos entre las ranuras de equipo de la mano principal y la mano secundaria.",
+  "armorstatues.screen.vanillaTweaks.toolRack": "Alinear herramienta como estante de herramientas",
+  "armorstatues.screen.vanillaTweaks.toolRack.description": "Alinea un soporte de armadura con un gancho de alambre en la pared encima de él para que una herramienta sostenida por él parezca estar colgada. También bloquea el soporte de armadura y deshabilita todas las ranuras excepto la de la mano principal.",
+  "armorstatues.screen.vanillaTweaks.triggerSent": "¡Enviado!",
+  "armorstatues.screen.vanillaTweaks.unlock": "Desbloquear",
+  "armorstatues.screen.vanillaTweaks.unlock.description": "Desbloquear un soporte de armadura revierte cualquier ajuste realizado mediante una acción de bloqueo anterior.",
+  "puzzlesapi.screen.type.alignments": "Alineaciones",
+  "puzzlesapi.screen.type.vanillaTweaks": "Ajustes de Vanilla"
+}
