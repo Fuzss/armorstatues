@@ -26,7 +26,8 @@ public class ArmorStatuesClient implements ClientModConstructor {
     @Override
     public void onConstructMod() {
         registerEventHandlers();
-        ItemTooltipRegistry.registerItemTooltip(Items.ARMOR_STAND, ArmorStandInteractHelper.getArmorStandHoverText());
+        ItemTooltipRegistry.ITEM.registerItemTooltip(Items.ARMOR_STAND,
+                ArmorStandInteractHelper.getArmorStandHoverText());
     }
 
     private static void registerEventHandlers() {

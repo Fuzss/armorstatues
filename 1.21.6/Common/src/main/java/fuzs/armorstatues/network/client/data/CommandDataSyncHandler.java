@@ -13,17 +13,15 @@ import fuzs.statuemenus.api.v1.world.inventory.data.ArmorStandScreenType;
 import fuzs.statuemenus.api.v1.world.inventory.data.ArmorStandStyleOption;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.player.LocalPlayer;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.DoubleTag;
-import net.minecraft.nbt.FloatTag;
-import net.minecraft.nbt.ListTag;
+import net.minecraft.nbt.*;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.ComponentSerialization;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.decoration.ArmorStand;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
-import java.util.function.BiPredicate;
+import java.util.function.BiConsumer;
 
 public class CommandDataSyncHandler implements DataSyncHandler {
     public static final String NO_PERMISSION_TRANSLATION_KEY = ArmorStatues.MOD_ID + ".dataSync.failure.noPermission";
@@ -57,9 +55,12 @@ public class CommandDataSyncHandler implements DataSyncHandler {
     public void sendName(String name) {
         if (!this.isEditingAllowed()) return;
         DataSyncHandler.setCustomArmorStandName(this.getArmorStand(), name);
-        CompoundTag tag = new CompoundTag();
-        tag.putString("CustomName", Component.Serializer.toJson(Component.literal(name), this.player.registryAccess()));
-        this.enqueueEntityData(tag);
+        CompoundTag compoundTag = new CompoundTag();
+        compoundTag.storeNullable("CustomName",
+                ComponentSerialization.CODEC,
+                this.player.registryAccess().createSerializationContext(NbtOps.INSTANCE),
+                Component.literal(name));
+        this.enqueueEntityData(compoundTag);
         this.finalizeCurrentOperation();
     }
 
@@ -75,11 +76,12 @@ public class CommandDataSyncHandler implements DataSyncHandler {
         if (finalize) this.finalizeCurrentOperation();
     }
 
-    private void sendPosePart(BiPredicate<CompoundTag, ArmorStandPose> dataWriter, ArmorStandPose lastSyncedPose) {
-        CompoundTag tag = new CompoundTag();
-        if (dataWriter.test(tag, lastSyncedPose)) {
+    private void sendPosePart(BiConsumer<CompoundTag, ArmorStandPose> dataWriter, ArmorStandPose lastSyncedPose) {
+        CompoundTag compoundTag = new CompoundTag();
+        dataWriter.accept(compoundTag, lastSyncedPose);
+        if (!compoundTag.isEmpty()) {
             CompoundTag tagToSend = new CompoundTag();
-            tagToSend.put("Pose", tag);
+            tagToSend.put("Pose", compoundTag);
             this.enqueueEntityData(tagToSend);
         }
     }
@@ -96,9 +98,9 @@ public class CommandDataSyncHandler implements DataSyncHandler {
         listTag.add(DoubleTag.valueOf(posX));
         listTag.add(DoubleTag.valueOf(posY));
         listTag.add(DoubleTag.valueOf(posZ));
-        CompoundTag tag = new CompoundTag();
-        tag.put("Pos", listTag);
-        this.enqueueEntityData(tag);
+        CompoundTag compoundTag = new CompoundTag();
+        compoundTag.put("Pos", listTag);
+        this.enqueueEntityData(compoundTag);
         if (finalize) this.finalizeCurrentOperation();
     }
 
@@ -132,18 +134,18 @@ public class CommandDataSyncHandler implements DataSyncHandler {
         if (!this.isEditingAllowed()) return;
         ListTag listTag = new ListTag();
         listTag.add(FloatTag.valueOf(rotation));
-        CompoundTag tag = new CompoundTag();
-        tag.put("Rotation", listTag);
-        this.enqueueEntityData(tag);
+        CompoundTag compoundTag = new CompoundTag();
+        compoundTag.put("Rotation", listTag);
+        this.enqueueEntityData(compoundTag);
         if (finalize) this.finalizeCurrentOperation();
     }
 
     @Override
     public void sendStyleOption(ArmorStandStyleOption styleOption, boolean value, boolean finalize) {
         if (!this.isEditingAllowed()) return;
-        CompoundTag tag = new CompoundTag();
-        styleOption.toTag(tag, value);
-        this.enqueueEntityData(tag);
+        CompoundTag compoundTag = new CompoundTag();
+        styleOption.toTag(compoundTag, value);
+        this.enqueueEntityData(compoundTag);
         styleOption.setOption(this.getArmorStand(), value);
         if (finalize) this.finalizeCurrentOperation();
     }
@@ -194,8 +196,10 @@ public class CommandDataSyncHandler implements DataSyncHandler {
             this.sendFailureMessage(Component.translatable(NO_PERMISSION_TRANSLATION_KEY));
             return false;
         }
-        return this.player.getAbilities().mayBuild &&
-                this.testArmorStand(this.getArmorStand()).ifLeft(this::sendFailureMessage).right().isPresent();
+        return this.player.getAbilities().mayBuild && this.testArmorStand(this.getArmorStand())
+                .ifLeft(this::sendFailureMessage)
+                .right()
+                .isPresent();
     }
 
     protected Either<Component, Unit> testArmorStand(ArmorStand armorStand) {
@@ -235,7 +239,8 @@ public class CommandDataSyncHandler implements DataSyncHandler {
                 .withStyle(failure ? ChatFormatting.RED : ChatFormatting.GREEN), false);
     }
 
-    private void enqueueEntityData(CompoundTag tag) {
-        this.enqueueClientCommand("data merge entity %s %s".formatted(this.getArmorStand().getStringUUID(), tag));
+    private void enqueueEntityData(CompoundTag compoundTag) {
+        this.enqueueClientCommand("data merge entity %s %s".formatted(this.getArmorStand().getStringUUID(),
+                compoundTag));
     }
 }

@@ -242,9 +242,9 @@ public class VanillaTweaksDataSyncHandler extends CommandDataSyncHandler {
     }
 
     private int getTriggerValueFromPose(ArmorStandPose pose) {
-        if (pose.getSourceType() == ArmorStandPose.SourceType.EMPTY) return POSE_PRESETS_ATTENTION;
-        if (pose.getSourceType() == ArmorStandPose.SourceType.MIRRORED) return MIRROR_AND_FLIP_FLIP;
-        if (pose.getSourceType() != ArmorStandPose.SourceType.VANILLA_TWEAKS) return -1;
+        if (pose.isEmpty()) return POSE_PRESETS_ATTENTION;
+        if (pose.isMirrored()) return MIRROR_AND_FLIP_FLIP;
+        if (!pose.isVanillaTweaksCompatible()) return -1;
         if (pose == ArmorStandPose.WALKING) return POSE_PRESETS_WALKING;
         if (pose == ArmorStandPose.RUNNING) return POSE_PRESETS_RUNNING;
         if (pose == ArmorStandPose.POINTING) return POSE_PRESETS_POINTING;
@@ -269,37 +269,37 @@ public class VanillaTweaksDataSyncHandler extends CommandDataSyncHandler {
 
     private void tryApplyAllPoseParts(ArmorStandPose pose) {
         if (!this.tryApplyPosePart(this.lastSyncedPose.getHeadPose(),
-                pose.getNullableHeadPose(),
+                pose.headPose(),
                 POSE_ADJUSTMENT_HEAD,
                 this.lastSyncedPose::withHeadPose)) {
             return;
         }
         if (!this.tryApplyPosePart(this.lastSyncedPose.getBodyPose(),
-                pose.getNullableBodyPose(),
+                pose.bodyPose(),
                 POSE_ADJUSTMENT_BODY,
                 this.lastSyncedPose::withBodyPose)) {
             return;
         }
         if (!this.tryApplyPosePart(this.lastSyncedPose.getRightArmPose(),
-                pose.getNullableRightArmPose(),
+                pose.rightArmPose(),
                 POSE_ADJUSTMENT_RIGHT_ARM,
                 this.lastSyncedPose::withRightArmPose)) {
             return;
         }
         if (!this.tryApplyPosePart(this.lastSyncedPose.getLeftArmPose(),
-                pose.getNullableLeftArmPose(),
+                pose.leftArmPose(),
                 POSE_ADJUSTMENT_LEFT_ARM,
                 this.lastSyncedPose::withLeftArmPose)) {
             return;
         }
         if (!this.tryApplyPosePart(this.lastSyncedPose.getRightLegPose(),
-                pose.getNullableRightLegPose(),
+                pose.rightLegPose(),
                 POSE_ADJUSTMENT_RIGHT_LEG,
                 this.lastSyncedPose::withRightLegPose)) {
             return;
         }
         if (!this.tryApplyPosePart(this.lastSyncedPose.getLeftLegPose(),
-                pose.getNullableLeftLegPose(),
+                pose.leftLegPose(),
                 POSE_ADJUSTMENT_LEFT_LEG,
                 this.lastSyncedPose::withLeftLegPose)) {
             return;
