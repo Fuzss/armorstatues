@@ -7,3 +7,9 @@ dependencies {
     // Statue Menus
     modApi(include(libs.statuemenus.neoforge.get()))
 }
+
+tasks.withType(net.fabricmc.loom.task.AbstractRunTask).configureEach {
+    doFirst {
+        patchLaunchCfg()
+    }
+}
