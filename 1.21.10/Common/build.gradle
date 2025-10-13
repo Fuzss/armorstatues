@@ -8,6 +8,3 @@ dependencies {
     modApi libs.statuemenus.common
 }
 
-tasks.withType(net.fabricmc.loom.task.AbstractRemapJarTask).configureEach {
-    targetNamespace = "named"
-}
