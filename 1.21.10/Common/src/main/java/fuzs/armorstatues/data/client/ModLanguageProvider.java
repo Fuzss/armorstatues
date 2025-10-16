@@ -1,7 +1,7 @@
 package fuzs.armorstatues.data.client;
 
 import fuzs.armorstatues.client.gui.screens.armorstand.ArmorStandVanillaTweaksScreen;
-import fuzs.armorstatues.init.ModRegistry;
+import fuzs.armorstatues.world.inventory.data.ArmorStandScreenTypes;
 import fuzs.armorstatues.network.client.data.CommandDataSyncHandler;
 import fuzs.puzzleslib.api.client.data.v2.AbstractLanguageProvider;
 import fuzs.puzzleslib.api.data.v2.core.DataProviderContext;
@@ -20,9 +20,9 @@ public class ModLanguageProvider extends AbstractLanguageProvider {
         builder.add(CommandDataSyncHandler.OUT_OF_RANGE_TRANSLATION_KEY, "Out Of Range");
         builder.add(CommandDataSyncHandler.NOT_FINISHED_TRANSLATION_KEY, "Queue Not Empty");
         builder.add(CommandDataSyncHandler.FINISHED_TRANSLATION_KEY, "Finished sending queued armor stand data");
-        builder.add(ModRegistry.POSITION_SCREEN_TYPE.getTranslationKey(), "Position");
-        builder.add(ModRegistry.ALIGNMENTS_SCREEN_TYPE.getTranslationKey(), "Alignments");
-        builder.add(ModRegistry.VANILLA_TWEAKS_SCREEN_TYPE.getTranslationKey(), "Vanilla Tweaks");
+        builder.add(ArmorStandScreenTypes.POSITION.getTranslationKey(), "Position");
+        builder.add(ArmorStandScreenTypes.ALIGNMENTS.getTranslationKey(), "Alignments");
+        builder.add(ArmorStandScreenTypes.VANILLA_TWEAKS.getTranslationKey(), "Vanilla Tweaks");
         builder.add(ArmorStandVanillaTweaksScreen.TRIGGER_SENT_TRANSLATION_KEY, "Sent!");
         builder.add(ArmorStandVanillaTweaksScreen.CHECK_TARGET_TRANSLATION_KEY, "Check Armor Stand Target");
         builder.add(ArmorStandVanillaTweaksScreen.CHECK_TARGET_DESCRIPTION_KEY,

@@ -2,10 +2,14 @@ package fuzs.armorstatues.config;
 
 import fuzs.puzzleslib.api.config.v3.Config;
 import fuzs.puzzleslib.api.config.v3.ConfigCore;
-import fuzs.statuemenus.api.v1.client.gui.screens.AbstractArmorStandScreen;
+import fuzs.statuemenus.api.v1.client.gui.screens.AbstractStatueScreen;
 
 public class ClientConfig implements ConfigCore {
-    @Config(description = {"Allows for using this mod on a server without it (like a vanilla server) when the Vanilla Tweaks Armor Statues data pack is installed without the need for being a server operator.", "Download the Vanilla Tweaks Armor Statues data pack from here: " + AbstractArmorStandScreen.VANILLA_TWEAKS_HOMEPAGE})
+    @Config(description = {
+            "Allows for using this mod on a server without it (like a vanilla server) when the Vanilla Tweaks Armor Statues data pack is installed without the need for being a server operator.",
+            "Download the Vanilla Tweaks Armor Statues data pack from here: "
+                    + AbstractStatueScreen.VANILLA_TWEAKS_HOMEPAGE
+    })
     public boolean useVanillaTweaksTriggers = false;
     @Config(description = "Do not check if the client has the necessary permission level for executing the '/data' command when trying to edit an armor stand. Useful when the current server is using custom permissions handling.")
     public boolean overrideClientPermissionsCheck = false;

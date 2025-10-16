@@ -1,43 +1,56 @@
 package fuzs.armorstatues.client.gui.screens.armorstand;
 
-import com.google.common.collect.Lists;
-import fuzs.armorstatues.init.ModRegistry;
-import fuzs.statuemenus.api.v1.client.gui.screens.ArmorStandButtonsScreen;
-import fuzs.statuemenus.api.v1.client.gui.screens.ArmorStandPositionScreen;
+import fuzs.armorstatues.world.inventory.data.ArmorStandScreenTypes;
+import fuzs.statuemenus.api.v1.client.gui.screens.StatueButtonsScreen;
+import fuzs.statuemenus.api.v1.client.gui.screens.StatuePositionScreen;
 import fuzs.statuemenus.api.v1.network.client.data.DataSyncHandler;
-import fuzs.statuemenus.api.v1.world.inventory.ArmorStandHolder;
-import fuzs.statuemenus.api.v1.world.inventory.data.ArmorStandAlignment;
-import fuzs.statuemenus.api.v1.world.inventory.data.ArmorStandScreenType;
+import fuzs.statuemenus.api.v1.world.inventory.StatueHolder;
+import fuzs.statuemenus.api.v1.world.inventory.data.StatueAlignment;
+import fuzs.statuemenus.api.v1.world.inventory.data.StatueScreenType;
 import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
-import net.minecraft.world.entity.decoration.ArmorStand;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.phys.Vec3;
 
+import java.util.ArrayList;
 import java.util.EnumSet;
 import java.util.List;
 
-public class ArmorStandAlignmentsScreen extends ArmorStandButtonsScreen {
+public class ArmorStandAlignmentsScreen extends StatueButtonsScreen {
 
-    public ArmorStandAlignmentsScreen(ArmorStandHolder holder, Inventory inventory, Component component, DataSyncHandler dataSyncHandler) {
+    public ArmorStandAlignmentsScreen(StatueHolder holder, Inventory inventory, Component component, DataSyncHandler dataSyncHandler) {
         super(holder, inventory, component, dataSyncHandler);
     }
 
     @Override
-    protected List<ArmorStandWidget> buildWidgets(ArmorStand armorStand) {
-        List<ArmorStandWidget> widgets = Lists.newArrayList();
-        widgets.add(new DoubleButtonWidget(Component.translatable(ArmorStandPositionScreen.CENTERED_TRANSLATION_KEY), Component.translatable(ArmorStandPositionScreen.CORNERED_TRANSLATION_KEY), Component.translatable(ArmorStandPositionScreen.CENTERED_DESCRIPTION_TRANSLATION_KEY), Component.translatable(ArmorStandPositionScreen.CORNERED_DESCRIPTION_TRANSLATION_KEY), Component.translatable(ArmorStandPositionScreen.ALIGNED_TRANSLATION_KEY), button -> {
-            Vec3 newPosition = this.holder.getArmorStand().position().align(EnumSet.allOf(Direction.Axis.class)).add(0.5, 0.0, 0.5);
-            this.dataSyncHandler.sendPosition(newPosition.x(), newPosition.y(), newPosition.z());
-        }, button -> {
-            Vec3 newPosition = this.holder.getArmorStand().position().align(EnumSet.allOf(Direction.Axis.class));
-            this.dataSyncHandler.sendPosition(newPosition.x(), newPosition.y(), newPosition.z());
-        }));
-        for (ArmorStandAlignment alignment : ArmorStandAlignment.values()) {
-            widgets.add(new SingleButtonWidget(Component.translatable(alignment.getTranslationKey()), Component.translatable(alignment.getDescriptionsKey()), Component.translatable(ArmorStandPositionScreen.ALIGNED_TRANSLATION_KEY), button -> {
-                ArmorStandAlignmentsScreen.this.dataSyncHandler.sendAlignment(alignment);
-            }));
+    protected List<ArmorStandWidget> buildWidgets(LivingEntity livingEntity) {
+        List<ArmorStandWidget> widgets = new ArrayList<>();
+        widgets.add(new DoubleButtonWidget(Component.translatable(StatuePositionScreen.CENTERED_TRANSLATION_KEY),
+                Component.translatable(StatuePositionScreen.CORNERED_TRANSLATION_KEY),
+                Component.translatable(StatuePositionScreen.CENTERED_DESCRIPTION_TRANSLATION_KEY),
+                Component.translatable(StatuePositionScreen.CORNERED_DESCRIPTION_TRANSLATION_KEY),
+                Component.translatable(StatuePositionScreen.ALIGNED_TRANSLATION_KEY),
+                button -> {
+                    Vec3 newPosition = this.holder.getEntity()
+                            .position()
+                            .align(EnumSet.allOf(Direction.Axis.class))
+                            .add(0.5, 0.0, 0.5);
+                    this.dataSyncHandler.sendPosition(newPosition.x(), newPosition.y(), newPosition.z());
+                },
+                button -> {
+                    Vec3 newPosition = this.holder.getEntity().position().align(EnumSet.allOf(Direction.Axis.class));
+                    this.dataSyncHandler.sendPosition(newPosition.x(), newPosition.y(), newPosition.z());
+                }));
+        for (StatueAlignment statueAlignment : StatueAlignment.values()) {
+            widgets.add(new SingleButtonWidget(Component.translatable(statueAlignment.getTranslationKey()),
+                    Component.translatable(statueAlignment.getDescriptionsKey()),
+                    Component.translatable(StatuePositionScreen.ALIGNED_TRANSLATION_KEY),
+                    button -> {
+                        ArmorStandAlignmentsScreen.this.dataSyncHandler.sendAlignment(statueAlignment);
+                    }));
         }
+
         return widgets;
     }
 
@@ -48,7 +61,7 @@ public class ArmorStandAlignmentsScreen extends ArmorStandButtonsScreen {
     }
 
     @Override
-    public ArmorStandScreenType getScreenType() {
-        return ModRegistry.ALIGNMENTS_SCREEN_TYPE;
+    public StatueScreenType getScreenType() {
+        return ArmorStandScreenTypes.ALIGNMENTS;
     }
 }

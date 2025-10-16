@@ -6,55 +6,59 @@ import fuzs.armorstatues.ArmorStatues;
 import fuzs.armorstatues.config.ClientConfig;
 import fuzs.statuemenus.api.v1.helper.ScaleAttributeHelper;
 import fuzs.statuemenus.api.v1.network.client.data.DataSyncHandler;
-import fuzs.statuemenus.api.v1.world.inventory.ArmorStandHolder;
-import fuzs.statuemenus.api.v1.world.inventory.data.ArmorStandAlignment;
-import fuzs.statuemenus.api.v1.world.inventory.data.ArmorStandPose;
-import fuzs.statuemenus.api.v1.world.inventory.data.ArmorStandScreenType;
-import fuzs.statuemenus.api.v1.world.inventory.data.ArmorStandStyleOption;
+import fuzs.statuemenus.api.v1.world.inventory.StatueHolder;
+import fuzs.statuemenus.api.v1.world.inventory.data.StatueAlignment;
+import fuzs.statuemenus.api.v1.world.inventory.data.StatuePose;
+import fuzs.statuemenus.api.v1.world.inventory.data.StatueScreenType;
+import fuzs.statuemenus.api.v1.world.inventory.data.StatueStyleOption;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.nbt.*;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.ComponentSerialization;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.attributes.Attributes;
-import net.minecraft.world.entity.decoration.ArmorStand;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
 import java.util.function.BiConsumer;
 
 public class CommandDataSyncHandler implements DataSyncHandler {
-    public static final String NO_PERMISSION_TRANSLATION_KEY = ArmorStatues.MOD_ID + ".dataSync.failure.noPermission";
-    public static final String NO_ARMOR_STAND_TRANSLATION_KEY = ArmorStatues.MOD_ID + ".dataSync.failure.noArmorStand";
-    public static final String OUT_OF_RANGE_TRANSLATION_KEY = ArmorStatues.MOD_ID + ".dataSync.failure.outOfRange";
-    public static final String NOT_FINISHED_TRANSLATION_KEY = ArmorStatues.MOD_ID + ".dataSync.failure.notFinished";
-    public static final String FINISHED_TRANSLATION_KEY = ArmorStatues.MOD_ID + ".dataSync.finished";
-    public static final String FAILURE_TRANSLATION_KEY = ArmorStatues.MOD_ID + ".dataSync.failure";
+    public static final String FINISHED_TRANSLATION_KEY = ArmorStatues.id("finished").toLanguageKey("data_sync");
+    public static final String FAILURE_TRANSLATION_KEY = ArmorStatues.id("failure").toLanguageKey("data_sync");
+    public static final String NO_PERMISSION_TRANSLATION_KEY = ArmorStatues.id("failure")
+            .toLanguageKey("data_sync", "no_permission");
+    public static final String NO_ARMOR_STAND_TRANSLATION_KEY = ArmorStatues.id("failure")
+            .toLanguageKey("data_sync", "no_armor_stand");
+    public static final String OUT_OF_RANGE_TRANSLATION_KEY = ArmorStatues.id("failure")
+            .toLanguageKey("data_sync", "out_of_range");
+    public static final String NOT_FINISHED_TRANSLATION_KEY = ArmorStatues.id("failure")
+            .toLanguageKey("data_sync", "not_finished");
     private static final Queue<List<String>> CLIENT_COMMAND_QUEUE = new ArrayDeque<>();
 
     @Nullable
-    private static ArmorStand queueArmorStand;
+    private static LivingEntity queueArmorStand;
     private static int itemDequeuedTicks;
 
-    private final ArmorStandHolder holder;
+    private final StatueHolder holder;
     protected final LocalPlayer player;
-    protected ArmorStandPose lastSyncedPose;
+    protected StatuePose lastSyncedPose;
 
-    public CommandDataSyncHandler(ArmorStandHolder holder, LocalPlayer player) {
+    public CommandDataSyncHandler(StatueHolder holder, LocalPlayer player) {
         this.holder = holder;
-        this.lastSyncedPose = ArmorStandPose.fromEntity(this.holder.getArmorStand());
+        this.lastSyncedPose = StatuePose.fromEntity(this.holder.getStatueEntity());
         this.player = player;
     }
 
     @Override
-    public ArmorStandHolder getArmorStandHolder() {
+    public StatueHolder getArmorStandHolder() {
         return this.holder;
     }
 
     @Override
     public void sendName(String name) {
         if (!this.isEditingAllowed()) return;
-        DataSyncHandler.setCustomArmorStandName(this.getArmorStand(), name);
+        DataSyncHandler.setCustomArmorStandName(this.getEntity(), name);
         CompoundTag compoundTag = new CompoundTag();
         compoundTag.storeNullable("CustomName",
                 ComponentSerialization.CODEC,
@@ -65,18 +69,18 @@ public class CommandDataSyncHandler implements DataSyncHandler {
     }
 
     @Override
-    public void sendPose(ArmorStandPose pose, boolean finalize) {
+    public void sendPose(StatuePose pose, boolean finalize) {
         if (!this.isEditingAllowed()) return;
         // split this into multiple chat messages as the client chat field has a very low character limit
         this.sendPosePart(pose::serializeBodyPoses, this.lastSyncedPose);
         this.sendPosePart(pose::serializeArmPoses, this.lastSyncedPose);
         this.sendPosePart(pose::serializeLegPoses, this.lastSyncedPose);
-        pose.applyToEntity(this.getArmorStand());
+        pose.applyToEntity(this.getArmorStandHolder().getStatueEntity());
         this.lastSyncedPose = pose.copyAndFillFrom(this.lastSyncedPose);
         if (finalize) this.finalizeCurrentOperation();
     }
 
-    private void sendPosePart(BiConsumer<CompoundTag, ArmorStandPose> dataWriter, ArmorStandPose lastSyncedPose) {
+    private void sendPosePart(BiConsumer<CompoundTag, StatuePose> dataWriter, StatuePose lastSyncedPose) {
         CompoundTag compoundTag = new CompoundTag();
         dataWriter.accept(compoundTag, lastSyncedPose);
         if (!compoundTag.isEmpty()) {
@@ -87,7 +91,7 @@ public class CommandDataSyncHandler implements DataSyncHandler {
     }
 
     @Override
-    public @Nullable ArmorStandPose getLastSyncedPose() {
+    public @Nullable StatuePose getLastSyncedPose() {
         return this.lastSyncedPose;
     }
 
@@ -110,21 +114,23 @@ public class CommandDataSyncHandler implements DataSyncHandler {
     }
 
     public void sendScale(boolean hasModifier, float scale, boolean finalize) {
-        // track if our scale attribute modifier is already present, so we only try to remove it if necessary
+        // track if our scale attribute modifier is already present, so we only try to remove it if necessary,
         // otherwise an error message from the remove command is displayed which would also be fine if this no longer works
         List<String> clientCommands = new ArrayList<>();
         if (hasModifier) {
-            clientCommands.add("attribute %s %s modifier remove %s".formatted(this.getArmorStand().getStringUUID(),
+            clientCommands.add("attribute %s %s modifier remove %s".formatted(this.getEntity().getStringUUID(),
                     Attributes.SCALE.unwrapKey().orElseThrow().location(),
                     ScaleAttributeHelper.SCALE_BONUS_ID));
         }
+
         if (scale != ScaleAttributeHelper.DEFAULT_SCALE) {
-            clientCommands.add("attribute %s %s modifier add %s %s add_value".formatted(this.getArmorStand()
+            clientCommands.add("attribute %s %s modifier add %s %s add_value".formatted(this.getEntity()
                             .getStringUUID(),
                     Attributes.SCALE.unwrapKey().orElseThrow().location(),
                     ScaleAttributeHelper.SCALE_BONUS_ID,
                     scale - ScaleAttributeHelper.DEFAULT_SCALE));
         }
+
         this.enqueueClientCommand(clientCommands);
         if (finalize) this.finalizeCurrentOperation();
     }
@@ -141,23 +147,23 @@ public class CommandDataSyncHandler implements DataSyncHandler {
     }
 
     @Override
-    public void sendStyleOption(ArmorStandStyleOption styleOption, boolean value, boolean finalize) {
+    public void sendStyleOption(StatueStyleOption<?> styleOption, boolean value, boolean finalize) {
         if (!this.isEditingAllowed()) return;
         CompoundTag compoundTag = new CompoundTag();
         styleOption.toTag(compoundTag, value);
         this.enqueueEntityData(compoundTag);
-        styleOption.setOption(this.getArmorStand(), value);
+        ((StatueStyleOption<LivingEntity>) styleOption).setOption(this.getEntity(), value);
         if (finalize) this.finalizeCurrentOperation();
     }
 
     @Override
-    public void sendAlignment(ArmorStandAlignment alignment) {
+    public void sendAlignment(StatueAlignment alignment) {
         if (!this.isEditingAllowed()) return;
         DataSyncHandler.super.sendAlignment(alignment);
     }
 
     @Override
-    public boolean supportsScreenType(ArmorStandScreenType screenType) {
+    public boolean supportsScreenType(StatueScreenType screenType) {
         return !screenType.requiresServer();
     }
 
@@ -196,14 +202,14 @@ public class CommandDataSyncHandler implements DataSyncHandler {
             this.sendFailureMessage(Component.translatable(NO_PERMISSION_TRANSLATION_KEY));
             return false;
         }
-        return this.player.getAbilities().mayBuild && this.testArmorStand(this.getArmorStand())
+        return this.player.getAbilities().mayBuild && this.testArmorStand(this.getEntity())
                 .ifLeft(this::sendFailureMessage)
                 .right()
                 .isPresent();
     }
 
-    protected Either<Component, Unit> testArmorStand(ArmorStand armorStand) {
-        return !armorStand.isAlive() ? Either.left(Component.translatable(NO_ARMOR_STAND_TRANSLATION_KEY)) :
+    protected Either<Component, Unit> testArmorStand(LivingEntity livingEntity) {
+        return !livingEntity.isAlive() ? Either.left(Component.translatable(NO_ARMOR_STAND_TRANSLATION_KEY)) :
                 Either.right(Unit.INSTANCE);
     }
 
@@ -225,7 +231,7 @@ public class CommandDataSyncHandler implements DataSyncHandler {
     @Override
     public void finalizeCurrentOperation() {
         if (!CLIENT_COMMAND_QUEUE.isEmpty()) {
-            queueArmorStand = this.getArmorStand();
+            queueArmorStand = this.getEntity();
         }
     }
 
@@ -240,7 +246,6 @@ public class CommandDataSyncHandler implements DataSyncHandler {
     }
 
     private void enqueueEntityData(CompoundTag compoundTag) {
-        this.enqueueClientCommand("data merge entity %s %s".formatted(this.getArmorStand().getStringUUID(),
-                compoundTag));
+        this.enqueueClientCommand("data merge entity %s %s".formatted(this.getEntity().getStringUUID(), compoundTag));
     }
 }

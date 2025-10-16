@@ -5,15 +5,19 @@ import com.mojang.datafixers.util.Either;
 import com.mojang.datafixers.util.Unit;
 import fuzs.armorstatues.ArmorStatues;
 import fuzs.armorstatues.config.ClientConfig;
-import fuzs.armorstatues.init.ModRegistry;
-import fuzs.statuemenus.api.v1.world.inventory.ArmorStandHolder;
-import fuzs.statuemenus.api.v1.world.inventory.data.*;
+import fuzs.armorstatues.world.inventory.data.ArmorStandScreenTypes;
+import fuzs.statuemenus.api.v1.world.inventory.StatueHolder;
+import fuzs.statuemenus.api.v1.world.inventory.data.StatueAlignment;
+import fuzs.statuemenus.api.v1.world.inventory.data.StatuePose;
+import fuzs.statuemenus.api.v1.world.inventory.data.StatueScreenType;
+import fuzs.statuemenus.api.v1.world.inventory.data.StatueStyleOption;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.core.Rotations;
 import net.minecraft.network.chat.Component;
-import net.minecraft.world.entity.decoration.ArmorStand;
+import net.minecraft.world.entity.LivingEntity;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.List;
 import java.util.Map;
 import java.util.NavigableMap;
 import java.util.Optional;
@@ -222,82 +226,157 @@ public class VanillaTweaksDataSyncHandler extends CommandDataSyncHandler {
             45.0F,
             ADJUST_ROTATION_ANGLE_STEP_45);
 
-    public VanillaTweaksDataSyncHandler(ArmorStandHolder holder, LocalPlayer player) {
+    public VanillaTweaksDataSyncHandler(StatueHolder holder, LocalPlayer player) {
         super(holder, player);
     }
 
     @Override
-    public void sendPose(ArmorStandPose pose, boolean finalize) {
-        if (!this.isEditingAllowed()) return;
+    public void sendPose(StatuePose pose, boolean finalize) {
+        if (!this.isEditingAllowed()) {
+            return;
+        }
         int triggerValue = this.getTriggerValueFromPose(pose);
         if (triggerValue != -1) {
             if (this.enqueueTriggerValue(triggerValue)) {
                 this.lastSyncedPose = pose.copyAndFillFrom(this.lastSyncedPose);
-                pose.applyToEntity(this.getArmorStand());
+                pose.applyToEntity(this.getArmorStandHolder().getStatueEntity());
             }
         } else {
             this.tryApplyAllPoseParts(pose);
         }
-        if (finalize) this.finalizeCurrentOperation();
+        if (finalize) {
+            this.finalizeCurrentOperation();
+        }
     }
 
-    private int getTriggerValueFromPose(ArmorStandPose pose) {
-        if (pose.isEmpty()) return POSE_PRESETS_ATTENTION;
-        if (pose.isMirrored()) return MIRROR_AND_FLIP_FLIP;
-        if (!pose.isVanillaTweaksCompatible()) return -1;
-        if (pose == ArmorStandPose.WALKING) return POSE_PRESETS_WALKING;
-        if (pose == ArmorStandPose.RUNNING) return POSE_PRESETS_RUNNING;
-        if (pose == ArmorStandPose.POINTING) return POSE_PRESETS_POINTING;
-        if (pose == ArmorStandPose.BLOCKING) return POSE_PRESETS_BLOCKING;
-        if (pose == ArmorStandPose.LUNGEING) return POSE_PRESETS_LUNGEING;
-        if (pose == ArmorStandPose.WINNING) return POSE_PRESETS_WINNING;
-        if (pose == ArmorStandPose.SITTING) return POSE_PRESETS_SITTING;
-        if (pose == ArmorStandPose.ARABESQUE) return POSE_PRESETS_ARABESQUE;
-        if (pose == ArmorStandPose.CUPID) return POSE_PRESETS_CUPID;
-        if (pose == ArmorStandPose.CONFIDENT) return POSE_PRESETS_CONFIDENT;
-        if (pose == ArmorStandPose.SALUTE) return POSE_PRESETS_SALUTE;
-        if (pose == ArmorStandPose.DEATH) return POSE_PRESETS_DEATH;
-        if (pose == ArmorStandPose.FACEPALM) return POSE_PRESETS_FACEPALM;
-        if (pose == ArmorStandPose.LAZING) return POSE_PRESETS_LAZING;
-        if (pose == ArmorStandPose.CONFUSED) return POSE_PRESETS_CONFUSED;
-        if (pose == ArmorStandPose.FORMAL) return POSE_PRESETS_FORMAL;
-        if (pose == ArmorStandPose.SAD) return POSE_PRESETS_SAD;
-        if (pose == ArmorStandPose.JOYOUS) return POSE_PRESETS_JOYOUS;
-        if (pose == ArmorStandPose.STARGAZING) return POSE_PRESETS_STARGAZING;
+    private int getTriggerValueFromPose(StatuePose pose) {
+        if (pose.isEmpty()) {
+            return POSE_PRESETS_ATTENTION;
+        }
+
+        if (pose.isMirrored()) {
+            return MIRROR_AND_FLIP_FLIP;
+        }
+
+        if (!pose.isVanillaTweaksCompatible()) {
+            return -1;
+        }
+
+        if (pose == StatuePose.WALKING) {
+            return POSE_PRESETS_WALKING;
+        }
+
+        if (pose == StatuePose.RUNNING) {
+            return POSE_PRESETS_RUNNING;
+        }
+
+        if (pose == StatuePose.POINTING) {
+            return POSE_PRESETS_POINTING;
+        }
+
+        if (pose == StatuePose.BLOCKING) {
+            return POSE_PRESETS_BLOCKING;
+        }
+
+        if (pose == StatuePose.LUNGEING) {
+            return POSE_PRESETS_LUNGEING;
+        }
+
+        if (pose == StatuePose.WINNING) {
+            return POSE_PRESETS_WINNING;
+        }
+
+        if (pose == StatuePose.SITTING) {
+            return POSE_PRESETS_SITTING;
+        }
+
+        if (pose == StatuePose.ARABESQUE) {
+            return POSE_PRESETS_ARABESQUE;
+        }
+
+        if (pose == StatuePose.CUPID) {
+            return POSE_PRESETS_CUPID;
+        }
+
+        if (pose == StatuePose.CONFIDENT) {
+            return POSE_PRESETS_CONFIDENT;
+        }
+
+        if (pose == StatuePose.SALUTE) {
+            return POSE_PRESETS_SALUTE;
+        }
+
+        if (pose == StatuePose.DEATH) {
+            return POSE_PRESETS_DEATH;
+        }
+
+        if (pose == StatuePose.FACEPALM) {
+            return POSE_PRESETS_FACEPALM;
+        }
+
+        if (pose == StatuePose.LAZING) {
+            return POSE_PRESETS_LAZING;
+        }
+
+        if (pose == StatuePose.CONFUSED) {
+            return POSE_PRESETS_CONFUSED;
+        }
+
+        if (pose == StatuePose.FORMAL) {
+            return POSE_PRESETS_FORMAL;
+        }
+
+        if (pose == StatuePose.SAD) {
+            return POSE_PRESETS_SAD;
+        }
+
+        if (pose == StatuePose.JOYOUS) {
+            return POSE_PRESETS_JOYOUS;
+        }
+
+        if (pose == StatuePose.STARGAZING) {
+            return POSE_PRESETS_STARGAZING;
+        }
+
         return -1;
     }
 
-    private void tryApplyAllPoseParts(ArmorStandPose pose) {
+    private void tryApplyAllPoseParts(StatuePose pose) {
         if (!this.tryApplyPosePart(this.lastSyncedPose.getHeadPose(),
                 pose.headPose(),
                 POSE_ADJUSTMENT_HEAD,
                 this.lastSyncedPose::withHeadPose)) {
             return;
         }
+
         if (!this.tryApplyPosePart(this.lastSyncedPose.getBodyPose(),
                 pose.bodyPose(),
                 POSE_ADJUSTMENT_BODY,
                 this.lastSyncedPose::withBodyPose)) {
             return;
         }
+
         if (!this.tryApplyPosePart(this.lastSyncedPose.getRightArmPose(),
                 pose.rightArmPose(),
                 POSE_ADJUSTMENT_RIGHT_ARM,
                 this.lastSyncedPose::withRightArmPose)) {
             return;
         }
+
         if (!this.tryApplyPosePart(this.lastSyncedPose.getLeftArmPose(),
                 pose.leftArmPose(),
                 POSE_ADJUSTMENT_LEFT_ARM,
                 this.lastSyncedPose::withLeftArmPose)) {
             return;
         }
+
         if (!this.tryApplyPosePart(this.lastSyncedPose.getRightLegPose(),
                 pose.rightLegPose(),
                 POSE_ADJUSTMENT_RIGHT_LEG,
                 this.lastSyncedPose::withRightLegPose)) {
             return;
         }
+
         if (!this.tryApplyPosePart(this.lastSyncedPose.getLeftLegPose(),
                 pose.leftLegPose(),
                 POSE_ADJUSTMENT_LEFT_LEG,
@@ -306,7 +385,7 @@ public class VanillaTweaksDataSyncHandler extends CommandDataSyncHandler {
         }
     }
 
-    private boolean tryApplyPosePart(Rotations oldPose, @Nullable Rotations newPose, int[] poseAdjustment, Function<Rotations, ArmorStandPose> function) {
+    private boolean tryApplyPosePart(Rotations oldPose, @Nullable Rotations newPose, int[] poseAdjustment, Function<Rotations, StatuePose> function) {
         if (this.tryApplyPoseAdjustment(oldPose, newPose, poseAdjustment)) {
             this.lastSyncedPose = function.apply(newPose != null ? newPose : oldPose);
             return true;
@@ -322,29 +401,31 @@ public class VanillaTweaksDataSyncHandler extends CommandDataSyncHandler {
             return false;
         } else if (!this.applyIncrementsFromSteps(oldPose.y(), newPose.y(), poseAdjustment[2], poseAdjustment[3])) {
             return false;
-        } else if (!this.applyIncrementsFromSteps(oldPose.z(), newPose.z(), poseAdjustment[4], poseAdjustment[5])) {
-            return false;
         } else {
-            return true;
+            return this.applyIncrementsFromSteps(oldPose.z(), newPose.z(), poseAdjustment[4], poseAdjustment[5]);
         }
     }
 
     @Override
     public void sendPosition(double posX, double posY, double posZ, boolean finalize) {
-        if (!this.isEditingAllowed()) return;
-        this.applyPositionIncrements(this.getArmorStand().getX(),
+        if (!this.isEditingAllowed()) {
+            return;
+        }
+        this.applyPositionIncrements(this.getEntity().getX(),
                 posX,
                 NUDGE_POSITIONS_X_POSITIVE,
                 NUDGE_POSITIONS_X_NEGATIVE);
-        this.applyPositionIncrements(this.getArmorStand().getY(),
+        this.applyPositionIncrements(this.getEntity().getY(),
                 posY,
                 NUDGE_POSITIONS_Y_POSITIVE,
                 NUDGE_POSITIONS_Y_NEGATIVE);
-        this.applyPositionIncrements(this.getArmorStand().getZ(),
+        this.applyPositionIncrements(this.getEntity().getZ(),
                 posZ,
                 NUDGE_POSITIONS_Z_POSITIVE,
                 NUDGE_POSITIONS_Z_NEGATIVE);
-        if (finalize) this.finalizeCurrentOperation();
+        if (finalize) {
+            this.finalizeCurrentOperation();
+        }
     }
 
     private void applyPositionIncrements(double oldValue, double newValue, NavigableMap<Double, Integer> positiveNudgePositions, NavigableMap<Double, Integer> negativeNudgePositions) {
@@ -367,12 +448,16 @@ public class VanillaTweaksDataSyncHandler extends CommandDataSyncHandler {
 
     @Override
     public void sendRotation(float rotation, boolean finalize) {
-        if (!this.isEditingAllowed()) return;
-        this.applyIncrementsFromSteps(this.getArmorStand().getYRot(),
+        if (!this.isEditingAllowed()) {
+            return;
+        }
+        this.applyIncrementsFromSteps(this.getEntity().getYRot(),
                 rotation,
                 ADJUST_ROTATION_ROTATE_RIGHT,
                 ADJUST_ROTATION_ROTATE_LEFT);
-        if (finalize) this.finalizeCurrentOperation();
+        if (finalize) {
+            this.finalizeCurrentOperation();
+        }
     }
 
     private boolean applyIncrementsFromSteps(float oldValue, float newValue, int triggerValueNegative, int triggerValuePositive) {
@@ -402,33 +487,40 @@ public class VanillaTweaksDataSyncHandler extends CommandDataSyncHandler {
     }
 
     @Override
-    public void sendStyleOption(ArmorStandStyleOption styleOption, boolean value, boolean finalize) {
-        if (!this.isEditingAllowed()) return;
+    public void sendStyleOption(StatueStyleOption<?> styleOption, boolean value, boolean finalize) {
+        if (!this.isEditingAllowed()) {
+            return;
+        }
+
         int triggerValue;
-        if (styleOption == ArmorStandStyleOptions.SHOW_NAME) {
+        if (styleOption == StatueStyleOption.SHOW_NAME) {
             triggerValue = value ? DISPLAY_NAME_YES : DISPLAY_NAME_NO;
-        } else if (styleOption == ArmorStandStyleOptions.SHOW_ARMS) {
+        } else if (styleOption == StatueStyleOption.SHOW_ARMS) {
             triggerValue = value ? SHOW_ARMS_YES : SHOW_ARMS_NO;
-        } else if (styleOption == ArmorStandStyleOptions.SMALL) {
+        } else if (styleOption == StatueStyleOption.SMALL) {
             triggerValue = value ? SMALL_STAND_YES : SMALL_STAND_NO;
-        } else if (styleOption == ArmorStandStyleOptions.INVISIBLE) {
+        } else if (styleOption == StatueStyleOption.INVISIBLE) {
             triggerValue = value ? STAND_VISIBLE_NO : STAND_VISIBLE_YES;
-        } else if (styleOption == ArmorStandStyleOptions.NO_BASE_PLATE) {
+        } else if (styleOption == StatueStyleOption.NO_BASE_PLATE) {
             triggerValue = value ? SHOW_BASE_PLATE_NO : SHOW_BASE_PLATE_YES;
-        } else if (styleOption == ArmorStandStyleOptions.NO_GRAVITY) {
+        } else if (styleOption == StatueStyleOption.IMMOVABLE) {
             triggerValue = value ? APPLY_GRAVITY_NO : APPLY_GRAVITY_YES;
         } else {
             super.sendStyleOption(styleOption, value, finalize);
             return;
         }
+
         if (this.sendSingleTriggerValue(triggerValue, finalize)) {
-            styleOption.setOption(this.getArmorStand(), value);
+            ((StatueStyleOption<LivingEntity>) styleOption).setOption(this.getEntity(), value);
         }
     }
 
     @Override
-    public void sendAlignment(ArmorStandAlignment alignment) {
-        if (!this.isEditingAllowed()) return;
+    public void sendAlignment(StatueAlignment alignment) {
+        if (!this.isEditingAllowed()) {
+            return;
+        }
+
         int triggerValue = switch (alignment) {
             case BLOCK -> AUTO_ALIGNMENT_BLOCK_ON_SURFACE;
             case FLOATING_ITEM -> AUTO_ALIGNMENT_ITEM_ON_SURFACE;
@@ -439,20 +531,23 @@ public class VanillaTweaksDataSyncHandler extends CommandDataSyncHandler {
     }
 
     public void sendSingleTriggerValue(int triggerValue) {
-        if (!this.isEditingAllowed()) return;
+        if (!this.isEditingAllowed()) {
+            return;
+        }
         this.sendSingleTriggerValue(triggerValue, true);
     }
 
     private boolean sendSingleTriggerValue(int triggerValue, boolean finalize) {
         boolean result = this.enqueueTriggerValue(triggerValue);
-        if (finalize) this.finalizeCurrentOperation();
+        if (finalize) {
+            this.finalizeCurrentOperation();
+        }
         return result;
     }
 
     @Override
-    public ArmorStandScreenType[] getScreenTypes() {
-        return Stream.concat(Stream.of(super.getScreenTypes()), Stream.of(ModRegistry.VANILLA_TWEAKS_SCREEN_TYPE))
-                .toArray(ArmorStandScreenType[]::new);
+    public List<StatueScreenType> getScreenTypes() {
+        return Stream.concat(super.getScreenTypes().stream(), Stream.of(ArmorStandScreenTypes.VANILLA_TWEAKS)).toList();
     }
 
     @Override
@@ -461,9 +556,9 @@ public class VanillaTweaksDataSyncHandler extends CommandDataSyncHandler {
     }
 
     @Override
-    protected Either<Component, Unit> testArmorStand(ArmorStand armorStand) {
-        return super.testArmorStand(armorStand).<Optional<Component>>map(Optional::of, $ -> {
-            if (this.player.distanceToSqr(armorStand) < 9.0) {
+    protected Either<Component, Unit> testArmorStand(LivingEntity livingEntity) {
+        return super.testArmorStand(livingEntity).<Optional<Component>>map(Optional::of, (Unit unit) -> {
+            if (this.player.distanceToSqr(livingEntity) < 9.0) {
                 return Optional.empty();
             } else {
                 return Optional.of(Component.translatable(OUT_OF_RANGE_TRANSLATION_KEY));
