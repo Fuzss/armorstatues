@@ -16,9 +16,10 @@ import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.nbt.*;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.ComponentSerialization;
+import net.minecraft.server.permissions.Permissions;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.attributes.Attributes;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 import java.util.*;
 import java.util.function.BiConsumer;
@@ -119,14 +120,14 @@ public class CommandDataSyncHandler implements DataSyncHandler {
         List<String> clientCommands = new ArrayList<>();
         if (hasModifier) {
             clientCommands.add("attribute %s %s modifier remove %s".formatted(this.getEntity().getStringUUID(),
-                    Attributes.SCALE.unwrapKey().orElseThrow().location(),
+                    Attributes.SCALE.unwrapKey().orElseThrow().identifier(),
                     ScaleAttributeHelper.SCALE_BONUS_ID));
         }
 
         if (scale != ScaleAttributeHelper.DEFAULT_SCALE) {
             clientCommands.add("attribute %s %s modifier add %s %s add_value".formatted(this.getEntity()
                             .getStringUUID(),
-                    Attributes.SCALE.unwrapKey().orElseThrow().location(),
+                    Attributes.SCALE.unwrapKey().orElseThrow().identifier(),
                     ScaleAttributeHelper.SCALE_BONUS_ID,
                     scale - ScaleAttributeHelper.DEFAULT_SCALE));
         }
@@ -198,7 +199,7 @@ public class CommandDataSyncHandler implements DataSyncHandler {
     }
 
     protected final boolean isEditingAllowed(boolean testPermissionLevel) {
-        if (testPermissionLevel && !this.player.hasPermissions(2)) {
+        if (testPermissionLevel && !this.player.permissions().hasPermission(Permissions.COMMANDS_GAMEMASTER)) {
             this.sendFailureMessage(Component.translatable(NO_PERMISSION_TRANSLATION_KEY));
             return false;
         }

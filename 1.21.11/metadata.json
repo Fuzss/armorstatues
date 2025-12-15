@@ -1,0 +1,69 @@
+{
+    "mod": {
+        "id": "armorstatues",
+        "group": "fuzs.armorstatues",
+        "name": "Armor Statues",
+        "version": "21.11.0",
+        "authors": [
+            "Fuzs"
+        ],
+        "description": "Unlock the full potential of armor stands! Works on vanilla servers, too.",
+        "license": "MPL-2.0"
+    },
+    "dependencies": [
+        {
+            "name": "statuemenus",
+            "type": "embedded",
+            "platforms": [
+                "fabric",
+                "neoforge"
+            ]
+        },
+        {
+            "name": "fabricapi",
+            "type": "required",
+            "platforms": [
+                "fabric"
+            ]
+        },
+        {
+            "name": "forgeconfigapiport",
+            "type": "required",
+            "platforms": [
+                "fabric"
+            ]
+        },
+        {
+            "name": "puzzleslib",
+            "type": "required",
+            "platforms": [
+                "fabric",
+                "neoforge"
+            ]
+        }
+    ],
+    "links": [
+        {
+            "name": "github",
+            "slug": "armorstatues"
+        },
+        {
+            "name": "curseforge",
+            "slug": "armor-statues",
+            "id": "682566"
+        },
+        {
+            "name": "modrinth",
+            "slug": "armor-statues",
+            "id": "bbGCtEvb"
+        }
+    ],
+    "environments": {
+        "client": "required",
+        "server": "unsupported"
+    },
+    "platforms": [
+        "fabric",
+        "neoforge"
+    ]
+}

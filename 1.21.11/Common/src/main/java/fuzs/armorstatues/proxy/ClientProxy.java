@@ -11,6 +11,7 @@ import fuzs.statuemenus.api.v1.world.inventory.StatueHolder;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.player.LocalPlayer;
+import net.minecraft.server.permissions.Permissions;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 
@@ -27,7 +28,8 @@ public class ClientProxy extends ServerProxy {
     }
 
     private static DataSyncHandler createDataSyncHandler(StatueHolder holder, LocalPlayer player) {
-        if ((!player.hasPermissions(2) || ArmorStatues.CONFIG.get(ClientConfig.class).overrideClientPermissionsCheck)
+        if ((!player.permissions().hasPermission(Permissions.COMMANDS_GAMEMASTER) || ArmorStatues.CONFIG.get(
+                ClientConfig.class).overrideClientPermissionsCheck)
                 && ArmorStatues.CONFIG.get(ClientConfig.class).useVanillaTweaksTriggers) {
             return new VanillaTweaksDataSyncHandler(holder, player);
         } else {
