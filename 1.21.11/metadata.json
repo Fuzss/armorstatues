@@ -3,7 +3,7 @@
         "id": "armorstatues",
         "group": "fuzs.armorstatues",
         "name": "Armor Statues",
-        "version": "21.11.0",
+        "version": "21.11.1",
         "authors": [
             "Fuzs"
         ],
@@ -44,13 +44,13 @@
     ],
     "links": [
         {
-            "name": "github",
-            "slug": "armorstatues"
-        },
-        {
             "name": "curseforge",
             "slug": "armor-statues",
             "id": "682566"
+        },
+        {
+            "name": "github",
+            "slug": "armorstatues"
         },
         {
             "name": "modrinth",
@@ -60,7 +60,7 @@
     ],
     "environments": {
         "client": "required",
-        "server": "unsupported"
+        "server": "optional"
     },
     "platforms": [
         "fabric",
